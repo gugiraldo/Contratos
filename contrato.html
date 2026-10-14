@@ -439,7 +439,7 @@
   // ===== Firmas y huellas digitales (se ven en el PDF; en papel queda el espacio para hacerlo a mano) =====
   var pads = Array.prototype.slice.call(document.querySelectorAll('.pad'));
   var modal = null;
-  function cerrarModal() { if (modal) { modal.querySelectorAll('audio').forEach(function (a) { a.pause(); }); modal.remove(); modal = null; document.body.style.overflow = ''; } }
+  function cerrarModal() { if (modal) { modal.querySelectorAll('audio').forEach(function (a) { a.pause(); }); modal.querySelectorAll('video').forEach(function (v) { if (v.srcObject) v.srcObject.getTracks().forEach(function (t) { t.stop(); }); }); modal.remove(); modal = null; document.body.style.overflow = ''; } }
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') cerrarModal(); });
   function ponerPad(pad, url) {
     var img = pad.querySelector('.pad-img');
@@ -566,100 +566,176 @@
     return c;
   }
 
+  function esMovil() { return !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches); }
+  function rotar(img, grados, max) {
+    var d = medidas(img), r = grados * Math.PI / 180, co = Math.abs(Math.cos(r)), si = Math.abs(Math.sin(r));
+    var W = d.w * co + d.h * si, H = d.w * si + d.h * co, k = Math.min(1, max / Math.max(W, H));
+    var c = document.createElement('canvas'); c.width = Math.max(1, Math.round(W * k)); c.height = Math.max(1, Math.round(H * k));
+    var x = c.getContext('2d');
+    x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height);
+    x.translate(c.width / 2, c.height / 2); x.rotate(r); x.scale(k, k); x.drawImage(img, -d.w / 2, -d.h / 2);
+    return c;
+  }
+
+  // Cámara del computador (webcam). En el celular se usa la cámara del teléfono con elegirArchivo(true, ...)
+  function abrirCamara(cb) {
+    var m = crearModal('Cámara', 'Ponga la cédula frente a la cámara, con buena luz, y pulse Capturar.');
+    var video = document.createElement('video');
+    video.autoplay = true; video.muted = true; video.setAttribute('playsinline', '');
+    video.style.cssText = 'width:100%;max-height:50vh;background:#000;border-radius:8px;';
+    m.zona.appendChild(video);
+    var capturar;
+    m.acc.appendChild(botonModal('Cancelar', cerrarModal));
+    m.acc.appendChild(botonModal('📁 Elegir archivo', function () { cerrarModal(); elegirArchivo(false, function (f) { cargarImagen(f, cb); }); }));
+    capturar = botonModal('📷 Capturar', function () {
+      if (!video.videoWidth) return;
+      var c = document.createElement('canvas'); c.width = video.videoWidth; c.height = video.videoHeight;
+      c.getContext('2d').drawImage(video, 0, 0);
+      cerrarModal(); cb(c);
+    }, 'principal');
+    capturar.disabled = true;
+    m.acc.appendChild(capturar);
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { m.info.textContent = 'Este navegador no permite usar la cámara en esta vista. Elija un archivo.'; return; }
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1080 } }, audio: false }).then(function (flujo) {
+      if (!modal || !modal.contains(video)) { flujo.getTracks().forEach(function (t) { t.stop(); }); return; }
+      video.srcObject = flujo;
+      video.addEventListener('loadedmetadata', function () { capturar.disabled = false; });
+    }).catch(function () { m.info.textContent = 'No se pudo activar la cámara (revise el permiso del navegador). Puede elegir un archivo.'; });
+  }
+  function accionesFoto(m, recibir) {
+    var movil = esMovil();
+    m.acc.appendChild(botonModal(movil ? '🖼 Galería' : '📁 Elegir archivo', function () { elegirArchivo(false, function (f) { cargarImagen(f, recibir); }); }));
+    m.acc.appendChild(botonModal(movil ? '📷 Tomar foto' : '📷 Usar la cámara', function () {
+      if (movil) elegirArchivo(true, function (f) { cargarImagen(f, recibir); }); else abrirCamara(recibir);
+    }, 'principal'));
+  }
+
+  // Ajuste de una foto: girar, enderezar, acercar y mover el recuadro (sirve para la cédula y para recortar la huella)
+  function abrirAjuste(o) {
+    var m = crearModal(o.titulo || 'Ajustar foto', o.ayuda || '');
+    var RAT = o.relacion, giros = 0, fino = 0, frac = o.inicial || 1;
+    var rot = null, k = 1, vw = 0, vh = 0, rw = 0, rx = 0, ry = 0;
+    var maxW = Math.min(560, window.innerWidth - 56), maxH = Math.round(window.innerHeight * 0.38);
+    var caja = el('div');
+    caja.style.cssText = 'position:relative;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;border-radius:6px;';
+    var cv = document.createElement('canvas'); cv.style.display = 'block';
+    var rec = el('div');
+    rec.style.cssText = 'position:absolute;border:3px solid #38bdf8;box-shadow:0 0 0 9999px rgba(15,23,42,.55);cursor:move;touch-action:none;';
+    caja.appendChild(cv); caja.appendChild(rec); m.zona.appendChild(caja);
+    function tope() { return Math.min(vw, vh * RAT); }
+    function colocar() {
+      var rh = rw / RAT;
+      rx = Math.max(0, Math.min(vw - rw, rx)); ry = Math.max(0, Math.min(vh - rh, ry));
+      rec.style.left = rx + 'px'; rec.style.top = ry + 'px'; rec.style.width = rw + 'px'; rec.style.height = rh + 'px';
+    }
+    function preparar() {
+      var cx = vw ? (rx + rw / 2) / vw : 0.5, cy = vw ? (ry + (rw / RAT) / 2) / vh : 0.5;
+      rot = rotar(o.img, giros * 90 + fino, 1600);
+      k = Math.min(maxW / rot.width, maxH / rot.height);
+      vw = Math.round(rot.width * k); vh = Math.round(rot.height * k);
+      cv.width = vw; cv.height = vh; cv.style.width = vw + 'px'; cv.style.height = vh + 'px';
+      caja.style.width = vw + 'px'; caja.style.height = vh + 'px';
+      cv.getContext('2d').drawImage(rot, 0, 0, vw, vh);
+      rw = Math.round(tope() * frac); rx = cx * vw - rw / 2; ry = cy * vh - (rw / RAT) / 2; colocar();
+    }
+    preparar();
+    var arr = null;
+    rec.addEventListener('pointerdown', function (e) { e.preventDefault(); try { rec.setPointerCapture(e.pointerId); } catch (x) {} arr = { x: e.clientX, y: e.clientY }; });
+    rec.addEventListener('pointermove', function (e) { if (!arr) return; e.preventDefault(); rx += e.clientX - arr.x; ry += e.clientY - arr.y; arr = { x: e.clientX, y: e.clientY }; colocar(); });
+    function soltar() { arr = null; }
+    rec.addEventListener('pointerup', soltar); rec.addEventListener('pointercancel', soltar);
+    caja.addEventListener('pointerdown', function (e) {
+      if (e.target === rec) return;
+      var r = caja.getBoundingClientRect(); rx = e.clientX - r.left - rw / 2; ry = e.clientY - r.top - (rw / RAT) / 2; colocar();
+    });
+
+    function fila(texto, ctl) {
+      var d = el('div'); d.style.cssText = 'text-align:left;font-weight:normal;margin-top:8px;';
+      var t = el('div', null, texto); d.appendChild(t); d.appendChild(ctl);
+      m.info.appendChild(d);
+      return t;
+    }
+    var giro = el('div', 'modal-acc'); giro.style.justifyContent = 'center'; giro.style.marginTop = '0';
+    giro.appendChild(boton('↺ Girar', function () { giros--; preparar(); }));
+    giro.appendChild(boton('↻ Girar', function () { giros++; preparar(); }));
+    m.info.appendChild(giro);
+    var fi = document.createElement('input');
+    fi.type = 'range'; fi.min = -30; fi.max = 30; fi.step = 0.5; fi.value = 0; fi.style.cssText = 'width:100%;';
+    var tfi = fila('Enderezar: 0°', fi);
+    fi.addEventListener('input', function () { fino = +fi.value; tfi.textContent = 'Enderezar: ' + fino + '°'; preparar(); });
+    var ta = document.createElement('input');
+    ta.type = 'range'; ta.min = 15; ta.max = 100; ta.step = 1; ta.value = Math.round(frac * 100); ta.style.cssText = 'width:100%;';
+    fila('Tamaño del recuadro (más pequeño = más acercado)', ta);
+    ta.addEventListener('input', function () {
+      var cx = rx + rw / 2, cy = ry + (rw / RAT) / 2;
+      frac = ta.value / 100; rw = Math.round(tope() * frac); rx = cx - rw / 2; ry = cy - (rw / RAT) / 2; colocar();
+    });
+
+    m.acc.appendChild(botonModal('Cancelar', cerrarModal));
+    m.acc.appendChild(botonModal(o.textoGuardar || 'Guardar', function () {
+      var OW = o.ancho, OH = o.alto;
+      var out = document.createElement('canvas'); out.width = OW; out.height = OH;
+      var oc = out.getContext('2d');
+      oc.fillStyle = '#fff'; oc.fillRect(0, 0, OW, OH);
+      oc.drawImage(rot, rx / k, ry / k, rw / k, (rw / RAT) / k, 0, 0, OW, OH);
+      if (o.gris) {   // blanco y negro con un poco más de contraste
+        var datos = oc.getImageData(0, 0, OW, OH), px = datos.data;
+        for (var i = 0; i < px.length; i += 4) {
+          var g = 0.299 * px[i] + 0.587 * px[i + 1] + 0.114 * px[i + 2];
+          g = Math.max(0, Math.min(255, (g - 128) * 1.25 + 128));
+          px[i] = px[i + 1] = px[i + 2] = g;
+        }
+        oc.putImageData(datos, 0, 0);
+      }
+      cerrarModal();
+      o.alGuardar(out);
+    }, 'principal'));
+  }
+
   function abrirFoto(slot) {
-    var m = crearModal(slot.dataset.titulo || 'Foto de la cédula', 'Ponga la cédula sobre una superficie plana, con buena luz, y tome la foto de modo que se lea todo.');
+    var m = crearModal(slot.dataset.titulo || 'Foto de la cédula', 'Ponga la cédula sobre una superficie plana, con buena luz, y tome la foto de modo que se lea todo. Después podrá girarla, acercarla y encuadrarla.');
     var previo = slot.querySelector('.pad-img');
+    function ajustar(img) {
+      cerrarModal();
+      abrirAjuste({
+        titulo: slot.dataset.titulo, img: img, relacion: 1.585, ancho: 1200, alto: 757, gris: false, textoGuardar: 'Guardar foto',
+        ayuda: 'Gire o enderece la foto, acérquela con el tamaño del recuadro y muévala hasta que la cédula quede bien encuadrada.',
+        alGuardar: function (c) { ponerPad(slot, c.toDataURL('image/jpeg', 0.88)); }
+      });
+    }
     if (previo) {
       var im = document.createElement('img');
       im.src = previo.src; im.style.cssText = 'max-width:100%;border:1px solid #94a3b8;border-radius:6px';
       m.zona.appendChild(im);
+      m.acc.appendChild(botonModal('Quitar foto', function () { borrarPad(slot); cerrarModal(); }));
+      m.acc.appendChild(botonModal('✂ Ajustar esta foto', function () { var x = new Image(); x.onload = function () { ajustar(x); }; x.src = previo.src; }));
     }
-    function recibir(archivo) {
-      cargarImagen(archivo, function (img) { ponerPad(slot, encajar(img, 1200, 757).toDataURL('image/jpeg', 0.85)); cerrarModal(); });
-    }
-    if (previo) m.acc.appendChild(botonModal('Quitar foto', function () { borrarPad(slot); cerrarModal(); }));
     m.acc.appendChild(botonModal('Cancelar', cerrarModal));
-    m.acc.appendChild(botonModal('🖼 Galería', function () { elegirArchivo(false, recibir); }));
-    m.acc.appendChild(botonModal('📷 Tomar foto', function () { elegirArchivo(true, recibir); }, 'principal'));
+    accionesFoto(m, ajustar);
   }
 
   function abrirHuella(pad) {
     var slot = pad.dataset.slot ? document.querySelector('.pad-foto[data-id="' + pad.dataset.slot + '"]') : null;
     var fotoSlot = slot && slot.querySelector('.pad-img');
     var m = crearModal(pad.dataset.titulo || 'Huella', 'La huella se toma de la foto de la cédula: la cara donde aparece la huella de la persona. Luego se recorta el cuadro de la huella.');
-    function nueva(archivo) {
-      cargarImagen(archivo, function (img) {
-        if (slot) ponerPad(slot, encajar(img, 1200, 757).toDataURL('image/jpeg', 0.85));
-        cerrarModal(); abrirRecorte(pad, reducir(img, 1600));
+    function recortar(img) {
+      cerrarModal();
+      abrirAjuste({
+        titulo: pad.dataset.titulo, img: img, relacion: 0.786, ancho: 480, alto: 610, gris: true, inicial: 0.4, textoGuardar: 'Guardar huella',
+        ayuda: 'Mueva el recuadro sobre la huella. Si la foto quedó torcida, enderécela con la barra o gírela.',
+        alGuardar: function (c) { ponerPad(pad, c.toDataURL('image/jpeg', 0.9)); }
       });
+    }
+    function nueva(img) {
+      if (slot) ponerPad(slot, encajar(img, 1200, 757).toDataURL('image/jpeg', 0.85));
+      recortar(reducir(img, 1600));
     }
     if (pad.classList.contains('firmado')) m.acc.appendChild(botonModal('Quitar huella', function () { borrarPad(pad); cerrarModal(); }));
     m.acc.appendChild(botonModal('Cancelar', cerrarModal));
-    m.acc.appendChild(botonModal('🖼 Galería', function () { elegirArchivo(false, nueva); }));
-    m.acc.appendChild(botonModal('📷 Tomar foto de la cédula', function () { elegirArchivo(true, nueva); }, fotoSlot ? '' : 'principal'));
     if (fotoSlot) m.acc.appendChild(botonModal('Usar la foto ya tomada', function () {
-      var im = new Image();
-      im.onload = function () { cerrarModal(); abrirRecorte(pad, im); };
-      im.src = fotoSlot.src;
+      var im = new Image(); im.onload = function () { recortar(im); }; im.src = fotoSlot.src;
     }, 'principal'));
-  }
-
-  function abrirRecorte(pad, img) {
-    var m = crearModal(pad.dataset.titulo || 'Huella', 'Mueva el recuadro hasta que quede justo sobre la huella y ajuste su tamaño con la barra.');
-    var d = medidas(img), RAT = 0.786;
-    var maxW = Math.min(520, window.innerWidth - 56), maxH = Math.round(window.innerHeight * 0.45);
-    var k = Math.min(maxW / d.w, maxH / d.h), vw = Math.round(d.w * k), vh = Math.round(d.h * k);
-    var caja = el('div');
-    caja.style.cssText = 'position:relative;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;border-radius:6px;width:' + vw + 'px;height:' + vh + 'px;';
-    var cv = document.createElement('canvas');
-    cv.width = vw; cv.height = vh; cv.style.cssText = 'display:block;width:' + vw + 'px;height:' + vh + 'px;';
-    cv.getContext('2d').drawImage(img, 0, 0, vw, vh);
-    var rec = el('div');
-    rec.style.cssText = 'position:absolute;border:3px solid #38bdf8;box-shadow:0 0 0 9999px rgba(15,23,42,.55);cursor:move;touch-action:none;';
-    caja.appendChild(cv); caja.appendChild(rec);
-    m.zona.appendChild(caja);
-    var rw = Math.round(Math.min(vw, vh * RAT) * 0.4), rx = (vw - rw) / 2, ry = (vh - rw / RAT) / 2;
-    function colocar() {
-      var rh = rw / RAT;
-      rx = Math.max(0, Math.min(vw - rw, rx)); ry = Math.max(0, Math.min(vh - rh, ry));
-      rec.style.left = rx + 'px'; rec.style.top = ry + 'px'; rec.style.width = rw + 'px'; rec.style.height = rh + 'px';
-    }
-    colocar();
-    var arrastre = null;
-    rec.addEventListener('pointerdown', function (e) { e.preventDefault(); try { rec.setPointerCapture(e.pointerId); } catch (x) {} arrastre = { x: e.clientX, y: e.clientY }; });
-    rec.addEventListener('pointermove', function (e) { if (!arrastre) return; e.preventDefault(); rx += e.clientX - arrastre.x; ry += e.clientY - arrastre.y; arrastre = { x: e.clientX, y: e.clientY }; colocar(); });
-    function soltar() { arrastre = null; }
-    rec.addEventListener('pointerup', soltar); rec.addEventListener('pointercancel', soltar);
-    caja.addEventListener('pointerdown', function (e) {  // un toque fuera del recuadro lo lleva allí
-      if (e.target === rec) return;
-      var r = caja.getBoundingClientRect(); rx = e.clientX - r.left - rw / 2; ry = e.clientY - r.top - (rw / RAT) / 2; colocar();
-    });
-    var etiqueta = el('div', null, 'Tamaño del recuadro');
-    var barra = document.createElement('input');
-    barra.type = 'range'; barra.min = 40; barra.max = Math.floor(Math.min(vw, vh * RAT)); barra.value = rw;
-    barra.style.cssText = 'width:100%;margin-top:6px;';
-    barra.addEventListener('input', function () {
-      var cx = rx + rw / 2, cy = ry + (rw / RAT) / 2;
-      rw = +barra.value; rx = cx - rw / 2; ry = cy - (rw / RAT) / 2; colocar();
-    });
-    m.info.appendChild(etiqueta); m.info.appendChild(barra);
-    m.acc.appendChild(botonModal('Cancelar', cerrarModal));
-    m.acc.appendChild(botonModal('Guardar huella', function () {
-      var OW = 480, OH = Math.round(OW / RAT);
-      var out = document.createElement('canvas'); out.width = OW; out.height = OH;
-      var o = out.getContext('2d');
-      o.fillStyle = '#fff'; o.fillRect(0, 0, OW, OH);
-      o.drawImage(img, rx / k, ry / k, rw / k, (rw / RAT) / k, 0, 0, OW, OH);
-      var datos = o.getImageData(0, 0, OW, OH), px = datos.data;   // blanco y negro con un poco más de contraste
-      for (var i = 0; i < px.length; i += 4) {
-        var g = 0.299 * px[i] + 0.587 * px[i + 1] + 0.114 * px[i + 2];
-        g = Math.max(0, Math.min(255, (g - 128) * 1.25 + 128));
-        px[i] = px[i + 1] = px[i + 2] = g;
-      }
-      o.putImageData(datos, 0, 0);
-      ponerPad(pad, out.toDataURL('image/jpeg', 0.9));
-      cerrarModal();
-    }, 'principal'));
+    accionesFoto(m, nueva);
   }
 
   pads.forEach(function (pad) {

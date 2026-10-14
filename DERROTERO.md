@@ -16,9 +16,11 @@ Archivo principal: `contrato.html` (página web editable; se descarga como PDF).
 - PDF en 4 páginas (5 si lleva codeudor y referencias a la vez), igual desde cualquier pantalla.
 - Página pública con GitHub Pages: https://gugiraldo.github.io/Contratos/
 - Menú del celular desplegable, con botones grandes.
+- Fotos de la cédula (cara con la foto y cara con la huella) con la cámara; en el computador usa la cámara web. Se pueden girar, enderezar, acercar y encuadrar.
+- Huella tomada de la foto de la cédula (se recorta con un recuadro); ya no hay huella dibujada.
 
 ## Pendiente (en este orden de prioridad lo que falta)
-0. **Decidir qué hacer con la huella gráfica**: hoy es el mismo dibujo para todas las personas (no es biométrica). Opciones: dejarla rotulada como "constancia gráfica", quitarla, o reemplazarla por una evidencia real (código por WhatsApp/SMS, foto de la cédula y selfie, o firma electrónica certificada).
+0. **Paso a paso guiado** (leer o escuchar → "Sí, lo acepto" → datos → fotos de la cédula → huella → firma → resumen y PDF). Por confirmar: orden, selfie con la cédula, si obliga el orden. Nota: la huella es la de la foto de la cédula; no está certificada ni verificada por nadie.
 1. **Sección de exigencias del arrendador**: condiciones que no se negocian, separadas de las demás. (Por definir con el dueño del contrato.)
 2. **Audio del contrato**: generarlo en NotebookLM (modo debate, con el prompt acordado) y publicarlo como `contrato-audio.mp3`.
 3. Botón **Compartir PDF** (WhatsApp / correo) desde el celular.
