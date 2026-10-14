@@ -35,7 +35,7 @@ Archivo principal: `contrato.html` (página web editable; se descarga como PDF).
 - Cláusula séptima: con codeudor dice solo que el codeudor responde por las obligaciones; sin codeudor (con o sin referencias) dice una frase neutral de la ley: el arrendatario responde con todos sus bienes (art. 2488, Código Civil). Las referencias no agregan texto a esa cláusula.
 - La cláusula segunda sigue diciendo que solo se paga por anticipado el primer mes de arriendo.
 - Formas legales de protegerse: canon bien fijado (tope 1 % del valor comercial), codeudor, seguro de arrendamiento, cláusula penal, recibos de servicios al día al entregar, inventario con fotos, y buen estudio del arrendatario antes de firmar.
-- Pendiente: sección "Garantías y condiciones de entrega".
+- Borrador de la sección "Condiciones de entrega, servicios públicos y restitución" en `BORRADOR-garantias-y-entrega.md` (todavía no está en el contrato; falta que se lea y se corrija).
 
 ## Notas
 - Una firma y huella dibujadas en pantalla son firma electrónica simple y una constancia visual; no son validación biométrica. Para nivel bancario hace falta un servicio de firma electrónica certificada.
