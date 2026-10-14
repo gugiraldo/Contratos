@@ -73,6 +73,36 @@
   .pdf .anexo { break-inside: auto; }
   .pdf p.fila { line-height: 1.9; }
   .pdf .nl { margin: 6px 0; }
+  .inicio-proceso { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; background: #ecfdf5; border: 1px solid #86efac; border-radius: 10px; padding: 12px 14px; margin: 0 0 14px; font: 14px/1.4 Arial, sans-serif; color: #14532d; }
+  .inicio-proceso button { padding: 10px 16px; font-size: 15px; font-weight: bold; border-radius: 8px; border: 0; background: #16a34a; color: #fff; cursor: pointer; min-height: 44px; }
+  .barra button#btnProceso { background: #16a34a; border-color: #16a34a; font-weight: bold; }
+  .aceptaciones { margin-top: 8px; }
+  .asistente { position: fixed; left: 0; top: 0; right: 0; bottom: 0; z-index: 90; background: #e2e8f0; overflow-y: auto; display: flex; justify-content: center; padding: 12px; font: 15px/1.45 Arial, sans-serif; color: #0f172a; }
+  .asis-caja { background: #fff; border-radius: 14px; width: 100%; max-width: 560px; padding: 18px; box-shadow: 0 6px 24px rgba(0,0,0,.18); align-self: flex-start; margin: auto; }
+  .asis-cab { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .asis-paso { font-size: 13px; color: #475569; }
+  .asis-x { border: 0; background: none; color: #475569; font-size: 14px; cursor: pointer; padding: 8px; }
+  .asis-barra { height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; margin: 8px 0 14px; }
+  .asis-barra div { height: 100%; background: #2563eb; transition: width .2s; }
+  .asis-caja h2 { font: bold 21px Arial, sans-serif; margin: 0 0 8px; }
+  .asis-cuerpo p { margin: 8px 0; }
+  .asis-campo { display: block; margin: 12px 0 3px; font-weight: bold; font-size: 13px; }
+  .asis-caja input[type=text], .asis-caja input[type=tel], .asis-caja input[type=email] { width: 100%; padding: 11px; font-size: 16px; border: 1px solid #94a3b8; border-radius: 8px; box-sizing: border-box; }
+  .asis-fila { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+  .asis-btn { padding: 12px 16px; font-size: 15px; border-radius: 10px; border: 1px solid #94a3b8; background: #f8fafc; color: #0f172a; cursor: pointer; min-height: 46px; }
+  .asis-btn.principal { background: #2563eb; border-color: #2563eb; color: #fff; font-weight: bold; }
+  .asis-btn:disabled { opacity: .45; cursor: not-allowed; }
+  .asis-pie { display: flex; gap: 8px; justify-content: space-between; margin-top: 18px; }
+  .asis-chk { display: flex; gap: 8px; align-items: flex-start; margin: 14px 0 10px; }
+  .asis-chk input { width: 22px; height: 22px; margin-top: 2px; flex: none; }
+  .asis-lista { list-style: none; padding: 0; margin: 8px 0; }
+  .asis-lista li { padding: 5px 0; font-size: 15px; }
+  .asistente .ok { color: #15803d; font-weight: bold; }
+  .asistente .falta { color: #b91c1c; }
+  .asis-vista { max-width: 100%; max-height: 220px; border: 1px solid #94a3b8; border-radius: 8px; margin-top: 6px; background: #fff; }
+  .volver-proceso { position: fixed; right: 12px; bottom: 12px; z-index: 95; padding: 14px 18px; font-size: 15px; font-weight: bold; border-radius: 28px; border: 0; background: #2563eb; color: #fff; box-shadow: 0 4px 14px rgba(0,0,0,.35); cursor: pointer; }
+  @media print { .asistente, .volver-proceso, .inicio-proceso { display: none !important; } }
+  @media (max-width: 640px) { #btnProceso { grid-column: 1 / -1; order: 0; font-size: 15px; } }
   .cedulas { margin: 8px 0; break-inside: avoid; }
   .cedula-fila { display: flex; gap: 12px; margin-top: 4px; }
   .cedula-fila > div { flex: 1; }
@@ -173,6 +203,7 @@
     </div>
     <div class="barra-cuerpo" id="barraCuerpo">
       <div class="b-grupo b-acciones">
+        <button id="btnProceso" type="button">✍ Iniciar proceso de firma</button>
         <button id="btnImprimir" type="button">Imprimir / Guardar PDF</button>
         <button id="btnDescargar" type="button">Descargar PDF</button>
         <button id="btnAudio" type="button">🎧 Escuchar el contrato</button>
@@ -193,6 +224,11 @@
 </header>
 
 <div class="pagina">
+<div class="inicio-proceso">
+  <b>¿Va a firmar este contrato?</b>
+  <span>Lo guiamos paso a paso: leer o escuchar, aceptar, sus datos, fotos de la cédula, huella y firma. Al final se genera el PDF completo.</span>
+  <button id="btnProceso2" type="button">✍ Iniciar proceso de firma</button>
+</div>
 <table class="hoja"><thead><tr><td><div class="esp"></div></td></tr></thead><tfoot><tr><td><div class="esp"></div></td></tr></tfoot><tbody><tr><td>
 <h1>CONTRATO DE ARRENDAMIENTO DE VIVIENDA URBANA</h1>
 <p style="text-align:center">(Ley 820 de 2003 – República de Colombia)</p>
@@ -201,31 +237,31 @@
 <p><b>ARRENDADOR:</b> <span class="fijo" data-key="nombre" data-ph="NOMBRE DEL ARRENDADOR">JOSEFA MARÍA MESTRA</span>, C.C. <span class="fijo" data-key="cc" data-ph="CÉDULA">39.405.410</span>.</p>
 <div class="datos">
   <b class="tit">ARRENDATARIO</b>
-  <span class="et">Nombre completo:</span><span class="linea campo" style="grid-column: span 3"></span>
-  <span class="et">C.C. N.°:</span><span class="linea campo"></span>
-  <span class="et">Expedida en:</span><span class="linea campo"></span>
-  <span class="et">Teléfono:</span><span class="linea campo"></span>
-  <span class="et">Correo:</span><span class="linea campo min"></span>
+  <span class="et">Nombre completo:</span><span class="linea campo" style="grid-column: span 3" data-rol="arrendatario" data-campo="nombre"></span>
+  <span class="et">C.C. N.°:</span><span class="linea campo" data-rol="arrendatario" data-campo="cc"></span>
+  <span class="et">Expedida en:</span><span class="linea campo" data-rol="arrendatario" data-campo="expedida"></span>
+  <span class="et">Teléfono:</span><span class="linea campo" data-rol="arrendatario" data-campo="telefono"></span>
+  <span class="et">Correo:</span><span class="linea campo min" data-rol="arrendatario" data-campo="correo"></span>
 </div>
 <div class="datos" data-si="codeudor">
   <b class="tit">CODEUDOR</b>
-  <span class="et">Nombre completo:</span><span class="linea campo" style="grid-column: span 3"></span>
-  <span class="et">C.C. N.°:</span><span class="linea campo"></span>
-  <span class="et">Expedida en:</span><span class="linea campo"></span>
-  <span class="et">Teléfono:</span><span class="linea campo"></span>
-  <span class="et">Correo:</span><span class="linea campo min"></span>
+  <span class="et">Nombre completo:</span><span class="linea campo" style="grid-column: span 3" data-rol="codeudor" data-campo="nombre"></span>
+  <span class="et">C.C. N.°:</span><span class="linea campo" data-rol="codeudor" data-campo="cc"></span>
+  <span class="et">Expedida en:</span><span class="linea campo" data-rol="codeudor" data-campo="expedida"></span>
+  <span class="et">Teléfono:</span><span class="linea campo" data-rol="codeudor" data-campo="telefono"></span>
+  <span class="et">Correo:</span><span class="linea campo min" data-rol="codeudor" data-campo="correo"></span>
 </div>
 
 <div class="datos" data-si="referencias">
   <b class="tit">REFERENCIAS PERSONALES (dos personas que conozcan al arrendatario: familiares o conocidos)</b>
-  <span class="et">Referencia 1 &ndash; Nombre:</span><span class="linea campo" style="grid-column: span 3"></span>
-  <span class="et">Parentesco o relación:</span><span class="linea campo"></span>
-  <span class="et">Teléfono:</span><span class="linea campo"></span>
-  <span class="et">Dirección o barrio:</span><span class="linea campo" style="grid-column: span 3"></span>
-  <span class="et">Referencia 2 &ndash; Nombre:</span><span class="linea campo" style="grid-column: span 3"></span>
-  <span class="et">Parentesco o relación:</span><span class="linea campo"></span>
-  <span class="et">Teléfono:</span><span class="linea campo"></span>
-  <span class="et">Dirección o barrio:</span><span class="linea campo" style="grid-column: span 3"></span>
+  <span class="et">Referencia 1 &ndash; Nombre:</span><span class="linea campo" style="grid-column: span 3" data-rol="referencias" data-campo="r1-nombre"></span>
+  <span class="et">Parentesco o relación:</span><span class="linea campo" data-rol="referencias" data-campo="r1-parentesco"></span>
+  <span class="et">Teléfono:</span><span class="linea campo" data-rol="referencias" data-campo="r1-telefono"></span>
+  <span class="et">Dirección o barrio:</span><span class="linea campo" style="grid-column: span 3" data-rol="referencias" data-campo="r1-direccion"></span>
+  <span class="et">Referencia 2 &ndash; Nombre:</span><span class="linea campo" style="grid-column: span 3" data-rol="referencias" data-campo="r2-nombre"></span>
+  <span class="et">Parentesco o relación:</span><span class="linea campo" data-rol="referencias" data-campo="r2-parentesco"></span>
+  <span class="et">Teléfono:</span><span class="linea campo" data-rol="referencias" data-campo="r2-telefono"></span>
+  <span class="et">Dirección o barrio:</span><span class="linea campo" style="grid-column: span 3" data-rol="referencias" data-campo="r2-direccion"></span>
 </div>
 
 <h2>PRIMERA – OBJETO E INMUEBLE</h2>
@@ -285,12 +321,17 @@
 <h2>DECIMOSÉPTIMA – DOMICILIO Y EJEMPLARES</h2>
 <p>El domicilio contractual es <b>Carepa, Antioquia</b>. Este contrato se firma en <b>dos (2) ejemplares</b> del mismo tenor, uno para cada parte.</p>
 
-<p class="fila" style="margin-top:14px">En constancia se firma en <span class="linea"></span>, el <span class="fecha"><span class="linea"></span><button type="button" class="btnfecha" title="Elegir fecha en el calendario" aria-label="Elegir fecha">📅</button></span>.</p>
+<p class="fila" style="margin-top:14px">En constancia se firma en <span class="linea" data-campo="ciudad-firma"></span>, el <span class="fecha"><span class="linea" data-campo="fecha-firma"></span><button type="button" class="btnfecha" title="Elegir fecha en el calendario" aria-label="Elegir fecha">📅</button></span>.</p>
+<div class="aceptaciones">
+  <p class="fila"><b>Aceptación digital del arrendador:</b> <span class="linea larga" data-acepta="arrendador"></span></p>
+  <p class="fila"><b>Aceptación digital del arrendatario:</b> <span class="linea larga" data-acepta="arrendatario"></span></p>
+  <p class="fila" data-si="codeudor"><b>Aceptación digital del codeudor:</b> <span class="linea larga" data-acepta="codeudor"></span></p>
+</div>
 
 <div class="firmas">
-  <div class="firma"><div class="pad pad-firma" data-titulo="Firma del arrendador"><span class="pad-ph">Toque aquí para firmar</span></div>ARRENDADOR<br>C.C. <span class="fijo" data-key="cc" data-ph="CÉDULA">39.405.410</span><div class="huella pad pad-huella" data-titulo="Huella del arrendador"><span class="pad-et">Huella</span><span class="pad-ph">Toque aquí para la huella (de la cédula)</span></div></div>
-  <div class="firma"><div class="pad pad-firma" data-titulo="Firma del arrendatario"><span class="pad-ph">Toque aquí para firmar</span></div>ARRENDATARIO<br>C.C. <span class="linea corta"></span><div class="huella pad pad-huella" data-titulo="Huella del arrendatario" data-slot="arr-dorso"><span class="pad-et">Huella</span><span class="pad-ph">Toque aquí para la huella (de la cédula)</span></div></div>
-  <div class="firma" data-si="codeudor"><div class="pad pad-firma" data-titulo="Firma del codeudor"><span class="pad-ph">Toque aquí para firmar</span></div>CODEUDOR<br>C.C. <span class="linea corta"></span><div class="huella pad pad-huella" data-titulo="Huella del codeudor" data-slot="cod-dorso"><span class="pad-et">Huella</span><span class="pad-ph">Toque aquí para la huella (de la cédula)</span></div></div>
+  <div class="firma"><div class="pad pad-firma" data-titulo="Firma del arrendador" data-rol="arrendador"><span class="pad-ph">Toque aquí para firmar</span></div>ARRENDADOR<br>C.C. <span class="fijo" data-key="cc" data-ph="CÉDULA">39.405.410</span><div class="huella pad pad-huella" data-titulo="Huella del arrendador" data-rol="arrendador"><span class="pad-et">Huella</span><span class="pad-ph">Toque aquí para la huella (de la cédula)</span></div></div>
+  <div class="firma"><div class="pad pad-firma" data-titulo="Firma del arrendatario" data-rol="arrendatario"><span class="pad-ph">Toque aquí para firmar</span></div>ARRENDATARIO<br>C.C. <span class="linea corta"></span><div class="huella pad pad-huella" data-titulo="Huella del arrendatario" data-rol="arrendatario" data-slot="arr-dorso"><span class="pad-et">Huella</span><span class="pad-ph">Toque aquí para la huella (de la cédula)</span></div></div>
+  <div class="firma" data-si="codeudor"><div class="pad pad-firma" data-titulo="Firma del codeudor" data-rol="codeudor"><span class="pad-ph">Toque aquí para firmar</span></div>CODEUDOR<br>C.C. <span class="linea corta"></span><div class="huella pad pad-huella" data-titulo="Huella del codeudor" data-rol="codeudor" data-slot="cod-dorso"><span class="pad-et">Huella</span><span class="pad-ph">Toque aquí para la huella (de la cédula)</span></div></div>
 </div>
 
 <div class="anexo">
@@ -345,6 +386,8 @@
 
 </td></tr></tbody></table>
 </div>
+<div class="asistente oculto" id="asistente" role="dialog" aria-modal="true"></div>
+<button id="volverProceso" class="volver-proceso oculto" type="button">↩ Volver al proceso de firma</button>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
 (function () {
@@ -446,11 +489,13 @@
     if (!img) { img = document.createElement('img'); img.className = 'pad-img'; img.alt = ''; pad.appendChild(img); }
     img.src = url;
     pad.classList.add('firmado');
+    document.dispatchEvent(new Event('pad-cambio'));
   }
   function borrarPad(pad) {
     var img = pad.querySelector('.pad-img');
     if (img) img.remove();
     pad.classList.remove('firmado');
+    document.dispatchEvent(new Event('pad-cambio'));
   }
   function crearModal(titulo, ayuda) {
     cerrarModal();
@@ -887,28 +932,256 @@
     }).toCanvas().toPdf();
     return { trabajo: trabajo, limpiar: function () {} };
   }
-  btnDescargar.addEventListener('click', function () {
-    if (generando) return;
-    if (typeof html2pdf === 'undefined') { decir('No se pudo cargar el generador de PDF. Revise la conexión a internet.'); return; }
+  // Genera el PDF y devuelve el archivo (Blob)
+  function hacerPDF() {
+    if (generando) return Promise.reject(new Error('ocupado'));
+    if (typeof html2pdf === 'undefined') return Promise.reject(new Error('sin-libreria'));
     generando = true;
     var yAntes = window.scrollY;
     window.scrollTo(0, 0); // la captura sale corrida si la página está desplazada
+    var g;
+    function fin() { if (g) g.limpiar(); generando = false; window.scrollTo(0, yAntes); }
+    try { g = crearPDF(); } catch (e) { fin(); return Promise.reject(e); }
+    return g.trabajo.outputPdf('blob').then(function (blob) { fin(); return blob; }, function (e) { fin(); throw e; });
+  }
+  function guardarArchivo(blob) {
+    var usar = (window.claude && claude.use) ? claude.use('downloads').catch(function () { return null; }) : Promise.resolve(null);
+    return usar.then(function (downloads) {
+      if (downloads) return downloads.save({ filename: NOMBRE, data: blob });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob); a.download = NOMBRE; a.style.display = 'none';
+      document.body.appendChild(a); a.click();
+      setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
+    });
+  }
+  btnDescargar.addEventListener('click', function () {
+    if (generando) return;
+    if (typeof html2pdf === 'undefined') { decir('No se pudo cargar el generador de PDF. Revise la conexión a internet.'); return; }
     btnDescargar.disabled = true;
     decir('Generando PDF...');
-    var g = crearPDF();
-    var listo = function () { g.limpiar(); generando = false; btnDescargar.disabled = false; window.scrollTo(0, yAntes); };
-    var usar = (window.claude && claude.use) ? claude.use('downloads').catch(function () { return null; }) : Promise.resolve(null);
-    usar.then(function (downloads) {
-      if (downloads) {
-        return g.trabajo.outputPdf('blob').then(function (blob) {
-          return downloads.save({ filename: NOMBRE, data: blob }).then(function () { decir('PDF guardado.'); });
+    hacerPDF().then(guardarArchivo).then(function () { decir('PDF guardado.'); }).catch(function (e) {
+      decir(!e || e.code !== 'declined' ? 'No se pudo generar el PDF.' : '');
+    }).then(function () { btnDescargar.disabled = false; });
+  });
+
+  // ===== Asistente de firma: paso a paso =====
+  var ROLES = {
+    arrendatario: { titulo: 'Arrendatario (quien va a arrendar)', datos: true, fotos: true, refs: true },
+    codeudor: { titulo: 'Codeudor', datos: true, fotos: true, refs: false },
+    arrendador: { titulo: 'Arrendador (propietaria)', datosArr: true, fotos: false, refs: false }
+  };
+  var PREFIJO = { arrendatario: 'arr', codeudor: 'cod' };
+  var CAMPOS_PERSONA = [['nombre', 'Nombre completo', 'text'], ['cc', 'Cédula de ciudadanía (solo números)', 'tel'], ['expedida', 'Cédula expedida en (ciudad)', 'text'], ['telefono', 'Teléfono celular', 'tel'], ['correo', 'Correo electrónico', 'email']];
+  var TITULOS = { aceptar: 'Lea o escuche el contrato', datosArr: 'Datos del arrendador', datos: 'Sus datos', refs: 'Referencias personales', frente: 'Cédula: cara con su foto', dorso: 'Cédula: cara con su huella', huella: 'Su huella', firma: 'Su firma', resumen: 'Resumen y PDF final' };
+  var asis = null;
+  var cont = document.getElementById('asistente'), flotante = document.getElementById('volverProceso');
+
+  function campo(rol, c) { return document.querySelector('[data-rol="' + rol + '"][data-campo="' + c + '"]'); }
+  function padDe(clase, rol) { return document.querySelector('.' + clase + '[data-rol="' + rol + '"]'); }
+  function foto(id) { return document.querySelector('.pad-foto[data-id="' + id + '"]'); }
+  function txt(e) { return e ? e.textContent.trim() : ''; }
+  function aceptado(rol) { return !!txt(document.querySelector('[data-acepta="' + rol + '"]')); }
+  function datosListos(rol) { return !!(txt(campo(rol, 'nombre')) && txt(campo(rol, 'cc')) && txt(campo(rol, 'telefono'))); }
+  function refsListas() { return ['r1', 'r2'].every(function (r) { return txt(campo('referencias', r + '-nombre')) && txt(campo('referencias', r + '-telefono')); }); }
+  function datosArrListos() { return !!(txt(document.querySelector('.fijo[data-key="nombre"]')) && txt(document.querySelector('.fijo[data-key="cc"]'))); }
+  function fotoLista(rol, lado) { var f = foto(PREFIJO[rol] + '-' + lado); return !!(f && f.classList.contains('firmado')); }
+  function padListo(clase, rol) { var q = padDe(clase, rol); return !!(q && q.classList.contains('firmado')); }
+  function listo(rol, k) {
+    switch (k) {
+      case 'aceptar': return aceptado(rol);
+      case 'datosArr': return datosArrListos();
+      case 'datos': return datosListos(rol);
+      case 'refs': return refsListas();
+      case 'frente': return fotoLista(rol, 'frente');
+      case 'dorso': return fotoLista(rol, 'dorso');
+      case 'huella': return padListo('pad-huella', rol);
+      case 'firma': return padListo('pad-firma', rol);
+      default: return true;
+    }
+  }
+  function pasosDe(rol) {
+    var c = ROLES[rol], p = ['aceptar'];
+    if (c.datosArr) p.push('datosArr');
+    if (c.datos) p.push('datos');
+    if (c.refs && opciones.referencias) p.push('refs');
+    if (c.fotos) p.push('frente', 'dorso');
+    p.push('huella', 'firma', 'resumen');
+    return p;
+  }
+  function fechaLarga(d) { return d.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' }); }
+  function registrarAceptacion(rol) {
+    var d = new Date(), s1 = document.querySelector('[data-acepta="' + rol + '"]');
+    if (s1) s1.textContent = fechaLarga(d) + ', ' + d.toLocaleTimeString('es-CO', { hour: 'numeric', minute: '2-digit' });
+    var f = document.querySelector('[data-campo="fecha-firma"]');
+    if (f && !txt(f)) f.textContent = fechaLarga(d);
+  }
+  function mostrarAsistente(si) { cont.classList.toggle('oculto', !si); document.body.style.overflow = si ? 'hidden' : ''; }
+  function salirAsistente() { mostrarAsistente(false); flotante.classList.add('oculto'); asis = null; }
+  function btn(texto, fn, principal) {
+    var b = el('button', 'asis-btn' + (principal ? ' principal' : ''), texto);
+    b.type = 'button'; b.addEventListener('click', fn);
+    return b;
+  }
+  function entrada(cu, span, etiqueta, opciones2) {
+    cu.appendChild(el('label', 'asis-campo', etiqueta));
+    var i = document.createElement('input');
+    i.type = (opciones2 && opciones2.tipo === 'email') ? 'email' : (opciones2 && opciones2.tipo === 'tel' ? 'tel' : 'text');
+    if (opciones2 && opciones2.tipo === 'tel') i.inputMode = 'numeric';
+    i.value = txt(span); i.autocomplete = 'off';
+    if (!(opciones2 && opciones2.minusculas)) i.style.textTransform = 'uppercase';
+    i.addEventListener('input', function () { span.textContent = i.value; opciones2.cambio(); });
+    cu.appendChild(i);
+  }
+  function miniatura(cu, pad) {
+    var im = pad && pad.querySelector('.pad-img');
+    if (!im) return;
+    var v = document.createElement('img'); v.className = 'asis-vista'; v.src = im.src; cu.appendChild(v);
+  }
+
+  var PASOS = {
+    aceptar: function (cu, rol) {
+      cu.appendChild(el('p', null, 'Antes de aceptar, lea el contrato completo o escúchelo. Si prefiere hacerlo con calma, puede salir y volver cuando quiera: lo que ya hizo queda en esta página.'));
+      var fila = el('div', 'asis-fila');
+      fila.appendChild(btn('🎧 Escuchar el contrato', function () { document.getElementById('btnAudio').click(); }));
+      fila.appendChild(btn('📄 Leer el contrato', function () { cont.classList.add('oculto'); document.body.style.overflow = ''; flotante.classList.remove('oculto'); }));
+      cu.appendChild(fila);
+      if (aceptado(rol)) { cu.appendChild(el('p', 'ok', '✔ Aceptado el ' + txt(document.querySelector('[data-acepta="' + rol + '"]')))); return; }
+      var lab = el('label', 'asis-chk'), cb = document.createElement('input');
+      cb.type = 'checkbox'; lab.appendChild(cb);
+      lab.appendChild(document.createTextNode('Declaro que leí o escuché el contrato completo y lo acepto.'));
+      cu.appendChild(lab);
+      var ok = btn('✔ Sí, lo acepto', function () { registrarAceptacion(rol); asis.i++; pintarPaso(); }, true);
+      ok.disabled = true;
+      cb.addEventListener('change', function () { ok.disabled = !cb.checked; });
+      cu.appendChild(ok);
+    },
+    datosArr: function (cu, rol, cambio) {
+      cu.appendChild(el('p', null, 'Revise los datos de la arrendadora que aparecen en el contrato. Puede corregirlos.'));
+      [['nombre', 'Nombre completo'], ['cc', 'Cédula'], ['direccion', 'Dirección del inmueble']].forEach(function (c) {
+        var spans = document.querySelectorAll('.fijo[data-key="' + c[0] + '"]');
+        cu.appendChild(el('label', 'asis-campo', c[1]));
+        var i = document.createElement('input'); i.type = 'text'; i.value = txt(spans[0]); i.style.textTransform = 'uppercase';
+        i.addEventListener('input', function () {
+          spans.forEach(function (sp) { sp.textContent = i.value; });
+          guardar(c[0], i.value === '' ? '__vacio__' : i.value);
+          cambio();
         });
-      }
-      return g.trabajo.save().then(function () { decir('PDF guardado.'); });
-    }).catch(function (e) {
-      if (!e || e.code !== 'declined') decir('No se pudo generar el PDF.');
-      else decir('');
-    }).then(listo, listo);
+        cu.appendChild(i);
+      });
+    },
+    datos: function (cu, rol, cambio) {
+      cu.appendChild(el('p', null, 'Escriba sus datos tal como aparecen en su cédula. Se copian solos al contrato.'));
+      CAMPOS_PERSONA.forEach(function (c) { entrada(cu, campo(rol, c[0]), c[1], { tipo: c[2], minusculas: c[0] === 'correo', cambio: cambio }); });
+    },
+    refs: function (cu, rol, cambio) {
+      cu.appendChild(el('p', null, 'Dos personas que lo conozcan (familiares o conocidos), para poder ubicarlo si hace falta. No asumen ninguna deuda.'));
+      ['r1', 'r2'].forEach(function (r, n) {
+        cu.appendChild(el('p', 'ok', 'Referencia ' + (n + 1)));
+        [['nombre', 'Nombre completo', 'text'], ['parentesco', 'Parentesco o relación', 'text'], ['telefono', 'Teléfono', 'tel'], ['direccion', 'Dirección o barrio', 'text']].forEach(function (c) {
+          entrada(cu, campo('referencias', r + '-' + c[0]), c[1], { tipo: c[2], cambio: cambio });
+        });
+      });
+    },
+    frente: function (cu, rol) { pasoFoto(cu, rol, 'frente', 'Tome una foto de la cara de la cédula donde aparece su foto. Se ve completa: después puede girarla, acercarla y encuadrarla.'); },
+    dorso: function (cu, rol) { pasoFoto(cu, rol, 'dorso', 'Ahora la otra cara de la cédula, donde aparece su huella. De esta misma foto se recorta su huella en el paso siguiente.'); },
+    huella: function (cu, rol) {
+      var q = padDe('pad-huella', rol), hecho = q.classList.contains('firmado');
+      cu.appendChild(el('p', null, ROLES[rol].fotos ? 'Su huella se toma de la foto de la cédula que acaba de guardar: mueva el recuadro sobre la huella y, si hace falta, enderece la imagen.' : 'Tome una foto de la cara de su cédula donde aparece la huella y recorte el cuadro de la huella.'));
+      miniatura(cu, q);
+      if (hecho) cu.appendChild(el('p', 'ok', '✔ Huella guardada.'));
+      cu.appendChild(btn(hecho ? 'Cambiar la huella' : '👆 Recortar la huella', function () { abrirHuella(q); }, !hecho));
+    },
+    firma: function (cu, rol) {
+      var q = padDe('pad-firma', rol), hecho = q.classList.contains('firmado');
+      cu.appendChild(el('p', null, 'Firme con el dedo o con un lápiz digital, como lo haría en papel.'));
+      miniatura(cu, q);
+      if (hecho) cu.appendChild(el('p', 'ok', '✔ Firma guardada.'));
+      cu.appendChild(btn(hecho ? 'Firmar de nuevo' : '✍ Firmar', function () { abrirFirma(q); }, !hecho));
+    },
+    resumen: function (cu, rol) {
+      var c = ROLES[rol], items = [['Aceptación del contrato', aceptado(rol)]];
+      if (c.datosArr) items.push(['Datos del arrendador', datosArrListos()]);
+      if (c.datos) items.push(['Sus datos', datosListos(rol)]);
+      if (c.refs && opciones.referencias) items.push(['Referencias personales', refsListas()]);
+      if (c.fotos) items.push(['Cédula: cara con su foto', fotoLista(rol, 'frente')], ['Cédula: cara con su huella', fotoLista(rol, 'dorso')]);
+      items.push(['Huella', padListo('pad-huella', rol)], ['Firma', padListo('pad-firma', rol)]);
+      var ul = el('ul', 'asis-lista');
+      items.forEach(function (it) { ul.appendChild(el('li', it[1] ? 'ok' : 'falta', (it[1] ? '✔ ' : '✘ ') + it[0])); });
+      cu.appendChild(ul);
+      var todo = items.every(function (it) { return it[1]; });
+      cu.appendChild(el('p', null, todo ? 'Todo listo. El PDF final lleva el contrato con sus datos, las fotos de la cédula, la huella y la firma.' : 'Falta completar algunos pasos. Use "Atrás" para terminarlos.'));
+      var zona = el('div', 'asis-fila'), estado = el('p');
+      cu.appendChild(zona); cu.appendChild(estado);
+      var gen = btn('📄 Generar el PDF final', function () {
+        gen.disabled = true; estado.textContent = 'Generando el PDF... (puede tardar unos segundos)';
+        hacerPDF().then(function (blob) {
+          estado.textContent = '✔ PDF listo.';
+          zona.textContent = '';
+          zona.appendChild(btn('⬇ Descargar el PDF', function () {
+            guardarArchivo(blob).then(function () { estado.textContent = '✔ PDF guardado en su dispositivo.'; }).catch(function (e) { if (!e || e.code !== 'declined') estado.textContent = 'No se pudo guardar el archivo.'; });
+          }, true));
+          var arch = new File([blob], NOMBRE, { type: 'application/pdf' });
+          if (navigator.canShare && navigator.canShare({ files: [arch] })) {
+            zona.appendChild(btn('📤 Compartir por WhatsApp o correo', function () { navigator.share({ files: [arch], title: 'Contrato de arrendamiento' }).catch(function () {}); }));
+          }
+        }).catch(function () { estado.textContent = 'No se pudo generar el PDF. Revise la conexión a internet e intente de nuevo.'; gen.disabled = false; });
+      }, true);
+      gen.disabled = !todo;
+      zona.appendChild(gen);
+    }
+  };
+  function pasoFoto(cu, rol, lado, instruccion) {
+    var f = foto(PREFIJO[rol] + '-' + lado), hecho = f.classList.contains('firmado');
+    cu.appendChild(el('p', null, instruccion));
+    miniatura(cu, f);
+    if (hecho) cu.appendChild(el('p', 'ok', '✔ Foto guardada.'));
+    cu.appendChild(btn(hecho ? 'Cambiar la foto' : '📷 Tomar la foto', function () { abrirFoto(f); }, !hecho));
+  }
+
+  function pintarPaso() {
+    var rol = asis.rol, k = asis.pasos[asis.i], total = asis.pasos.length;
+    cont.textContent = '';
+    var caja = el('div', 'asis-caja'), cab = el('div', 'asis-cab');
+    cab.appendChild(el('span', 'asis-paso', 'Paso ' + (asis.i + 1) + ' de ' + total + ' · ' + ROLES[rol].titulo));
+    var x = el('button', 'asis-x', '✕ Salir'); x.type = 'button'; x.addEventListener('click', salirAsistente);
+    cab.appendChild(x); caja.appendChild(cab);
+    var barra = el('div', 'asis-barra'), rel = el('div');
+    rel.style.width = Math.round(asis.i / (total - 1) * 100) + '%'; barra.appendChild(rel); caja.appendChild(barra);
+    caja.appendChild(el('h2', null, TITULOS[k]));
+    var cu = el('div', 'asis-cuerpo'); caja.appendChild(cu);
+    var pie = el('div', 'asis-pie');
+    var atras = btn('← Atrás', function () { asis.i--; pintarPaso(); }); atras.disabled = asis.i === 0;
+    var sig = btn(k === 'resumen' ? 'Terminar' : 'Siguiente →', function () { if (k === 'resumen') pantallaRol(); else { asis.i++; pintarPaso(); } }, true);
+    pie.appendChild(atras); pie.appendChild(sig); caja.appendChild(pie);
+    cont.appendChild(caja);
+    var revisar = function () { sig.disabled = !listo(rol, k); };
+    PASOS[k](cu, rol, revisar);
+    revisar();
+    mostrarAsistente(true);
+    cont.scrollTop = 0;
+  }
+  function pantallaRol() {
+    asis = { rol: null, pasos: [], i: 0 };
+    cont.textContent = '';
+    var caja = el('div', 'asis-caja');
+    caja.appendChild(el('h2', null, '¿Quién va a firmar ahora?'));
+    caja.appendChild(el('p', null, 'Elija quién está usando este equipo. Cada persona hace su propio recorrido, paso a paso, y lo que ya hizo otra persona queda guardado en el contrato.'));
+    Object.keys(ROLES).forEach(function (r) {
+      if (r === 'codeudor' && !opciones.codeudor) return;
+      var b = btn(ROLES[r].titulo, function () { asis = { rol: r, pasos: pasosDe(r), i: 0 }; pintarPaso(); }, true);
+      b.style.cssText = 'display:block;width:100%;margin:8px 0;';
+      caja.appendChild(b);
+    });
+    var s = btn('Salir', salirAsistente); s.style.marginTop = '10px';
+    caja.appendChild(s); cont.appendChild(caja);
+    mostrarAsistente(true);
+  }
+  flotante.addEventListener('click', function () { flotante.classList.add('oculto'); if (asis && asis.rol) pintarPaso(); else pantallaRol(); });
+  document.addEventListener('pad-cambio', function () {
+    if (asis && asis.rol && !cont.classList.contains('oculto') && ['frente', 'dorso', 'huella', 'firma'].indexOf(asis.pasos[asis.i]) >= 0) pintarPaso();
+  });
+  ['btnProceso', 'btnProceso2'].forEach(function (id) {
+    document.getElementById(id).addEventListener('click', function () { menu(false); pantallaRol(); });
   });
 })();
 </script>

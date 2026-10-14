@@ -18,9 +18,10 @@ Archivo principal: `contrato.html` (página web editable; se descarga como PDF).
 - Menú del celular desplegable, con botones grandes.
 - Fotos de la cédula (cara con la foto y cara con la huella) con la cámara; en el computador usa la cámara web. Se pueden girar, enderezar, acercar y encuadrar.
 - Huella tomada de la foto de la cédula (se recorta con un recuadro); ya no hay huella dibujada.
+- **Asistente de firma paso a paso** (botón "Iniciar proceso de firma"): elegir quién firma → leer/escuchar y "Sí, lo acepto" (queda fecha y hora en el contrato) → datos → referencias → fotos de la cédula → huella → firma → resumen y PDF final (descargar o compartir). Sin selfie: se decidió que es incómodo; la cédula es el documento de identificación.
 
 ## Pendiente (en este orden de prioridad lo que falta)
-0. **Paso a paso guiado** (leer o escuchar → "Sí, lo acepto" → datos → fotos de la cédula → huella → firma → resumen y PDF). Por confirmar: orden, selfie con la cédula, si obliga el orden. Nota: la huella es la de la foto de la cédula; no está certificada ni verificada por nadie.
+0. **Firma remota con las dos partes**: si el arrendatario firma en su casa, su PDF no trae la firma ni la aceptación de la arrendadora (cada dispositivo guarda lo suyo). Opciones: la arrendadora firma primero y el enlace lleva sus datos; o un archivo de datos que se exporta/importa; o un servicio con base de datos.
 1. **Sección de exigencias del arrendador**: condiciones que no se negocian, separadas de las demás. (Por definir con el dueño del contrato.)
 2. **Audio del contrato**: generarlo en NotebookLM (modo debate, con el prompt acordado) y publicarlo como `contrato-audio.mp3`.
 3. Botón **Compartir PDF** (WhatsApp / correo) desde el celular.
