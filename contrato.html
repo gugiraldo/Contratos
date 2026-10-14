@@ -11,7 +11,7 @@
   p { margin: 5px 0; text-align: left; line-height: 1.55; }
   p.sub { margin-left: 0.8cm; }
   p.fila { line-height: 2.2; }
-  .linea { display: inline-block; border-bottom: 1px solid #000; min-width: 4.5cm; height: 1.1em; vertical-align: bottom; white-space: nowrap; }
+  .linea { display: inline-block; border-bottom: 1px solid #000; min-width: 4.5cm; min-height: 1.1em; line-height: 1.15; vertical-align: baseline; white-space: nowrap; }
   .datos { display: grid; grid-template-columns: auto 1fr auto 1fr; gap: 8px 10px; align-items: end; margin: 8px 0 12px; }
   .datos .tit { grid-column: 1 / -1; }
   .datos .et { white-space: nowrap; }
@@ -33,6 +33,16 @@
   .barra { position: sticky; top: 0; background: #f1f5f9; border: 1px solid #94a3b8; padding: 8px 12px; margin-bottom: 12px; font: 13px Arial, sans-serif; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
   .barra button { padding: 6px 14px; font-size: 13px; cursor: pointer; }
   .barra [hidden] { display: none; }
+  .chk { display: inline-flex; align-items: baseline; gap: 5px; margin-right: 12px; cursor: pointer; }
+  .chk input { width: 14px; height: 14px; margin: 0; cursor: pointer; align-self: center; }
+  .fecha .linea { min-width: 5.2cm; }
+  .linea { padding-bottom: 1px; }
+  .fecha { position: relative; display: inline-block; white-space: nowrap; }
+  .fecha input[type=date] { position: absolute; left: 0; bottom: 0; width: 1px; height: 1px; opacity: 0; pointer-events: none; border: 0; padding: 0; }
+  .btnfecha { border: 0; background: none; cursor: pointer; font-size: 14px; padding: 0 2px; vertical-align: middle; }
+  .medidor { margin: 3px 0; }
+  .medidor .et { display: inline-block; min-width: 1.9cm; font-weight: bold; }
+  @media print { .btnfecha { display: none; } }
   #aviso { font-weight: bold; color: #166534; }
   @media print { .barra { display: none; } [contenteditable]:focus { background: none; } }
   table.hoja { width: 100%; border-collapse: collapse; }
@@ -88,7 +98,7 @@
 <p>Cada doce (12) meses el canon se reajustará hasta en un porcentaje que no supere el 100 % del IPC del año anterior (art. 20, Ley 820 de 2003).</p>
 
 <h2>CUARTA – PLAZO</h2>
-<p>El plazo es de <span class="fijo" data-key="plazo">3</span> meses, contado desde el <span class="linea"></span>. Al vencer, el contrato se prorroga <b>automáticamente por periodos iguales</b> de <span class="fijo" data-key="plazo2">3</span> meses, en las mismas condiciones, mientras ninguna de las partes avise por escrito su no renovación con la antelación que fija la ley (art. 22 y siguientes, Ley 820 de 2003).</p>
+<p>El plazo es de <span class="fijo" data-key="plazo">3</span> meses, contado desde el <span class="fecha"><span class="linea"></span><button type="button" class="btnfecha" title="Elegir fecha en el calendario" aria-label="Elegir fecha">📅</button><input type="date" tabindex="-1" aria-hidden="true"></span>. Al vencer, el contrato se prorroga <b>automáticamente por periodos iguales</b> de <span class="fijo" data-key="plazo2">3</span> meses, en las mismas condiciones, mientras ninguna de las partes avise por escrito su no renovación con la antelación que fija la ley (art. 22 y siguientes, Ley 820 de 2003).</p>
 
 <h2>QUINTA – SERVICIOS PÚBLICOS</h2>
 <p>Los servicios públicos del inmueble de pago mensual (agua, energía, gas, aseo, internet y los demás) están a cargo del arrendatario y los pagará oportunamente. Entregará copia del recibo cancelado cuando el arrendador lo solicite. El arrendatario <b>no podrá alterar, manipular, puentear ni retirar</b> medidores, sellos ni dispositivos externos de los servicios.</p>
@@ -135,7 +145,7 @@
 <h2>DECIMOSÉPTIMA – DOMICILIO Y EJEMPLARES</h2>
 <p>El domicilio contractual es <b>Carepa, Antioquia</b>. Este contrato se firma en <b>dos (2) ejemplares</b> del mismo tenor, uno para cada parte.</p>
 
-<p class="fila" style="margin-top:14px">En constancia se firma en <span class="linea"></span>, el <span class="linea corta"></span> de <span class="linea"></span> de <span class="linea corta"></span>.</p>
+<p class="fila" style="margin-top:14px">En constancia se firma en <span class="linea"></span>, el <span class="fecha"><span class="linea"></span><button type="button" class="btnfecha" title="Elegir fecha en el calendario" aria-label="Elegir fecha">📅</button><input type="date" tabindex="-1" aria-hidden="true"></span>.</p>
 
 <div class="firmas">
   <div class="firma"><div class="raya"></div>ARRENDADOR<br>C.C. <span class="fijo" data-key="cc">39.405.410</span><div class="huella">Huella</div></div>
@@ -150,11 +160,24 @@
 
 <div class="anexo">
   <h2>ANEXO 2 – INVENTARIO Y ESTADO DEL INMUEBLE</h2>
-  <p class="fila">Fecha de entrega: <span class="linea"></span></p>
-  <p class="fila">Lecturas de medidores &ndash; Agua: <span class="linea corta"></span> &nbsp; Energía: <span class="linea corta"></span> &nbsp; Gas: <span class="linea corta"></span></p>
+  <p class="fila">Fecha de entrega: <span class="fecha"><span class="linea"></span><button type="button" class="btnfecha" title="Elegir fecha en el calendario" aria-label="Elegir fecha">📅</button><input type="date" tabindex="-1" aria-hidden="true"></span></p>
+  <p><b>Servicios y lecturas de medidores</b> (marque lo que aplique):</p>
+  <p class="fila medidor"><span class="et">Agua:</span>
+    <label class="chk"><input type="checkbox" data-grupo="agua"> Aplica</label>
+    <label class="chk"><input type="checkbox" data-grupo="agua"> No aplica</label>
+    Lectura: <span class="linea corta"></span></p>
+  <p class="fila medidor"><span class="et">Energía:</span>
+    <label class="chk"><input type="checkbox" data-grupo="energia"> Aplica</label>
+    <label class="chk"><input type="checkbox" data-grupo="energia"> No aplica</label>
+    Lectura: <span class="linea corta"></span></p>
+  <p class="fila medidor"><span class="et">Gas:</span>
+    <label class="chk"><input type="checkbox" data-grupo="gas"> Por red (con medidor)</label>
+    <label class="chk"><input type="checkbox" data-grupo="gas"> Pipeta (la compra el arrendatario)</label>
+    <label class="chk"><input type="checkbox" data-grupo="gas"> No aplica</label></p>
+  <p class="fila medidor sub">Lectura del medidor de gas (solo si es por red): <span class="linea corta"></span></p>
   <p>El inventario del estado del inmueble (puertas, pisos, paredes, baños, cocina, instalaciones, llaves, etc.) se hace así:</p>
-  <p class="sub">☐ <b>Digital:</b> fotos, videos y/o audios del estado del inmueble, <b>guardados en una carpeta compartida</b> (no se adjuntan al contrato). El arrendador envía el enlace de la carpeta al <b>correo electrónico del arrendatario</b> indicado en este contrato el día de la entrega. El envío y la recepción de ese correo quedan como prueba de que ambas partes conocen y aceptan el inventario.</p>
-  <p class="sub">☐ <b>Escrito:</b> descripción por espacios en las líneas de abajo, firmada por ambas partes. Si se hace por escrito, también es válido.</p>
+  <p class="sub"><label class="chk"><input type="checkbox"> <span><b>Digital:</b></span></label> fotos, videos y/o audios del estado del inmueble, <b>guardados en una carpeta compartida</b> (no se adjuntan al contrato). El arrendador envía el enlace de la carpeta al <b>correo electrónico del arrendatario</b> indicado en este contrato el día de la entrega. El envío y la recepción de ese correo quedan como prueba de que ambas partes conocen y aceptan el inventario.</p>
+  <p class="sub"><label class="chk"><input type="checkbox"> <span><b>Escrito:</b></span></label> descripción por espacios en las líneas de abajo, firmada por ambas partes. Si se hace por escrito, también es válido.</p>
   <p>Pueden usarse las dos formas a la vez. Cada parte conservará copia del material.</p>
   <p class="fila">Enlace de la carpeta compartida: <span class="linea larga"></span></p>
   <p>Descripción escrita (opcional):</p>
@@ -182,6 +205,27 @@
       fijos.forEach(function (o) { if (o !== e && o.dataset.key === k) o.textContent = t; });
     });
   });
+  // Casillas: las del mismo grupo (data-grupo) se excluyen entre sí, pero se pueden desmarcar
+  document.querySelectorAll('input[data-grupo]').forEach(function (c) {
+    c.addEventListener('change', function () {
+      if (!c.checked) return;
+      document.querySelectorAll('input[data-grupo="' + c.dataset.grupo + '"]').forEach(function (o) { if (o !== c) o.checked = false; });
+    });
+  });
+
+  // Fechas: el calendario escribe la fecha en letras ("14 de octubre de 2026"); también se puede escribir a mano
+  var MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+  document.querySelectorAll('.fecha').forEach(function (f) {
+    var texto = f.querySelector('.linea'), cal = f.querySelector('input[type=date]');
+    f.querySelector('.btnfecha').addEventListener('click', function () {
+      try { cal.showPicker(); } catch (x) { cal.focus(); try { cal.click(); } catch (y) {} }
+    });
+    cal.addEventListener('change', function () {
+      var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(cal.value);
+      texto.textContent = m ? (+m[3]) + ' de ' + MESES[+m[2] - 1] + ' de ' + m[1] : '';
+    });
+  });
+
   var aviso = document.getElementById('aviso');
   var avisoT;
   function decir(t) {
@@ -204,6 +248,8 @@
   document.getElementById('btnNo').addEventListener('click', function () { pedir(false); });
   document.getElementById('btnSi').addEventListener('click', function () {
     lineas.forEach(function (e) { e.textContent = ''; });
+    document.querySelectorAll('.chk input').forEach(function (c) { c.checked = false; });
+    document.querySelectorAll('.fecha input').forEach(function (c) { c.value = ''; });
     pedir(false);
     decir('Datos del inquilino borrados.');
   });
@@ -216,6 +262,14 @@
     var hoja = document.querySelector('table.hoja').cloneNode(true);
     ['thead', 'tfoot'].forEach(function (t) { var x = hoja.querySelector(t); if (x) x.remove(); });
     hoja.querySelectorAll('[contenteditable]').forEach(function (e) { e.removeAttribute('contenteditable'); });
+    var orig = document.querySelectorAll('table.hoja .chk input');
+    hoja.querySelectorAll('.chk input').forEach(function (c, i) {
+      var marca = document.createElement('span');
+      marca.textContent = orig[i] && orig[i].checked ? '☒' : '☐';
+      marca.style.cssText = 'font-size:15px;line-height:1;';
+      c.replaceWith(marca);
+    });
+    hoja.querySelectorAll('.btnfecha, .fecha input').forEach(function (e) { e.remove(); });
     // Une cada título con su texto para que no quede un título solo al final de una página
     var celda = hoja.querySelector('tbody td');
     Array.prototype.slice.call(celda.children).forEach(function (h) {
@@ -234,7 +288,7 @@
       margin: [15, 15, 15, 15],
       filename: NOMBRE,
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', scrollX: 0, scrollY: 0 },
       jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' },
       pagebreak: { mode: ['css', 'legacy'], avoid: ['.clausula', '.firmas', '.anexo', '.datos'] }
     }).from(hoja);
@@ -244,10 +298,12 @@
     if (generando) return;
     if (typeof html2pdf === 'undefined') { decir('No se pudo cargar el generador de PDF. Revise la conexión a internet.'); return; }
     generando = true;
+    var yAntes = window.scrollY;
+    window.scrollTo(0, 0); // la captura sale corrida si la página está desplazada
     btnDescargar.disabled = true;
     decir('Generando PDF...');
     var g = crearPDF();
-    var listo = function () { g.limpiar(); generando = false; btnDescargar.disabled = false; };
+    var listo = function () { g.limpiar(); generando = false; btnDescargar.disabled = false; window.scrollTo(0, yAntes); };
     var usar = (window.claude && claude.use) ? claude.use('downloads').catch(function () { return null; }) : Promise.resolve(null);
     usar.then(function (downloads) {
       if (downloads) {
