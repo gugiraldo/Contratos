@@ -33,6 +33,9 @@
   .barra { position: sticky; top: 0; background: #f1f5f9; border: 1px solid #94a3b8; padding: 8px 12px; margin-bottom: 12px; font: 13px Arial, sans-serif; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
   .barra button { padding: 6px 14px; font-size: 13px; cursor: pointer; }
   .barra [hidden] { display: none; }
+  .oculto { display: none !important; }
+  .barra .garantias { width: 100%; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; border-top: 1px solid #cbd5e1; padding-top: 6px; }
+  .barra .garantias label { display: inline-flex; gap: 5px; align-items: center; cursor: pointer; }
   .chk { display: inline-flex; align-items: baseline; gap: 5px; margin-right: 12px; cursor: pointer; }
   .chk input { width: 14px; height: 14px; margin: 0; cursor: pointer; align-self: center; }
   .fecha .linea { min-width: 5.2cm; }
@@ -63,6 +66,11 @@
     <button id="btnNo" type="button">Cancelar</button>
   </span>
   <span id="aviso" role="status"></span>
+  <div class="garantias">
+    <b>Este contrato lleva:</b>
+    <label><input type="checkbox" data-opcion="codeudor" checked> Codeudor</label>
+    <label><input type="checkbox" data-opcion="referencias"> Referencias personales (2 personas)</label>
+  </div>
 </div>
 
 <table class="hoja"><thead><tr><td><div class="esp"></div></td></tr></thead><tfoot><tr><td><div class="esp"></div></td></tr></tfoot><tbody><tr><td>
@@ -79,13 +87,25 @@
   <span class="et">Teléfono:</span><span class="linea campo"></span>
   <span class="et">Correo:</span><span class="linea campo"></span>
 </div>
-<div class="datos">
-  <b class="tit">CODEUDOR (si aplica)</b>
+<div class="datos" data-si="codeudor">
+  <b class="tit">CODEUDOR</b>
   <span class="et">Nombre completo:</span><span class="linea campo" style="grid-column: span 3"></span>
   <span class="et">C.C. N.°:</span><span class="linea campo"></span>
   <span class="et">Expedida en:</span><span class="linea campo"></span>
   <span class="et">Teléfono:</span><span class="linea campo"></span>
   <span class="et">Correo:</span><span class="linea campo"></span>
+</div>
+
+<div class="datos" data-si="referencias">
+  <b class="tit">REFERENCIAS PERSONALES (dos personas que conozcan al arrendatario: familiares o conocidos)</b>
+  <span class="et">Referencia 1 &ndash; Nombre:</span><span class="linea campo" style="grid-column: span 3"></span>
+  <span class="et">Parentesco o relación:</span><span class="linea campo"></span>
+  <span class="et">Teléfono:</span><span class="linea campo"></span>
+  <span class="et">Dirección o barrio:</span><span class="linea campo" style="grid-column: span 3"></span>
+  <span class="et">Referencia 2 &ndash; Nombre:</span><span class="linea campo" style="grid-column: span 3"></span>
+  <span class="et">Parentesco o relación:</span><span class="linea campo"></span>
+  <span class="et">Teléfono:</span><span class="linea campo"></span>
+  <span class="et">Dirección o barrio:</span><span class="linea campo" style="grid-column: span 3"></span>
 </div>
 
 <h2>PRIMERA – OBJETO E INMUEBLE</h2>
@@ -113,7 +133,7 @@
 <p>La terminación se hará efectiva por las vías legales; si el arrendatario no restituye el inmueble, el arrendador acudirá al proceso de restitución ante la autoridad judicial.</p>
 
 <h2>SÉPTIMA – GARANTÍA</h2>
-<p>No se exige depósito en dinero (art. 16, Ley 820 de 2003). El codeudor responde solidariamente por todas las obligaciones del arrendatario.</p>
+<p>No se exige depósito en dinero (art. 16, Ley 820 de 2003). <span data-si="codeudor">El codeudor responde solidariamente por todas las obligaciones del arrendatario.</span> <span data-si="referencias">Las personas de referencia indicadas en este contrato son personas que conocen al arrendatario; el arrendador podrá contactarlas únicamente para ubicarlo y ellas <b>no asumen ninguna obligación de pago</b>.</span></p>
 
 <h2>OCTAVA – CLÁUSULA PENAL (DISTINTA DEL CANON)</h2>
 <p>Si el arrendatario incumple cualquiera de las obligaciones de este contrato, pagará al arrendador, <b>a título de pena</b>, una suma equivalente a <span class="fijo" data-key="penal">1</span> canon(es) mensual(es) de arrendamiento. Esta pena es la <b>estimación anticipada y total de los perjuicios</b> causados por el incumplimiento y no se acumula con otra indemnización (art. 1592 y ss., Código Civil). Es <b>independiente del canon mensual</b>: no se paga al ingresar, no se imputa al arriendo ni se considera depósito o garantía entregada, y solo se causa por el incumplimiento. No exime al arrendatario de pagar los cánones y servicios adeudados ni de restituir el inmueble.</p>
@@ -125,7 +145,7 @@
 <p>Las partes aceptan como válidas las notificaciones enviadas a la dirección del inmueble y a los correos o números de contacto indicados en este contrato.</p>
 
 <h2>UNDÉCIMA – AUTORIZACIÓN DE DATOS PERSONALES</h2>
-<p>El arrendatario y el codeudor autorizan al arrendador, conforme a la Ley 1581 de 2012, a recolectar y conservar sus datos personales y copia de su cédula de ciudadanía, que se anexa al presente contrato, con la única finalidad de ejecutar y respaldar este contrato.</p>
+<p>El arrendatario<span data-si="codeudor"> y el codeudor</span> autoriza<span data-si="codeudor">n</span> al arrendador, conforme a la Ley 1581 de 2012, a recolectar y conservar sus datos personales y copia de su cédula de ciudadanía, que se anexa al presente contrato, con la única finalidad de ejecutar y respaldar este contrato. <span data-si="referencias">El arrendatario declara que las personas de referencia conocen y aceptan que sus datos de contacto se entreguen al arrendador solo para ubicarlo.</span></p>
 
 <h2>DUODÉCIMA – MÉRITO EJECUTIVO</h2>
 <p>Este contrato presta mérito ejecutivo para exigir el pago de las obligaciones aquí contenidas.</p>
@@ -140,7 +160,7 @@
 <p>El arrendatario puede terminar el contrato avisando por escrito al arrendador con un preaviso mínimo de <span class="fijo" data-key="preaviso">3</span> meses, con el preaviso e indemnización que fije la ley, y entregando el inmueble conforme a la cláusula novena. Seguirá pagando el canon y los servicios hasta la entrega efectiva.</p>
 
 <h2>DECIMOSEXTA – CENTRALES DE RIESGO</h2>
-<p>El arrendatario y el codeudor autorizan de forma expresa al arrendador a consultar su información financiera y a reportar el incumplimiento de las obligaciones de este contrato ante las centrales de riesgo, previo aviso conforme a la ley (Ley 1266 de 2008).</p>
+<p>El arrendatario<span data-si="codeudor"> y el codeudor</span> autoriza<span data-si="codeudor">n</span> de forma expresa al arrendador a consultar su información financiera y a reportar el incumplimiento de las obligaciones de este contrato ante las centrales de riesgo, previo aviso conforme a la ley (Ley 1266 de 2008).</p>
 
 <h2>DECIMOSÉPTIMA – DOMICILIO Y EJEMPLARES</h2>
 <p>El domicilio contractual es <b>Carepa, Antioquia</b>. Este contrato se firma en <b>dos (2) ejemplares</b> del mismo tenor, uno para cada parte.</p>
@@ -150,12 +170,12 @@
 <div class="firmas">
   <div class="firma"><div class="raya"></div>ARRENDADOR<br>C.C. <span class="fijo" data-key="cc">39.405.410</span><div class="huella">Huella</div></div>
   <div class="firma"><div class="raya"></div>ARRENDATARIO<br>C.C. <span class="linea corta"></span><div class="huella">Huella</div></div>
-  <div class="firma"><div class="raya"></div>CODEUDOR<br>C.C. <span class="linea corta"></span><div class="huella">Huella</div></div>
+  <div class="firma" data-si="codeudor"><div class="raya"></div>CODEUDOR<br>C.C. <span class="linea corta"></span><div class="huella">Huella</div></div>
 </div>
 
 <div class="anexo">
   <h2>ANEXO 1 – COPIA DE CÉDULA</h2>
-  <p>Anexar copia de la cédula del arrendatario y del codeudor, por ambos lados.</p>
+  <p>Anexar copia de la cédula del arrendatario<span data-si="codeudor"> y del codeudor</span>, por ambos lados.</p>
 </div>
 
 <div class="anexo">
@@ -226,6 +246,17 @@
     });
   });
 
+  // Qué lleva el contrato: cada opción muestra u oculta sus partes (data-si)
+  var opciones = {};
+  function aplicarOpciones() {
+    document.querySelectorAll('[data-si]').forEach(function (e) { e.classList.toggle('oculto', !opciones[e.dataset.si]); });
+  }
+  document.querySelectorAll('input[data-opcion]').forEach(function (c) {
+    opciones[c.dataset.opcion] = c.checked;
+    c.addEventListener('change', function () { opciones[c.dataset.opcion] = c.checked; aplicarOpciones(); });
+  });
+  aplicarOpciones();
+
   var aviso = document.getElementById('aviso');
   var avisoT;
   function decir(t) {
@@ -269,7 +300,7 @@
       marca.style.cssText = 'font-size:15px;line-height:1;';
       c.replaceWith(marca);
     });
-    hoja.querySelectorAll('.btnfecha, .fecha input').forEach(function (e) { e.remove(); });
+    hoja.querySelectorAll('.btnfecha, .fecha input, .oculto').forEach(function (e) { e.remove(); });
     // Une cada título con su texto para que no quede un título solo al final de una página
     var celda = hoja.querySelector('tbody td');
     Array.prototype.slice.call(celda.children).forEach(function (h) {
