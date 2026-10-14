@@ -24,8 +24,8 @@ Archivo principal: `contrato.html` (página web editable; se descarga como PDF).
 0. ~~Firma remota con las dos partes~~ **Decidido**: sin firma a distancia. Al interesado solo se le comparte el audio (y el enlace para leer); si decide tomarlo, confirma por teléfono/WhatsApp y la firma se hace **presencial** al día siguiente, llenando todo en el celular de la arrendadora (así el PDF final lleva las dos partes). Quien llega lleva el dinero completo que diga el contrato.
 1. **Sección de exigencias del arrendador**: condiciones que no se negocian, separadas de las demás. (Por definir con el dueño del contrato.)
 2. **Audio del contrato**: generarlo en NotebookLM (modo debate, con el prompt acordado) y publicarlo como `contrato-audio.mp3`.
-3. Botón **Compartir PDF** (WhatsApp / correo) desde el celular.
-4. Declaración "leí o escuché el contrato completo" antes de firmar (opcional, por decidir).
+3. ~~Botón Compartir PDF y declaración "leí o escuché el contrato"~~ Hechos dentro del asistente de firma.
+4. Modo "solo leer y escuchar" para el enlace que se le envía al interesado (propuesto, por decidir).
 5. **PIN de acceso a la página — AL FINAL**, cuando el contrato esté completamente listo. Nota: un PIN escrito en una página pública no protege datos de verdad; la opción segura es cifrar el contrato con el PIN (ver conversación).
 6. ~~Publicación para el arrendatario~~ Hecho con GitHub Pages sobre el repositorio `Contratos` (público).
 
