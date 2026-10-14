@@ -289,7 +289,7 @@
 <p>La terminación se hará efectiva por las vías legales; si el arrendatario no restituye el inmueble, el arrendador acudirá al proceso de restitución ante la autoridad judicial.</p>
 
 <h2>SÉPTIMA – GARANTÍA</h2>
-<p>No se exige depósito en dinero (art. 16, Ley 820 de 2003). <span data-si="codeudor">El codeudor responde solidariamente por todas las obligaciones del arrendatario.</span> <span data-si="referencias">Las personas de referencia indicadas en este contrato son personas que conocen al arrendatario; el arrendador podrá contactarlas únicamente para ubicarlo y ellas <b>no asumen ninguna obligación de pago</b>.</span></p>
+<p><span data-si="codeudor">El codeudor responde solidariamente por todas las obligaciones del arrendatario.</span> <span data-si="referencias">Las personas de referencia indicadas en este contrato son personas que conocen al arrendatario; el arrendador podrá contactarlas únicamente para ubicarlo y ellas <b>no asumen ninguna obligación de pago</b>.</span> <span data-si="ninguna">No se pacta codeudor ni otra garantía personal.</span></p>
 
 <h2>OCTAVA – CLÁUSULA PENAL (DISTINTA DEL CANON)</h2>
 <p>Si el arrendatario incumple cualquiera de las obligaciones de este contrato, pagará al arrendador, <b>a título de pena</b>, una suma equivalente a <span class="fijo" data-key="penal">1</span> canon(es) mensual(es) de arrendamiento. Esta pena es la <b>estimación anticipada y total de los perjuicios</b> causados por el incumplimiento y no se acumula con otra indemnización (art. 1592 y ss., Código Civil). Es <b>independiente del canon mensual</b>: no se paga al ingresar, no se imputa al arriendo ni se considera depósito o garantía entregada, y solo se causa por el incumplimiento. No exime al arrendatario de pagar los cánones y servicios adeudados ni de restituir el inmueble.</p>
@@ -829,6 +829,7 @@
   // Qué lleva el contrato: cada opción muestra u oculta sus partes (data-si)
   var opciones = {};
   function aplicarOpciones() {
+    opciones.ninguna = !opciones.codeudor && !opciones.referencias;
     document.querySelectorAll('[data-si]').forEach(function (e) { e.classList.toggle('oculto', !opciones[e.dataset.si]); });
   }
   document.querySelectorAll('input[data-opcion]').forEach(function (c) {

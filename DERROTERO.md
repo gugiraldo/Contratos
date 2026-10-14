@@ -29,8 +29,11 @@ Archivo principal: `contrato.html` (página web editable; se descarga como PDF).
 5. **PIN de acceso a la página — AL FINAL**, cuando el contrato esté completamente listo. Nota: un PIN escrito en una página pública no protege datos de verdad; la opción segura es cifrar el contrato con el PIN (ver conversación).
 6. ~~Publicación para el arrendatario~~ Hecho con GitHub Pages sobre el repositorio `Contratos` (público).
 
-## Por revisar con un abogado
-- El contrato dice (cláusulas segunda y séptima) que **no se exige depósito** (art. 16, Ley 820 de 2003) y que solo se paga por anticipado el primer mes. Si en la práctica se piensa cobrar "depósito + mes de arriendo", hay contradicción con el propio contrato.
+## Sobre el depósito (decidido)
+- Se **quitó** de la cláusula séptima la frase "No se exige depósito en dinero". No es obligatoria, pero quitarla **no vuelve legal** el depósito: el art. 16 de la Ley 820 de 2003 lo prohíbe igual, y según las fuentes consultadas también prohíbe disfrazarlo (primer mes más caro con "descuento" después, cobro verbal, otro nombre).
+- La cláusula segunda sigue diciendo que solo se paga por anticipado el primer mes de arriendo.
+- Formas legales de protegerse: canon bien fijado (tope 1 % del valor comercial), codeudor, seguro de arrendamiento, cláusula penal, recibos de servicios al día al entregar, inventario con fotos, y buen estudio del arrendatario antes de firmar.
+- Pendiente: sección "Garantías y condiciones de entrega".
 
 ## Notas
 - Una firma y huella dibujadas en pantalla son firma electrónica simple y una constancia visual; no son validación biométrica. Para nivel bancario hace falta un servicio de firma electrónica certificada.
