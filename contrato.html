@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Contrato de Arrendamiento de Vivienda Urbana</title>
 <style>
-  @page { size: letter; margin: 2cm; }
+  @page { size: letter; margin: 2cm; @bottom-right { content: "Hoja " counter(page) " de " counter(pages); font: 9pt Arial, sans-serif; color: #444; } }
   body { font-family: "Times New Roman", serif; font-size: 12pt; line-height: 1.45; margin: 0; color: #000; }
   .pagina { max-width: 18cm; margin: 0 auto; padding: 1cm; }
   h1 { text-align: center; font-size: 15pt; margin-bottom: 4px; }
@@ -882,6 +882,24 @@
   var btnDescargar = document.getElementById('btnDescargar');
   var NOMBRE = 'contrato-arrendamiento.pdf';
   var generando = false;
+  // Pie de cada hoja: partes del contrato y "Hoja X de N", para que no se pierda ni se cambie ninguna hoja
+  function piePartes() {
+    var arr = txt(document.querySelector('.fijo[data-key="nombre"]')), ten = txt(campo('arrendatario', 'nombre'));
+    var t = [];
+    if (arr) t.push('Arrendador: ' + arr);
+    if (ten) t.push('Arrendatario: ' + ten);
+    return t.join('  ·  ').toUpperCase().slice(0, 95);
+  }
+  function numerarHojas(pdf) {
+    var n = pdf.internal.getNumberOfPages(), w = pdf.internal.pageSize.getWidth(), h = pdf.internal.pageSize.getHeight(), izq = piePartes();
+    for (var i = 1; i <= n; i++) {
+      pdf.setPage(i);
+      pdf.setFont('helvetica', 'normal'); pdf.setFontSize(8.5); pdf.setTextColor(60); pdf.setDrawColor(150); pdf.setLineWidth(0.2);
+      pdf.line(13, h - 9.5, w - 13, h - 9.5);
+      if (izq) pdf.text(izq, 13, h - 5.5);
+      pdf.text('Hoja ' + i + ' de ' + n, w - 13, h - 5.5, { align: 'right' });
+    }
+  }
   function crearPDF() {
     var hoja = document.querySelector('table.hoja').cloneNode(true);
     ['thead', 'tfoot'].forEach(function (t) { var x = hoja.querySelector(t); if (x) x.remove(); });
@@ -930,7 +948,7 @@
       // la librería centra la hoja y la recorta en pantallas angostas: se alinea a la izquierda
       var ct = document.querySelector('.html2pdf__container');
       if (ct) ct.style.margin = '0';
-    }).toCanvas().toPdf();
+    }).toCanvas().toPdf().get('pdf').then(numerarHojas);
     return { trabajo: trabajo, limpiar: function () {} };
   }
   // Genera el PDF y devuelve el archivo (Blob)

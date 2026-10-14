@@ -16,6 +16,7 @@ Archivo principal: `contrato.html` (página web editable; se descarga como PDF).
 - PDF en 4 páginas (5 si lleva codeudor y referencias a la vez), igual desde cualquier pantalla.
 - Página pública con GitHub Pages: https://gugiraldo.github.io/Contratos/
 - Menú del celular desplegable, con botones grandes.
+- Pie en cada hoja del PDF: nombres de las partes y "Hoja X de N" (como en las escrituras), para que no se pierda ni se cambie una hoja.
 - Fotos de la cédula (cara con la foto y cara con la huella) con la cámara; en el computador usa la cámara web. Se pueden girar, enderezar, acercar y encuadrar.
 - Huella tomada de la foto de la cédula (se recorta con un recuadro); ya no hay huella dibujada.
 - **Asistente de firma paso a paso** (botón "Iniciar proceso de firma"): elegir quién firma → leer/escuchar y "Sí, lo acepto" (queda fecha y hora en el contrato) → datos → referencias → fotos de la cédula → huella → firma → resumen y PDF final (descargar o compartir). Sin selfie: se decidió que es incómodo; la cédula es el documento de identificación.
