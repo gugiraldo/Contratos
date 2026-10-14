@@ -68,10 +68,7 @@
   .modal-ayuda { margin: 0 0 10px; color: #475569; }
   .modal-zona { display: flex; justify-content: center; }
   .modal-canvas { width: 100%; height: clamp(180px, 38vh, 300px); border: 1px solid #94a3b8; border-radius: 8px; background: linear-gradient(to bottom, #fff 0, #fff calc(72% - 1px), #cbd5e1 calc(72% - 1px), #cbd5e1 72%, #fff 72%); touch-action: none; user-select: none; -webkit-user-select: none; cursor: crosshair; }
-  .modal-huella { position: relative; width: 240px; height: 300px; border: 2px solid #0f172a; border-radius: 6px; background: #fff; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
-  .modal-huella .celdas { position: absolute; left: 0; top: 0; right: 0; bottom: 0; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); }
-  .modal-huella .celdas i { border: 1px dashed #e2e8f0; }
-  .modal-huella .celdas i.ok { background: rgba(34,197,94,.18); }
+  .modal-huella { position: relative; width: 240px; height: 300px; border: 2px solid #38bdf8; border-radius: 10px; background: #0b1220; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
   .modal-huella canvas { position: absolute; left: 0; top: 0; width: 100%; height: 100%; touch-action: none; cursor: pointer; }
   .modal-info { margin: 10px 0 0; min-height: 20px; text-align: center; font-weight: bold; }
   .modal-barra { height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; margin-top: 6px; }
@@ -81,6 +78,25 @@
   .modal-acc button.principal { background: #2563eb; border-color: #2563eb; color: #fff; font-weight: bold; }
   .modal-acc button:disabled { opacity: .45; cursor: not-allowed; }
   @media print { .modal { display: none; } .pad-ph { display: none; } }
+  table.hoja { table-layout: fixed; }
+  .pagina { overflow-wrap: anywhere; }
+  .linea { max-width: 100%; }
+  @media (max-width: 640px) {
+    .barra-in { padding: 8px 12px; gap: 8px 14px; }
+    .b-titulo { flex-basis: 100%; }
+    .b-titulo small { display: none; }
+    .barra .garantias { gap: 10px; }
+    .pagina { padding: 12px; }
+    .hoja:not(.pdf) .datos { grid-template-columns: 1fr; gap: 2px 0; }
+    .hoja:not(.pdf) .datos .et { white-space: normal; margin-top: 6px; }
+    .hoja:not(.pdf) .datos .campo { grid-column: auto !important; }
+    .hoja:not(.pdf) .linea.larga, .hoja:not(.pdf) .linea.corta { min-width: 0; width: 100%; }
+    .hoja:not(.pdf) span[style*="nowrap"] { white-space: normal !important; }
+    .hoja:not(.pdf) .fecha { display: inline-block; max-width: 100%; }
+    .hoja:not(.pdf) .fecha .linea { min-width: 4cm; }
+    .hoja:not(.pdf) .firmas, .hoja:not(.pdf) .firmas-anexo { flex-direction: column; gap: 22px; }
+    .modal-caja { padding: 12px; }
+  }
   .linea { text-transform: uppercase; }
   .linea.min { text-transform: none; }
   .cal { position: absolute; left: 0; top: 100%; z-index: 30; width: 250px; background: #fff; border: 1px solid #94a3b8; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,.25); padding: 8px; font: 13px Arial, sans-serif; color: #0f172a; white-space: normal; text-align: center; line-height: 1.2; }
@@ -458,62 +474,107 @@
   }
 
   function abrirHuella(pad) {
-    var W = 240, H = 300, COLS = 4, FILAS = 5, RADIO = 46;
-    var m = crearModal(pad.dataset.titulo || 'Huella', 'Apoye el dedo varias veces dentro del recuadro, cubriendo todos los cuadros, hasta completar el 100 %.');
+    var W = 240, H = 300, ANILLOS = 26, RADIO = 34;
+    var m = crearModal(pad.dataset.titulo || 'Huella', 'Apoye el dedo sobre la huella y deslícelo por encima, varias veces, hasta que se llene por completo (100 %).');
     var caja = el('div', 'modal-huella');
-    var celdas = el('div', 'celdas'), nodos = [];
-    for (var i = 0; i < COLS * FILAS; i++) { var c = document.createElement('i'); celdas.appendChild(c); nodos.push(c); }
     var cv = document.createElement('canvas');
     var dpr = Math.max(1, window.devicePixelRatio || 1);
     cv.width = W * dpr; cv.height = H * dpr;
-    caja.appendChild(celdas); caja.appendChild(cv);
+    caja.appendChild(cv);
     m.zona.appendChild(caja);
     var ctx = cv.getContext('2d');
     ctx.scale(dpr, dpr);
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
     var barra = el('div', 'modal-barra'), relleno = el('div');
     barra.appendChild(relleno);
     var texto = el('div', null, '0 %');
     m.info.appendChild(texto); m.info.appendChild(barra);
-    var cubiertas = [], validada = false, guardar;
-    function sello(x, y) {
-      ctx.save(); ctx.translate(x, y); ctx.rotate((Math.random() - 0.5) * 0.7); ctx.scale(0.9 + Math.random() * 0.2, 1);
-      ctx.strokeStyle = 'rgba(15,23,42,.82)'; ctx.lineWidth = 1.5; ctx.lineCap = 'round';
-      for (var k = 0; k < 8; k++) {
-        ctx.beginPath();
-        ctx.ellipse(0, -2, 4 + k * 4, 6 + k * 5, 0, Math.random() * 0.5, Math.PI * 2 - Math.random() * 0.5);
-        ctx.stroke();
+
+    // Una sola huella con forma de yema de dedo, hecha de crestas partidas en tramos; cada toque "revela" los tramos cercanos
+    var segs = [], nucleo = { x: W / 2 + 4, y: 156 };
+    function dentro(x, y) {
+      if (y < 130) return Math.pow((x - 120) / 84, 2) + Math.pow((y - 130) / 112, 2) <= 1;
+      return Math.abs(x - 120) <= 84 && y <= 270;
+    }
+    function trocear(linea, desf) {
+      for (var s0 = desf; s0 + 3 < linea.length; s0 += 10) {
+        var parte = linea.slice(s0, s0 + 9);
+        if (parte.length >= 3) { var mid = parte[Math.floor(parte.length / 2)]; segs.push({ pts: parte, mx: mid[0], my: mid[1], ok: false }); }
       }
-      ctx.restore();
+    }
+    for (var i = 1; i <= ANILLOS; i++) {
+      var base = 4 + i * 5.4, linea = [];
+      for (var ang = 0; ang <= 2 * Math.PI + 0.001; ang += Math.PI / 60) {
+        var f = 1 + 0.03 * Math.sin(3 * ang + i * 0.5) + 0.02 * Math.sin(7 * ang - i);
+        var yy = nucleo.y + base * 1.22 * f * Math.sin(ang);
+        var xx = nucleo.x + base * f * Math.cos(ang) + 0.1 * (yy - nucleo.y);
+        if (dentro(xx, yy)) linea.push([xx, yy]); else { trocear(linea, (i * 4) % 10); linea = []; }
+      }
+      trocear(linea, (i * 4) % 10);
+    }
+    var activo = false, foco = null, validada = false, guardar;
+    function trazarSeg(sg) {
+      ctx.beginPath();
+      ctx.moveTo(sg.pts[0][0], sg.pts[0][1]);
+      for (var q = 1; q < sg.pts.length; q++) ctx.lineTo(sg.pts[q][0], sg.pts[q][1]);
+      ctx.stroke();
+    }
+    function pintar() {
+      ctx.clearRect(0, 0, W, H);
+      // contorno del dedo
+      ctx.strokeStyle = 'rgba(148,163,184,.45)'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.ellipse(120, 130, 84, 112, 0, Math.PI, 2 * Math.PI); ctx.lineTo(204, 270); ctx.lineTo(36, 270); ctx.closePath(); ctx.stroke();
+      if (foco && !validada) { ctx.fillStyle = 'rgba(56,189,248,.16)'; ctx.beginPath(); ctx.arc(foco.x, foco.y, RADIO, 0, Math.PI * 2); ctx.fill(); }
+      ctx.strokeStyle = 'rgba(148,163,184,.30)'; ctx.lineWidth = 1.4; ctx.shadowBlur = 0;
+      segs.forEach(function (sg) { if (!sg.ok) trazarSeg(sg); });
+      var color = validada ? '#4ade80' : '#38bdf8';
+      ctx.strokeStyle = color; ctx.shadowColor = color; ctx.shadowBlur = 6; ctx.lineWidth = 1.9;
+      segs.forEach(function (sg) { if (sg.ok) trazarSeg(sg); });
+      ctx.shadowBlur = 0;
+    }
+    function exportar() {
+      var out = document.createElement('canvas');
+      out.width = W * 2; out.height = H * 2;
+      var o = out.getContext('2d');
+      o.scale(2, 2); o.lineCap = 'round'; o.lineJoin = 'round'; o.strokeStyle = '#0f172a'; o.lineWidth = 2.2;
+      segs.forEach(function (sg) { o.beginPath(); o.moveTo(sg.pts[0][0], sg.pts[0][1]); for (var q = 1; q < sg.pts.length; q++) o.lineTo(sg.pts[q][0], sg.pts[q][1]); o.stroke(); });
+      return out.toDataURL('image/png');
     }
     function avance() {
-      var n = cubiertas.filter(Boolean).length;
-      var pct = Math.round(n * 100 / (COLS * FILAS));
+      var n = segs.filter(function (sg) { return sg.ok; }).length;
+      var pct = Math.floor(n * 100 / segs.length);
       relleno.style.width = pct + '%';
-      if (n === COLS * FILAS) { validada = true; texto.textContent = '✔ Huella validada'; guardar.disabled = false; }
+      if (n === segs.length) { validada = true; foco = null; texto.textContent = '✔ Huella validada'; guardar.disabled = false; }
       else texto.textContent = pct + ' %';
+    }
+    function revelar(e) {
+      var r = cv.getBoundingClientRect();
+      var x = (e.clientX - r.left) * (W / r.width), y = (e.clientY - r.top) * (H / r.height);
+      foco = { x: x, y: y };
+      segs.forEach(function (sg) { if (!sg.ok && (sg.mx - x) * (sg.mx - x) + (sg.my - y) * (sg.my - y) <= RADIO * RADIO) sg.ok = true; });
+      avance(); pintar();
     }
     cv.addEventListener('pointerdown', function (e) {
       e.preventDefault();
       if (validada) return;
-      var r = cv.getBoundingClientRect();
-      var x = (e.clientX - r.left) * (W / r.width), y = (e.clientY - r.top) * (H / r.height);
-      sello(x, y);
-      for (var f = 0; f < FILAS; f++) for (var c = 0; c < COLS; c++) {
-        var cx = (c + 0.5) * W / COLS, cy = (f + 0.5) * H / FILAS;
-        if ((cx - x) * (cx - x) + (cy - y) * (cy - y) <= RADIO * RADIO) { cubiertas[f * COLS + c] = true; nodos[f * COLS + c].className = 'ok'; }
-      }
-      avance();
+      try { cv.setPointerCapture(e.pointerId); } catch (x) {}
+      activo = true; revelar(e);
     });
+    cv.addEventListener('pointermove', function (e) { if (activo && !validada) { e.preventDefault(); revelar(e); } });
+    function fin() { activo = false; foco = null; pintar(); }
+    cv.addEventListener('pointerup', fin);
+    cv.addEventListener('pointercancel', fin);
     cv.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+
     if (pad.classList.contains('firmado')) m.acc.appendChild(botonModal('Quitar huella', function () { borrarPad(pad); cerrarModal(); }));
     m.acc.appendChild(botonModal('Volver a empezar', function () {
-      ctx.clearRect(0, 0, W, H); cubiertas = []; validada = false; guardar.disabled = true;
-      nodos.forEach(function (n) { n.className = ''; }); avance();
+      segs.forEach(function (sg) { sg.ok = false; }); validada = false; foco = null; guardar.disabled = true; avance(); pintar();
     }));
     m.acc.appendChild(botonModal('Cancelar', cerrarModal));
-    guardar = botonModal('Guardar huella', function () { if (validada) { ponerPad(pad, cv.toDataURL('image/png')); cerrarModal(); } }, 'principal');
+    guardar = botonModal('Guardar huella', function () { if (validada) { ponerPad(pad, exportar()); cerrarModal(); } }, 'principal');
     guardar.disabled = true;
     m.acc.appendChild(guardar);
+    pintar();
   }
 
   pads.forEach(function (pad) {
@@ -599,7 +660,7 @@
       margin: [15, 15, 15, 15],
       filename: NOMBRE,
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', scrollX: 0, scrollY: 0 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', scrollX: 0, scrollY: 0, windowWidth: 1100 },
       jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' },
       pagebreak: { mode: ['css', 'legacy'], avoid: ['.clausula', '.firmas', '.anexo', '.datos'] }
     }).from(hoja);
