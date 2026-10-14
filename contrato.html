@@ -97,6 +97,9 @@
     .hoja:not(.pdf) .firmas, .hoja:not(.pdf) .firmas-anexo { flex-direction: column; gap: 22px; }
     .modal-caja { padding: 12px; }
   }
+  .fijo:empty { display: inline-block; min-width: 4cm; border-bottom: 1px solid #000; min-height: 1.1em; vertical-align: baseline; }
+  @media screen { .hoja:not(.pdf) .fijo:empty::before { content: attr(data-ph); color: #94a3b8; font-weight: normal; } }
+  .modal-zona audio { width: 100%; }
   .linea { text-transform: uppercase; }
   .linea.min { text-transform: none; }
   .cal { position: absolute; left: 0; top: 100%; z-index: 30; width: 250px; background: #fff; border: 1px solid #94a3b8; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,.25); padding: 8px; font: 13px Arial, sans-serif; color: #0f172a; white-space: normal; text-align: center; line-height: 1.2; }
@@ -132,7 +135,9 @@
     <div class="b-grupo">
       <button id="btnImprimir" type="button">Imprimir / Guardar PDF</button>
       <button id="btnDescargar" type="button">Descargar PDF</button>
+      <button id="btnAudio" type="button">🎧 Escuchar el contrato</button>
       <button id="btnLimpiar" type="button">Limpiar datos del inquilino</button>
+      <button id="btnArr" type="button">Datos del arrendador…</button>
       <span id="confirmar" hidden>¿Borrar los datos del inquilino?
         <button id="btnSi" type="button">Sí, borrar</button>
         <button id="btnNo" type="button">Cancelar</button>
@@ -153,7 +158,7 @@
 <p style="text-align:center">(Ley 820 de 2003 – República de Colombia)</p>
 
 <h2>PARTES</h2>
-<p><b>ARRENDADOR:</b> <span class="fijo" data-key="nombre">JOSEFA MARÍA MESTRA</span>, C.C. <span class="fijo" data-key="cc">39.405.410</span>.</p>
+<p><b>ARRENDADOR:</b> <span class="fijo" data-key="nombre" data-ph="NOMBRE DEL ARRENDADOR">JOSEFA MARÍA MESTRA</span>, C.C. <span class="fijo" data-key="cc" data-ph="CÉDULA">39.405.410</span>.</p>
 <div class="datos">
   <b class="tit">ARRENDATARIO</b>
   <span class="et">Nombre completo:</span><span class="linea campo" style="grid-column: span 3"></span>
@@ -184,7 +189,7 @@
 </div>
 
 <h2>PRIMERA – OBJETO E INMUEBLE</h2>
-<p>El arrendador entrega en arrendamiento al arrendatario el inmueble ubicado en <span class="fijo" data-key="direccion">CR 65B N.° 67-36, Carepa, Antioquia (por la 2.ª calle de La Empedrada, finalizando la cuadra subiendo)</span>, destinado <b>exclusivamente a vivienda</b>. Su estado consta en el inventario del Anexo 2, que puede ser <b>digital (fotos, videos y audios en una carpeta compartida enviada al correo del arrendatario) o escrito</b>; ambas formas son válidas como prueba.</p>
+<p>El arrendador entrega en arrendamiento al arrendatario el inmueble ubicado en <span class="fijo" data-key="direccion" data-ph="DIRECCIÓN DEL INMUEBLE">CR 65B N.° 67-36, Carepa, Antioquia (por la 2.ª calle de La Empedrada, finalizando la cuadra subiendo)</span>, destinado <b>exclusivamente a vivienda</b>. Su estado consta en el inventario del Anexo 2, que puede ser <b>digital (fotos, videos y audios en una carpeta compartida enviada al correo del arrendatario) o escrito</b>; ambas formas son válidas como prueba.</p>
 
 <h2>SEGUNDA – CANON</h2>
 <p>El canon mensual es de <span style="white-space:nowrap">$ <span class="linea corta"></span> (<span class="linea larga"></span> pesos)</span>, pagadero dentro de los primeros <span class="fijo" data-key="diapago">5</span> días de cada mes, <b>en efectivo o por transferencia</b>, según lo acuerden las partes. El <b>primer canon</b> se paga por anticipado, al momento de recibir el inmueble; ese pago corresponde al primer mes de arriendo y no a otra suma. Todo pago se soporta con recibo o comprobante. El canon no excederá el 1 % del valor comercial del inmueble (art. 18, Ley 820 de 2003).</p>
@@ -243,7 +248,7 @@
 <p class="fila" style="margin-top:14px">En constancia se firma en <span class="linea"></span>, el <span class="fecha"><span class="linea"></span><button type="button" class="btnfecha" title="Elegir fecha en el calendario" aria-label="Elegir fecha">📅</button></span>.</p>
 
 <div class="firmas">
-  <div class="firma"><div class="pad pad-firma" data-titulo="Firma del arrendador"><span class="pad-ph">Toque aquí para firmar</span></div>ARRENDADOR<br>C.C. <span class="fijo" data-key="cc">39.405.410</span><div class="huella pad pad-huella" data-titulo="Huella del arrendador"><span class="pad-et">Huella</span><span class="pad-ph">Toque aquí para la huella</span></div></div>
+  <div class="firma"><div class="pad pad-firma" data-titulo="Firma del arrendador"><span class="pad-ph">Toque aquí para firmar</span></div>ARRENDADOR<br>C.C. <span class="fijo" data-key="cc" data-ph="CÉDULA">39.405.410</span><div class="huella pad pad-huella" data-titulo="Huella del arrendador"><span class="pad-et">Huella</span><span class="pad-ph">Toque aquí para la huella</span></div></div>
   <div class="firma"><div class="pad pad-firma" data-titulo="Firma del arrendatario"><span class="pad-ph">Toque aquí para firmar</span></div>ARRENDATARIO<br>C.C. <span class="linea corta"></span><div class="huella pad pad-huella" data-titulo="Huella del arrendatario"><span class="pad-et">Huella</span><span class="pad-ph">Toque aquí para la huella</span></div></div>
   <div class="firma" data-si="codeudor"><div class="pad pad-firma" data-titulo="Firma del codeudor"><span class="pad-ph">Toque aquí para firmar</span></div>CODEUDOR<br>C.C. <span class="linea corta"></span><div class="huella pad pad-huella" data-titulo="Huella del codeudor"><span class="pad-et">Huella</span><span class="pad-ph">Toque aquí para la huella</span></div></div>
 </div>
@@ -296,11 +301,12 @@
   function leer(k) { try { return localStorage.getItem('contrato_' + k); } catch (x) { return null; } }
   function guardar(k, v) { try { localStorage.setItem('contrato_' + k, v); } catch (x) {} }
   fijos.forEach(function (e) {
+    e.dataset.def = e.textContent;
     var v = leer(e.dataset.key);
-    if (v) e.textContent = v;
+    if (v !== null) e.textContent = (v === '__vacio__') ? '' : v;
     e.addEventListener('input', function () {
       var k = e.dataset.key, t = e.textContent;
-      guardar(k, t);
+      guardar(k, t === '' ? '__vacio__' : t);
       fijos.forEach(function (o) { if (o !== e && o.dataset.key === k) o.textContent = t; });
     });
   });
@@ -379,7 +385,7 @@
   // ===== Firmas y huellas digitales (se ven en el PDF; en papel queda el espacio para hacerlo a mano) =====
   var pads = Array.prototype.slice.call(document.querySelectorAll('.pad'));
   var modal = null;
-  function cerrarModal() { if (modal) { modal.remove(); modal = null; document.body.style.overflow = ''; } }
+  function cerrarModal() { if (modal) { modal.querySelectorAll('audio').forEach(function (a) { a.pause(); }); modal.remove(); modal = null; document.body.style.overflow = ''; } }
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') cerrarModal(); });
   function ponerPad(pad, url) {
     var img = pad.querySelector('.pad-img');
@@ -614,6 +620,40 @@
     pad.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrir(); } });
   });
 
+  // ===== Audio del contrato =====
+  var ARCHIVO_AUDIO = 'contrato-audio.mp3';
+  document.getElementById('btnAudio').addEventListener('click', function () {
+    var m = crearModal('Escuche el contrato', 'Puede escucharlo mientras lo lee en la página. Si lo prefiere, solo léalo.');
+    var audio = document.createElement('audio');
+    audio.controls = true; audio.preload = 'metadata'; audio.src = ARCHIVO_AUDIO;
+    var estado = m.info;
+    estado.textContent = 'Cargando audio...';
+    audio.addEventListener('loadedmetadata', function () { estado.textContent = ''; });
+    audio.addEventListener('error', function () {
+      audio.style.display = 'none';
+      estado.textContent = 'El audio de este contrato todavía no está disponible. Puede leer el contrato en la página.';
+    });
+    m.zona.appendChild(audio);
+    m.acc.appendChild(botonModal('Cerrar', cerrarModal, 'principal'));
+  });
+
+  // ===== Datos del arrendador (nombre, cédula, dirección): borrar o restaurar los originales =====
+  var CLAVES_ARR = ['nombre', 'cc', 'direccion'];
+  function datosArrendador(borrar) {
+    CLAVES_ARR.forEach(function (k) {
+      document.querySelectorAll('.fijo[data-key="' + k + '"]').forEach(function (e) { e.textContent = borrar ? '' : e.dataset.def; });
+      if (borrar) guardar(k, '__vacio__'); else { try { localStorage.removeItem('contrato_' + k); } catch (x) {} }
+    });
+    cerrarModal();
+    decir(borrar ? 'Datos del arrendador borrados. Haga clic en cada espacio para escribir otros.' : 'Datos originales del arrendador restaurados.');
+  }
+  document.getElementById('btnArr').addEventListener('click', function () {
+    var m = crearModal('Datos del arrendador', 'Se refiere al nombre, la cédula y la dirección del inmueble que aparecen en el contrato. Para cambiarlos, también puede hacer clic sobre cada uno y escribir.');
+    m.acc.appendChild(botonModal('Cancelar', cerrarModal));
+    m.acc.appendChild(botonModal('Restaurar los originales', function () { datosArrendador(false); }));
+    m.acc.appendChild(botonModal('Borrar datos', function () { datosArrendador(true); }, 'principal'));
+  });
+
   // Qué lleva el contrato: cada opción muestra u oculta sus partes (data-si)
   var opciones = {};
   function aplicarOpciones() {
@@ -682,16 +722,20 @@
         bloque.appendChild(bloque.nextElementSibling);
       }
     });
-    hoja.style.width = '17.4cm';
+    hoja.style.width = '185.9mm'; // igual al ancho útil de la hoja carta con márgenes de 15 mm
     hoja.style.background = '#fff';
     var trabajo = html2pdf().set({
       margin: [15, 15, 15, 15],
       filename: NOMBRE,
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', scrollX: 0, scrollY: 0, windowWidth: 1100 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', scrollX: 0, scrollY: 0, windowWidth: Math.max(760, window.innerWidth) },
       jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' },
       pagebreak: { mode: ['css', 'legacy'], avoid: ['.clausula', '.firmas', '.anexo', '.datos'] }
-    }).from(hoja);
+    }).from(hoja).toContainer().then(function () {
+      // la librería centra la hoja y la recorta en pantallas angostas: se alinea a la izquierda
+      var ct = document.querySelector('.html2pdf__container');
+      if (ct) ct.style.margin = '0';
+    }).toCanvas().toPdf();
     return { trabajo: trabajo, limpiar: function () {} };
   }
   btnDescargar.addEventListener('click', function () {
