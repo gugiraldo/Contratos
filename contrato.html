@@ -51,6 +51,36 @@
   .fecha .linea { min-width: 5.2cm; }
   .linea { padding-bottom: 1px; }
   .fecha { position: relative; display: inline-block; white-space: nowrap; }
+  .pad { position: relative; cursor: pointer; }
+  .pad-firma { height: 1.9cm; border-bottom: 1px solid #000; margin-bottom: 4px; }
+  .huella.pad { position: relative; }
+  .pad-ph { position: absolute; left: 0; top: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; text-align: center; font: 11px Arial, sans-serif; color: #64748b; padding: 2px; }
+  .pad-img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: contain; }
+  .pad.firmado .pad-ph, .pad.firmado .pad-et { display: none; }
+  @media screen { .pad:not(.firmado) { background: #f1f5f9; } .pad:hover { background: #e0f2fe; } .pad:focus-visible { outline: 2px solid #2563eb; } }
+  .pdf .pad { background: none !important; }
+  .pdf .pad-ph { display: none; }
+  .firmas-anexo { display: flex; gap: 1cm; margin-top: .6cm; break-inside: avoid; }
+  .firmas-anexo > div { flex: 1; font-size: 11pt; }
+  .modal { position: fixed; left: 0; top: 0; right: 0; bottom: 0; z-index: 100; background: rgba(15,23,42,.65); display: flex; align-items: center; justify-content: center; padding: 12px; overflow: auto; font: 14px/1.35 Arial, sans-serif; }
+  .modal-caja { background: #fff; color: #0f172a; border-radius: 12px; padding: 16px; width: 100%; max-width: 640px; box-shadow: 0 10px 30px rgba(0,0,0,.4); }
+  .modal-caja h3 { margin: 0 0 4px; font-size: 17px; }
+  .modal-ayuda { margin: 0 0 10px; color: #475569; }
+  .modal-zona { display: flex; justify-content: center; }
+  .modal-canvas { width: 100%; height: clamp(180px, 38vh, 300px); border: 1px solid #94a3b8; border-radius: 8px; background: linear-gradient(to bottom, #fff 0, #fff calc(72% - 1px), #cbd5e1 calc(72% - 1px), #cbd5e1 72%, #fff 72%); touch-action: none; user-select: none; -webkit-user-select: none; cursor: crosshair; }
+  .modal-huella { position: relative; width: 240px; height: 300px; border: 2px solid #0f172a; border-radius: 6px; background: #fff; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  .modal-huella .celdas { position: absolute; left: 0; top: 0; right: 0; bottom: 0; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); }
+  .modal-huella .celdas i { border: 1px dashed #e2e8f0; }
+  .modal-huella .celdas i.ok { background: rgba(34,197,94,.18); }
+  .modal-huella canvas { position: absolute; left: 0; top: 0; width: 100%; height: 100%; touch-action: none; cursor: pointer; }
+  .modal-info { margin: 10px 0 0; min-height: 20px; text-align: center; font-weight: bold; }
+  .modal-barra { height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; margin-top: 6px; }
+  .modal-barra div { height: 100%; width: 0; background: #22c55e; transition: width .15s; }
+  .modal-acc { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; margin-top: 12px; }
+  .modal-acc button { padding: 9px 16px; font-size: 14px; border-radius: 6px; border: 1px solid #94a3b8; background: #f8fafc; cursor: pointer; }
+  .modal-acc button.principal { background: #2563eb; border-color: #2563eb; color: #fff; font-weight: bold; }
+  .modal-acc button:disabled { opacity: .45; cursor: not-allowed; }
+  @media print { .modal { display: none; } .pad-ph { display: none; } }
   .linea { text-transform: uppercase; }
   .linea.min { text-transform: none; }
   .cal { position: absolute; left: 0; top: 100%; z-index: 30; width: 250px; background: #fff; border: 1px solid #94a3b8; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,.25); padding: 8px; font: 13px Arial, sans-serif; color: #0f172a; white-space: normal; text-align: center; line-height: 1.2; }
@@ -197,9 +227,9 @@
 <p class="fila" style="margin-top:14px">En constancia se firma en <span class="linea"></span>, el <span class="fecha"><span class="linea"></span><button type="button" class="btnfecha" title="Elegir fecha en el calendario" aria-label="Elegir fecha">📅</button></span>.</p>
 
 <div class="firmas">
-  <div class="firma"><div class="raya"></div>ARRENDADOR<br>C.C. <span class="fijo" data-key="cc">39.405.410</span><div class="huella">Huella</div></div>
-  <div class="firma"><div class="raya"></div>ARRENDATARIO<br>C.C. <span class="linea corta"></span><div class="huella">Huella</div></div>
-  <div class="firma" data-si="codeudor"><div class="raya"></div>CODEUDOR<br>C.C. <span class="linea corta"></span><div class="huella">Huella</div></div>
+  <div class="firma"><div class="pad pad-firma" data-titulo="Firma del arrendador"><span class="pad-ph">Toque aquí para firmar</span></div>ARRENDADOR<br>C.C. <span class="fijo" data-key="cc">39.405.410</span><div class="huella pad pad-huella" data-titulo="Huella del arrendador"><span class="pad-et">Huella</span><span class="pad-ph">Toque aquí para la huella</span></div></div>
+  <div class="firma"><div class="pad pad-firma" data-titulo="Firma del arrendatario"><span class="pad-ph">Toque aquí para firmar</span></div>ARRENDATARIO<br>C.C. <span class="linea corta"></span><div class="huella pad pad-huella" data-titulo="Huella del arrendatario"><span class="pad-et">Huella</span><span class="pad-ph">Toque aquí para la huella</span></div></div>
+  <div class="firma" data-si="codeudor"><div class="pad pad-firma" data-titulo="Firma del codeudor"><span class="pad-ph">Toque aquí para firmar</span></div>CODEUDOR<br>C.C. <span class="linea corta"></span><div class="huella pad pad-huella" data-titulo="Huella del codeudor"><span class="pad-et">Huella</span><span class="pad-ph">Toque aquí para la huella</span></div></div>
 </div>
 
 <div class="anexo">
@@ -231,7 +261,10 @@
   <p class="fila">Enlace de la carpeta compartida: <span class="linea larga min"></span></p>
   <p>Descripción escrita (opcional):</p>
   <span class="nl"></span><span class="nl"></span><span class="nl"></span>
-  <p class="fila" style="margin-top:.6cm">Firma arrendador: <span class="linea"></span> &nbsp; Firma arrendatario: <span class="linea"></span></p>
+  <div class="firmas-anexo">
+    <div>Firma arrendador:<div class="pad pad-firma" data-titulo="Firma del arrendador (inventario)"><span class="pad-ph">Toque aquí para firmar</span></div></div>
+    <div>Firma arrendatario:<div class="pad pad-firma" data-titulo="Firma del arrendatario (inventario)"><span class="pad-ph">Toque aquí para firmar</span></div></div>
+  </div>
 </div>
 
 
@@ -327,6 +360,171 @@
     });
   });
 
+  // ===== Firmas y huellas digitales (se ven en el PDF; en papel queda el espacio para hacerlo a mano) =====
+  var pads = Array.prototype.slice.call(document.querySelectorAll('.pad'));
+  var modal = null;
+  function cerrarModal() { if (modal) { modal.remove(); modal = null; document.body.style.overflow = ''; } }
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') cerrarModal(); });
+  function ponerPad(pad, url) {
+    var img = pad.querySelector('.pad-img');
+    if (!img) { img = document.createElement('img'); img.className = 'pad-img'; img.alt = ''; pad.appendChild(img); }
+    img.src = url;
+    pad.classList.add('firmado');
+  }
+  function borrarPad(pad) {
+    var img = pad.querySelector('.pad-img');
+    if (img) img.remove();
+    pad.classList.remove('firmado');
+  }
+  function crearModal(titulo, ayuda) {
+    cerrarModal();
+    var fondo = el('div', 'modal');
+    fondo.setAttribute('role', 'dialog');
+    fondo.setAttribute('aria-modal', 'true');
+    var caja = el('div', 'modal-caja');
+    caja.appendChild(el('h3', null, titulo));
+    caja.appendChild(el('p', 'modal-ayuda', ayuda));
+    var zona = el('div', 'modal-zona'); caja.appendChild(zona);
+    var info = el('div', 'modal-info'); caja.appendChild(info);
+    var acc = el('div', 'modal-acc'); caja.appendChild(acc);
+    fondo.appendChild(caja);
+    document.body.appendChild(fondo);
+    document.body.style.overflow = 'hidden';
+    modal = fondo;
+    return { zona: zona, info: info, acc: acc };
+  }
+  function botonModal(texto, fn, clase) {
+    var b = boton(texto, fn);
+    if (clase) b.className = clase;
+    return b;
+  }
+
+  function abrirFirma(pad) {
+    var m = crearModal(pad.dataset.titulo || 'Firma', 'Firme con el dedo o con el lápiz digital dentro del recuadro.');
+    var cv = document.createElement('canvas');
+    cv.className = 'modal-canvas';
+    m.zona.appendChild(cv);
+    var dpr = Math.max(1, window.devicePixelRatio || 1);
+    var w = cv.clientWidth, h = cv.clientHeight;
+    cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+    var ctx = cv.getContext('2d');
+    ctx.scale(dpr, dpr);
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = '#111';
+    var activo = false, ant = null, trazos = 0, caja = { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 };
+    var guardar;
+    function pos(e) { var r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) * (w / r.width), y: (e.clientY - r.top) * (h / r.height), p: e.pressure }; }
+    function grosor(pt) { return (pt.p && pt.p > 0 && pt.p < 1) ? 1.4 + pt.p * 3 : 2.6; }
+    function marca(pt) { caja.x0 = Math.min(caja.x0, pt.x); caja.y0 = Math.min(caja.y0, pt.y); caja.x1 = Math.max(caja.x1, pt.x); caja.y1 = Math.max(caja.y1, pt.y); }
+    cv.addEventListener('pointerdown', function (e) {
+      e.preventDefault();
+      try { cv.setPointerCapture(e.pointerId); } catch (x) {}
+      activo = true; ant = pos(e); marca(ant);
+      ctx.fillStyle = '#111'; ctx.beginPath(); ctx.arc(ant.x, ant.y, grosor(ant) / 2, 0, Math.PI * 2); ctx.fill();
+      trazos++; guardar.disabled = false;
+    });
+    cv.addEventListener('pointermove', function (e) {
+      if (!activo) return;
+      e.preventDefault();
+      var pt = pos(e);
+      ctx.lineWidth = grosor(pt);
+      ctx.beginPath(); ctx.moveTo(ant.x, ant.y); ctx.lineTo(pt.x, pt.y); ctx.stroke();
+      marca(pt); ant = pt;
+    });
+    function fin() { activo = false; }
+    cv.addEventListener('pointerup', fin);
+    cv.addEventListener('pointercancel', fin);
+    cv.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+
+    if (pad.classList.contains('firmado')) m.acc.appendChild(botonModal('Quitar firma', function () { borrarPad(pad); cerrarModal(); }));
+    m.acc.appendChild(botonModal('Borrar trazo', function () { ctx.clearRect(0, 0, w, h); trazos = 0; caja = { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 }; guardar.disabled = true; }));
+    m.acc.appendChild(botonModal('Cancelar', cerrarModal));
+    guardar = botonModal('Guardar firma', function () {
+      if (!trazos) return;
+      var pad_ = pad.getBoundingClientRect();
+      var relacion = (pad_.width / pad_.height) || 2.6;
+      var margen = 8;
+      var sx = Math.max(0, caja.x0 - margen), sy = Math.max(0, caja.y0 - margen);
+      var sw = Math.min(w, caja.x1 + margen) - sx, sh = Math.min(h, caja.y1 + margen) - sy;
+      var OW = 700, OH = Math.round(OW / relacion);
+      var out = document.createElement('canvas'); out.width = OW; out.height = OH;
+      var k = Math.min(OW / sw, OH / sh);
+      var dw = sw * k, dh = sh * k;
+      out.getContext('2d').drawImage(cv, sx * dpr, sy * dpr, sw * dpr, sh * dpr, (OW - dw) / 2, (OH - dh) / 2, dw, dh);
+      ponerPad(pad, out.toDataURL('image/png'));
+      cerrarModal();
+    }, 'principal');
+    guardar.disabled = true;
+    m.acc.appendChild(guardar);
+  }
+
+  function abrirHuella(pad) {
+    var W = 240, H = 300, COLS = 4, FILAS = 5, RADIO = 46;
+    var m = crearModal(pad.dataset.titulo || 'Huella', 'Apoye el dedo varias veces dentro del recuadro, cubriendo todos los cuadros, hasta completar el 100 %.');
+    var caja = el('div', 'modal-huella');
+    var celdas = el('div', 'celdas'), nodos = [];
+    for (var i = 0; i < COLS * FILAS; i++) { var c = document.createElement('i'); celdas.appendChild(c); nodos.push(c); }
+    var cv = document.createElement('canvas');
+    var dpr = Math.max(1, window.devicePixelRatio || 1);
+    cv.width = W * dpr; cv.height = H * dpr;
+    caja.appendChild(celdas); caja.appendChild(cv);
+    m.zona.appendChild(caja);
+    var ctx = cv.getContext('2d');
+    ctx.scale(dpr, dpr);
+    var barra = el('div', 'modal-barra'), relleno = el('div');
+    barra.appendChild(relleno);
+    var texto = el('div', null, '0 %');
+    m.info.appendChild(texto); m.info.appendChild(barra);
+    var cubiertas = [], validada = false, guardar;
+    function sello(x, y) {
+      ctx.save(); ctx.translate(x, y); ctx.rotate((Math.random() - 0.5) * 0.7); ctx.scale(0.9 + Math.random() * 0.2, 1);
+      ctx.strokeStyle = 'rgba(15,23,42,.82)'; ctx.lineWidth = 1.5; ctx.lineCap = 'round';
+      for (var k = 0; k < 8; k++) {
+        ctx.beginPath();
+        ctx.ellipse(0, -2, 4 + k * 4, 6 + k * 5, 0, Math.random() * 0.5, Math.PI * 2 - Math.random() * 0.5);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+    function avance() {
+      var n = cubiertas.filter(Boolean).length;
+      var pct = Math.round(n * 100 / (COLS * FILAS));
+      relleno.style.width = pct + '%';
+      if (n === COLS * FILAS) { validada = true; texto.textContent = '✔ Huella validada'; guardar.disabled = false; }
+      else texto.textContent = pct + ' %';
+    }
+    cv.addEventListener('pointerdown', function (e) {
+      e.preventDefault();
+      if (validada) return;
+      var r = cv.getBoundingClientRect();
+      var x = (e.clientX - r.left) * (W / r.width), y = (e.clientY - r.top) * (H / r.height);
+      sello(x, y);
+      for (var f = 0; f < FILAS; f++) for (var c = 0; c < COLS; c++) {
+        var cx = (c + 0.5) * W / COLS, cy = (f + 0.5) * H / FILAS;
+        if ((cx - x) * (cx - x) + (cy - y) * (cy - y) <= RADIO * RADIO) { cubiertas[f * COLS + c] = true; nodos[f * COLS + c].className = 'ok'; }
+      }
+      avance();
+    });
+    cv.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+    if (pad.classList.contains('firmado')) m.acc.appendChild(botonModal('Quitar huella', function () { borrarPad(pad); cerrarModal(); }));
+    m.acc.appendChild(botonModal('Volver a empezar', function () {
+      ctx.clearRect(0, 0, W, H); cubiertas = []; validada = false; guardar.disabled = true;
+      nodos.forEach(function (n) { n.className = ''; }); avance();
+    }));
+    m.acc.appendChild(botonModal('Cancelar', cerrarModal));
+    guardar = botonModal('Guardar huella', function () { if (validada) { ponerPad(pad, cv.toDataURL('image/png')); cerrarModal(); } }, 'principal');
+    guardar.disabled = true;
+    m.acc.appendChild(guardar);
+  }
+
+  pads.forEach(function (pad) {
+    pad.tabIndex = 0;
+    pad.setAttribute('role', 'button');
+    pad.setAttribute('aria-label', pad.dataset.titulo || 'Firma');
+    function abrir() { if (pad.classList.contains('pad-huella')) abrirHuella(pad); else abrirFirma(pad); }
+    pad.addEventListener('click', abrir);
+    pad.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrir(); } });
+  });
+
   // Qué lleva el contrato: cada opción muestra u oculta sus partes (data-si)
   var opciones = {};
   function aplicarOpciones() {
@@ -361,6 +559,7 @@
   document.getElementById('btnSi').addEventListener('click', function () {
     lineas.forEach(function (e) { e.textContent = ''; });
     document.querySelectorAll('.chk input').forEach(function (c) { c.checked = false; });
+    pads.forEach(borrarPad);
     pedir(false);
     decir('Datos del inquilino borrados.');
   });
@@ -380,7 +579,8 @@
       marca.style.cssText = 'font-size:15px;line-height:1;';
       c.replaceWith(marca);
     });
-    hoja.querySelectorAll('.btnfecha, .cal, .oculto').forEach(function (e) { e.remove(); });
+    hoja.querySelectorAll('.btnfecha, .cal, .pad-ph, .oculto').forEach(function (e) { e.remove(); });
+    hoja.classList.add('pdf');
     // Une cada título con su texto para que no quede un título solo al final de una página
     var celda = hoja.querySelector('tbody td');
     Array.prototype.slice.call(celda.children).forEach(function (h) {
