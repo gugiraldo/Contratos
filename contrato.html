@@ -51,11 +51,22 @@
   .fecha .linea { min-width: 5.2cm; }
   .linea { padding-bottom: 1px; }
   .fecha { position: relative; display: inline-block; white-space: nowrap; }
-  .fecha input[type=date] { position: absolute; left: 0; bottom: 0; width: 1px; height: 1px; opacity: 0; pointer-events: none; border: 0; padding: 0; }
+  .linea { text-transform: uppercase; }
+  .linea.min { text-transform: none; }
+  .cal { position: absolute; left: 0; top: 100%; z-index: 30; width: 250px; background: #fff; border: 1px solid #94a3b8; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,.25); padding: 8px; font: 13px Arial, sans-serif; color: #0f172a; white-space: normal; text-align: center; line-height: 1.2; }
+  .cal-cab { display: flex; align-items: center; justify-content: space-between; gap: 2px; margin-bottom: 6px; font-weight: bold; }
+  .cal-cab span { flex: 1; text-transform: capitalize; }
+  .cal button { border: 1px solid #cbd5e1; background: #f8fafc; color: #0f172a; border-radius: 4px; cursor: pointer; font: 13px Arial, sans-serif; padding: 3px 7px; }
+  .cal button:hover { background: #dbeafe; }
+  .cal-rej { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+  .cal-rej b { font-size: 11px; color: #64748b; padding: 2px 0; }
+  .cal-rej button { padding: 5px 0; }
+  .cal-rej button.hoy { border-color: #2563eb; font-weight: bold; }
+  .cal-pie { display: flex; justify-content: space-between; margin-top: 6px; }
   .btnfecha { border: 0; background: none; cursor: pointer; font-size: 14px; padding: 0 2px; vertical-align: middle; }
   .medidor { margin: 3px 0; }
   .medidor .et { display: inline-block; min-width: 1.9cm; font-weight: bold; }
-  @media print { .btnfecha { display: none; } }
+  @media print { .btnfecha, .cal { display: none; } }
   #aviso { font-weight: bold; color: #86efac; }
   @media print { .barra { display: none; } [contenteditable]:focus { background: none; } }
   table.hoja { width: 100%; border-collapse: collapse; }
@@ -103,7 +114,7 @@
   <span class="et">C.C. N.°:</span><span class="linea campo"></span>
   <span class="et">Expedida en:</span><span class="linea campo"></span>
   <span class="et">Teléfono:</span><span class="linea campo"></span>
-  <span class="et">Correo:</span><span class="linea campo"></span>
+  <span class="et">Correo:</span><span class="linea campo min"></span>
 </div>
 <div class="datos" data-si="codeudor">
   <b class="tit">CODEUDOR</b>
@@ -111,7 +122,7 @@
   <span class="et">C.C. N.°:</span><span class="linea campo"></span>
   <span class="et">Expedida en:</span><span class="linea campo"></span>
   <span class="et">Teléfono:</span><span class="linea campo"></span>
-  <span class="et">Correo:</span><span class="linea campo"></span>
+  <span class="et">Correo:</span><span class="linea campo min"></span>
 </div>
 
 <div class="datos" data-si="referencias">
@@ -136,7 +147,7 @@
 <p>Cada doce (12) meses el canon se reajustará hasta en un porcentaje que no supere el 100 % del IPC del año anterior (art. 20, Ley 820 de 2003).</p>
 
 <h2>CUARTA – PLAZO</h2>
-<p>El plazo es de <span class="fijo" data-key="plazo">3</span> meses, contado desde el <span class="fecha"><span class="linea"></span><button type="button" class="btnfecha" title="Elegir fecha en el calendario" aria-label="Elegir fecha">📅</button><input type="date" tabindex="-1" aria-hidden="true"></span>. Al vencer, el contrato se prorroga <b>automáticamente por periodos iguales</b> de <span class="fijo" data-key="plazo2">3</span> meses, en las mismas condiciones, mientras ninguna de las partes avise por escrito su no renovación con la antelación que fija la ley (art. 22 y siguientes, Ley 820 de 2003).</p>
+<p>El plazo es de <span class="fijo" data-key="plazo">3</span> meses, contado desde el <span class="fecha"><span class="linea"></span><button type="button" class="btnfecha" title="Elegir fecha en el calendario" aria-label="Elegir fecha">📅</button></span>. Al vencer, el contrato se prorroga <b>automáticamente por periodos iguales</b> de <span class="fijo" data-key="plazo2">3</span> meses, en las mismas condiciones, mientras ninguna de las partes avise por escrito su no renovación con la antelación que fija la ley (art. 22 y siguientes, Ley 820 de 2003).</p>
 
 <h2>QUINTA – SERVICIOS PÚBLICOS</h2>
 <p>Los servicios públicos del inmueble de pago mensual (agua, energía, gas, aseo, internet y los demás) están a cargo del arrendatario y los pagará oportunamente. Entregará copia del recibo cancelado cuando el arrendador lo solicite. El arrendatario <b>no podrá alterar, manipular, puentear ni retirar</b> medidores, sellos ni dispositivos externos de los servicios.</p>
@@ -183,7 +194,7 @@
 <h2>DECIMOSÉPTIMA – DOMICILIO Y EJEMPLARES</h2>
 <p>El domicilio contractual es <b>Carepa, Antioquia</b>. Este contrato se firma en <b>dos (2) ejemplares</b> del mismo tenor, uno para cada parte.</p>
 
-<p class="fila" style="margin-top:14px">En constancia se firma en <span class="linea"></span>, el <span class="fecha"><span class="linea"></span><button type="button" class="btnfecha" title="Elegir fecha en el calendario" aria-label="Elegir fecha">📅</button><input type="date" tabindex="-1" aria-hidden="true"></span>.</p>
+<p class="fila" style="margin-top:14px">En constancia se firma en <span class="linea"></span>, el <span class="fecha"><span class="linea"></span><button type="button" class="btnfecha" title="Elegir fecha en el calendario" aria-label="Elegir fecha">📅</button></span>.</p>
 
 <div class="firmas">
   <div class="firma"><div class="raya"></div>ARRENDADOR<br>C.C. <span class="fijo" data-key="cc">39.405.410</span><div class="huella">Huella</div></div>
@@ -198,7 +209,7 @@
 
 <div class="anexo">
   <h2>ANEXO 2 – INVENTARIO Y ESTADO DEL INMUEBLE</h2>
-  <p class="fila">Fecha de entrega: <span class="fecha"><span class="linea"></span><button type="button" class="btnfecha" title="Elegir fecha en el calendario" aria-label="Elegir fecha">📅</button><input type="date" tabindex="-1" aria-hidden="true"></span></p>
+  <p class="fila">Fecha de entrega: <span class="fecha"><span class="linea"></span><button type="button" class="btnfecha" title="Elegir fecha en el calendario" aria-label="Elegir fecha">📅</button></span></p>
   <p><b>Servicios y lecturas de medidores</b> (marque lo que aplique):</p>
   <p class="fila medidor"><span class="et">Agua:</span>
     <label class="chk"><input type="checkbox" data-grupo="agua"> Aplica</label>
@@ -217,7 +228,7 @@
   <p class="sub"><label class="chk"><input type="checkbox"> <span><b>Digital:</b></span></label> fotos, videos y/o audios del estado del inmueble, <b>guardados en una carpeta compartida</b> (no se adjuntan al contrato). El arrendador envía el enlace de la carpeta al <b>correo electrónico del arrendatario</b> indicado en este contrato el día de la entrega. El envío y la recepción de ese correo quedan como prueba de que ambas partes conocen y aceptan el inventario.</p>
   <p class="sub"><label class="chk"><input type="checkbox"> <span><b>Escrito:</b></span></label> descripción por espacios en las líneas de abajo, firmada por ambas partes. Si se hace por escrito, también es válido.</p>
   <p>Pueden usarse las dos formas a la vez. Cada parte conservará copia del material.</p>
-  <p class="fila">Enlace de la carpeta compartida: <span class="linea larga"></span></p>
+  <p class="fila">Enlace de la carpeta compartida: <span class="linea larga min"></span></p>
   <p>Descripción escrita (opcional):</p>
   <span class="nl"></span><span class="nl"></span><span class="nl"></span>
   <p class="fila" style="margin-top:.6cm">Firma arrendador: <span class="linea"></span> &nbsp; Firma arrendatario: <span class="linea"></span></p>
@@ -252,16 +263,67 @@
     });
   });
 
-  // Fechas: el calendario escribe la fecha en letras ("14 de octubre de 2026"); también se puede escribir a mano
+  // Fechas: calendario propio (el selector del navegador no se abre dentro de la página de Claude).
+  // Escribe la fecha en letras ("14 de octubre de 2026"); también se puede escribir a mano.
   var MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+  var calAbierto = null;
+  function cerrarCal() { if (calAbierto) { calAbierto.remove(); calAbierto = null; } }
+  function el(tag, clase, texto) { var e = document.createElement(tag); if (clase) e.className = clase; if (texto != null) e.textContent = texto; return e; }
+  function boton(texto, fn, titulo) {
+    var b = el('button', null, texto); b.type = 'button'; if (titulo) b.title = titulo;
+    b.addEventListener('click', function (ev) { ev.stopPropagation(); fn(); });
+    return b;
+  }
+  function abrirCal(f, texto) {
+    var hoy = new Date();
+    var ver = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+    var cal = el('div', 'cal');
+    cal.contentEditable = 'false';
+    cal.addEventListener('click', function (ev) { ev.stopPropagation(); });
+    f.appendChild(cal);
+    calAbierto = cal;
+    function poner(d, m, y) { texto.textContent = d + ' de ' + MESES[m] + ' de ' + y; cerrarCal(); }
+    function pintar() {
+      cal.textContent = '';
+      var cab = el('div', 'cal-cab');
+      function mover(m, y) { return function () { ver = new Date(ver.getFullYear() + y, ver.getMonth() + m, 1); pintar(); }; }
+      cab.appendChild(boton('«', mover(0, -1), 'Año anterior'));
+      cab.appendChild(boton('‹', mover(-1, 0), 'Mes anterior'));
+      cab.appendChild(el('span', null, MESES[ver.getMonth()] + ' ' + ver.getFullYear()));
+      cab.appendChild(boton('›', mover(1, 0), 'Mes siguiente'));
+      cab.appendChild(boton('»', mover(0, 1), 'Año siguiente'));
+      cal.appendChild(cab);
+      var rej = el('div', 'cal-rej');
+      ['L', 'M', 'M', 'J', 'V', 'S', 'D'].forEach(function (d) { rej.appendChild(el('b', null, d)); });
+      var vacios = (new Date(ver.getFullYear(), ver.getMonth(), 1).getDay() + 6) % 7;
+      for (var i = 0; i < vacios; i++) rej.appendChild(el('span'));
+      var dias = new Date(ver.getFullYear(), ver.getMonth() + 1, 0).getDate();
+      var esHoy = ver.getFullYear() === hoy.getFullYear() && ver.getMonth() === hoy.getMonth();
+      for (var d = 1; d <= dias; d++) {
+        (function (d) {
+          var b = boton(d, function () { poner(d, ver.getMonth(), ver.getFullYear()); });
+          if (esHoy && d === hoy.getDate()) b.className = 'hoy';
+          rej.appendChild(b);
+        })(d);
+      }
+      cal.appendChild(rej);
+      var pie = el('div', 'cal-pie');
+      pie.appendChild(boton('Hoy', function () { poner(hoy.getDate(), hoy.getMonth(), hoy.getFullYear()); }));
+      pie.appendChild(boton('Borrar', function () { texto.textContent = ''; cerrarCal(); }));
+      pie.appendChild(boton('Cerrar', cerrarCal));
+      cal.appendChild(pie);
+    }
+    pintar();
+  }
+  document.addEventListener('click', cerrarCal);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') cerrarCal(); });
   document.querySelectorAll('.fecha').forEach(function (f) {
-    var texto = f.querySelector('.linea'), cal = f.querySelector('input[type=date]');
-    f.querySelector('.btnfecha').addEventListener('click', function () {
-      try { cal.showPicker(); } catch (x) { cal.focus(); try { cal.click(); } catch (y) {} }
-    });
-    cal.addEventListener('change', function () {
-      var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(cal.value);
-      texto.textContent = m ? (+m[3]) + ' de ' + MESES[+m[2] - 1] + ' de ' + m[1] : '';
+    var texto = f.querySelector('.linea');
+    f.querySelector('.btnfecha').addEventListener('click', function (ev) {
+      ev.stopPropagation();
+      var yaAbierto = calAbierto && calAbierto.parentNode === f;
+      cerrarCal();
+      if (!yaAbierto) abrirCal(f, texto);
     });
   });
 
@@ -299,7 +361,6 @@
   document.getElementById('btnSi').addEventListener('click', function () {
     lineas.forEach(function (e) { e.textContent = ''; });
     document.querySelectorAll('.chk input').forEach(function (c) { c.checked = false; });
-    document.querySelectorAll('.fecha input').forEach(function (c) { c.value = ''; });
     pedir(false);
     decir('Datos del inquilino borrados.');
   });
@@ -319,7 +380,7 @@
       marca.style.cssText = 'font-size:15px;line-height:1;';
       c.replaceWith(marca);
     });
-    hoja.querySelectorAll('.btnfecha, .fecha input, .oculto').forEach(function (e) { e.remove(); });
+    hoja.querySelectorAll('.btnfecha, .cal, .oculto').forEach(function (e) { e.remove(); });
     // Une cada título con su texto para que no quede un título solo al final de una página
     var celda = hoja.querySelector('tbody td');
     Array.prototype.slice.call(celda.children).forEach(function (h) {
