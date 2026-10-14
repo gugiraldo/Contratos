@@ -62,6 +62,13 @@
   @media screen { .pad:not(.firmado) { background: #f1f5f9; } .pad:hover { background: #e0f2fe; } .pad:focus-visible { outline: 2px solid #2563eb; } }
   .pdf .pad { background: none !important; }
   .pdf .pad-ph { display: none; }
+  .pdf p { margin: 3px 0; line-height: 1.4; }
+  .pdf h2 { margin: 9px 0 1px; }
+  .pdf .pad-firma { height: 1.5cm; }
+  .pdf .huella { height: 2.5cm; width: 1.97cm; }
+  .pdf .anexo { break-inside: auto; }
+  .pdf p.fila { line-height: 1.9; }
+  .pdf .nl { margin: 6px 0; }
   .firmas-anexo { display: flex; gap: 1cm; margin-top: .6cm; break-inside: avoid; }
   .firmas-anexo > div { flex: 1; font-size: 11pt; }
   .modal { position: fixed; left: 0; top: 0; right: 0; bottom: 0; z-index: 100; background: rgba(15,23,42,.65); display: flex; align-items: center; justify-content: center; padding: 12px; overflow: auto; font: 14px/1.35 Arial, sans-serif; }
@@ -724,15 +731,25 @@
         bloque.appendChild(bloque.nextElementSibling);
       }
     });
-    hoja.style.width = '185.9mm'; // igual al ancho útil de la hoja carta con márgenes de 15 mm
+    // Lo mismo dentro de los anexos: el título va unido al primer renglón que le sigue
+    hoja.querySelectorAll('.anexo').forEach(function (anexo) {
+      var h = anexo.querySelector('h2');
+      if (!h || !h.nextElementSibling) return;
+      var bloque = document.createElement('div');
+      bloque.className = 'clausula';
+      anexo.insertBefore(bloque, h);
+      bloque.appendChild(h);
+      bloque.appendChild(bloque.nextElementSibling);
+    });
+    hoja.style.width = '189.9mm'; // igual al ancho útil de la hoja carta con márgenes laterales de 13 mm
     hoja.style.background = '#fff';
     var trabajo = html2pdf().set({
-      margin: [15, 15, 15, 15],
+      margin: [12, 13, 12, 13],
       filename: NOMBRE,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', scrollX: 0, scrollY: 0, windowWidth: Math.max(760, window.innerWidth) },
       jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' },
-      pagebreak: { mode: ['css', 'legacy'], avoid: ['.clausula', '.firmas', '.anexo', '.datos'] }
+      pagebreak: { mode: ['css', 'legacy'], avoid: ['.clausula', '.firmas', '.firmas-anexo', '.datos', 'p', '.nl'] }
     }).from(hoja).toContainer().then(function () {
       // la librería centra la hoja y la recorta en pantallas angostas: se alinea a la izquierda
       var ct = document.querySelector('.html2pdf__container');
