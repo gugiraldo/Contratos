@@ -46,7 +46,7 @@
 <div class="barra">
   <span>Haz clic en cualquier línea o dato y escribe. Los datos del propietario e inmueble se guardan en este navegador.</span>
   <button id="btnImprimir" type="button">Imprimir / Guardar PDF</button>
-  <button id="btnDescargar" type="button" hidden>Descargar archivo para imprimir</button>
+  <button id="btnDescargar" type="button">Descargar PDF</button>
   <button id="btnLimpiar" type="button">Limpiar datos del inquilino</button>
   <span id="confirmar" hidden>¿Borrar los datos del inquilino?
     <button id="btnSi" type="button">Sí, borrar</button>
@@ -164,6 +164,7 @@
 
 
 </td></tr></tbody></table>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
 (function () {
   var lineas = document.querySelectorAll('.linea');
@@ -192,7 +193,7 @@
   // Imprimir / Guardar PDF
   document.getElementById('btnImprimir').addEventListener('click', function () {
     try { window.print(); }
-    catch (x) { decir('No se pudo abrir la impresión aquí. Use "Descargar archivo para imprimir" o Ctrl+P.'); }
+    catch (x) { decir('No se pudo abrir la impresión aquí. Use "Descargar PDF".'); }
   });
 
   // Limpiar datos del inquilino (confirmación dentro de la página, sin confirm())
@@ -207,20 +208,59 @@
     decir('Datos del inquilino borrados.');
   });
 
-  // Descargar copia del contrato (con lo escrito) para abrirla y imprimirla desde el navegador
+  // Descargar el contrato directamente como PDF (con lo escrito)
   var btnDescargar = document.getElementById('btnDescargar');
-  if (window.claude && claude.use) {
-    claude.use('downloads').then(function (downloads) {
-      if (!downloads) return;
-      btnDescargar.hidden = false;
-      btnDescargar.addEventListener('click', function () {
-        var html = '<!doctype html>\n' + document.documentElement.outerHTML;
-        downloads.save({ filename: 'contrato-arrendamiento.html', data: html })
-          .then(function () { decir('Archivo guardado. Ábralo y use Ctrl+P para imprimir o guardar PDF.'); })
-          .catch(function (e) { if (!e || e.code !== 'declined') decir('No se pudo descargar el archivo.'); });
-      });
-    }).catch(function () {});
+  var NOMBRE = 'contrato-arrendamiento.pdf';
+  var generando = false;
+  function crearPDF() {
+    var hoja = document.querySelector('table.hoja').cloneNode(true);
+    ['thead', 'tfoot'].forEach(function (t) { var x = hoja.querySelector(t); if (x) x.remove(); });
+    hoja.querySelectorAll('[contenteditable]').forEach(function (e) { e.removeAttribute('contenteditable'); });
+    // Une cada título con su texto para que no quede un título solo al final de una página
+    var celda = hoja.querySelector('tbody td');
+    Array.prototype.slice.call(celda.children).forEach(function (h) {
+      if (h.tagName !== 'H2') return;
+      var bloque = document.createElement('div');
+      bloque.className = 'clausula';
+      celda.insertBefore(bloque, h);
+      bloque.appendChild(h);
+      while (bloque.nextElementSibling && bloque.nextElementSibling.tagName === 'P') {
+        bloque.appendChild(bloque.nextElementSibling);
+      }
+    });
+    hoja.style.width = '17.4cm';
+    hoja.style.background = '#fff';
+    var trabajo = html2pdf().set({
+      margin: [15, 15, 15, 15],
+      filename: NOMBRE,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+      jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' },
+      pagebreak: { mode: ['css', 'legacy'], avoid: ['.clausula', '.firmas', '.anexo', '.datos'] }
+    }).from(hoja);
+    return { trabajo: trabajo, limpiar: function () {} };
   }
+  btnDescargar.addEventListener('click', function () {
+    if (generando) return;
+    if (typeof html2pdf === 'undefined') { decir('No se pudo cargar el generador de PDF. Revise la conexión a internet.'); return; }
+    generando = true;
+    btnDescargar.disabled = true;
+    decir('Generando PDF...');
+    var g = crearPDF();
+    var listo = function () { g.limpiar(); generando = false; btnDescargar.disabled = false; };
+    var usar = (window.claude && claude.use) ? claude.use('downloads').catch(function () { return null; }) : Promise.resolve(null);
+    usar.then(function (downloads) {
+      if (downloads) {
+        return g.trabajo.outputPdf('blob').then(function (blob) {
+          return downloads.save({ filename: NOMBRE, data: blob }).then(function () { decir('PDF guardado.'); });
+        });
+      }
+      return g.trabajo.save().then(function () { decir('PDF guardado.'); });
+    }).catch(function (e) {
+      if (!e || e.code !== 'declined') decir('No se pudo generar el PDF.');
+      else decir('');
+    }).then(listo, listo);
+  });
 })();
 </script>
 </body>
