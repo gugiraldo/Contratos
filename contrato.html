@@ -73,6 +73,11 @@
   .pdf .anexo { break-inside: auto; }
   .pdf p.fila { line-height: 1.9; }
   .pdf .nl { margin: 6px 0; }
+  .cedulas { margin: 8px 0; break-inside: avoid; }
+  .cedula-fila { display: flex; gap: 12px; margin-top: 4px; }
+  .cedula-fila > div { flex: 1; }
+  .pad-foto { aspect-ratio: 1.585 / 1; border: 1px solid #000; }
+  @media (max-width: 640px) { .hoja:not(.pdf) .cedula-fila { flex-direction: column; } }
   .firmas-anexo { display: flex; gap: 1cm; margin-top: .6cm; break-inside: avoid; }
   .firmas-anexo > div { flex: 1; font-size: 11pt; }
   .modal { position: fixed; left: 0; top: 0; right: 0; bottom: 0; z-index: 100; background: rgba(15,23,42,.65); display: flex; align-items: center; justify-content: center; padding: 12px; overflow: auto; font: 14px/1.35 Arial, sans-serif; }
@@ -283,14 +288,28 @@
 <p class="fila" style="margin-top:14px">En constancia se firma en <span class="linea"></span>, el <span class="fecha"><span class="linea"></span><button type="button" class="btnfecha" title="Elegir fecha en el calendario" aria-label="Elegir fecha">📅</button></span>.</p>
 
 <div class="firmas">
-  <div class="firma"><div class="pad pad-firma" data-titulo="Firma del arrendador"><span class="pad-ph">Toque aquí para firmar</span></div>ARRENDADOR<br>C.C. <span class="fijo" data-key="cc" data-ph="CÉDULA">39.405.410</span><div class="huella pad pad-huella" data-titulo="Huella del arrendador"><span class="pad-et">Huella</span><span class="pad-ph">Toque aquí para la huella</span></div></div>
-  <div class="firma"><div class="pad pad-firma" data-titulo="Firma del arrendatario"><span class="pad-ph">Toque aquí para firmar</span></div>ARRENDATARIO<br>C.C. <span class="linea corta"></span><div class="huella pad pad-huella" data-titulo="Huella del arrendatario"><span class="pad-et">Huella</span><span class="pad-ph">Toque aquí para la huella</span></div></div>
-  <div class="firma" data-si="codeudor"><div class="pad pad-firma" data-titulo="Firma del codeudor"><span class="pad-ph">Toque aquí para firmar</span></div>CODEUDOR<br>C.C. <span class="linea corta"></span><div class="huella pad pad-huella" data-titulo="Huella del codeudor"><span class="pad-et">Huella</span><span class="pad-ph">Toque aquí para la huella</span></div></div>
+  <div class="firma"><div class="pad pad-firma" data-titulo="Firma del arrendador"><span class="pad-ph">Toque aquí para firmar</span></div>ARRENDADOR<br>C.C. <span class="fijo" data-key="cc" data-ph="CÉDULA">39.405.410</span><div class="huella pad pad-huella" data-titulo="Huella del arrendador"><span class="pad-et">Huella</span><span class="pad-ph">Toque aquí para la huella (de la cédula)</span></div></div>
+  <div class="firma"><div class="pad pad-firma" data-titulo="Firma del arrendatario"><span class="pad-ph">Toque aquí para firmar</span></div>ARRENDATARIO<br>C.C. <span class="linea corta"></span><div class="huella pad pad-huella" data-titulo="Huella del arrendatario" data-slot="arr-dorso"><span class="pad-et">Huella</span><span class="pad-ph">Toque aquí para la huella (de la cédula)</span></div></div>
+  <div class="firma" data-si="codeudor"><div class="pad pad-firma" data-titulo="Firma del codeudor"><span class="pad-ph">Toque aquí para firmar</span></div>CODEUDOR<br>C.C. <span class="linea corta"></span><div class="huella pad pad-huella" data-titulo="Huella del codeudor" data-slot="cod-dorso"><span class="pad-et">Huella</span><span class="pad-ph">Toque aquí para la huella (de la cédula)</span></div></div>
 </div>
 
 <div class="anexo">
   <h2>ANEXO 1 – COPIA DE CÉDULA</h2>
-  <p>Anexar copia de la cédula del arrendatario<span data-si="codeudor"> y del codeudor</span>, por ambos lados.</p>
+  <p>Con la cámara del celular, tome una foto de cada cara de la cédula: la cara donde aparece su foto y la cara donde aparece su huella. Si prefiere hacerlo en papel, deje los recuadros en blanco y pegue las fotocopias.</p>
+  <div class="cedulas">
+    <b>Cédula del arrendatario</b>
+    <div class="cedula-fila">
+      <div><div class="pad pad-foto" data-id="arr-frente" data-titulo="Cédula del arrendatario – cara con la foto"><span class="pad-ph">Toque aquí para tomar la foto<br>(cara con su foto)</span></div></div>
+      <div><div class="pad pad-foto" data-id="arr-dorso" data-titulo="Cédula del arrendatario – cara con la huella"><span class="pad-ph">Toque aquí para tomar la foto<br>(cara con su huella)</span></div></div>
+    </div>
+  </div>
+  <div class="cedulas" data-si="codeudor">
+    <b>Cédula del codeudor</b>
+    <div class="cedula-fila">
+      <div><div class="pad pad-foto" data-id="cod-frente" data-titulo="Cédula del codeudor – cara con la foto"><span class="pad-ph">Toque aquí para tomar la foto<br>(cara con su foto)</span></div></div>
+      <div><div class="pad pad-foto" data-id="cod-dorso" data-titulo="Cédula del codeudor – cara con la huella"><span class="pad-ph">Toque aquí para tomar la foto<br>(cara con su huella)</span></div></div>
+    </div>
+  </div>
 </div>
 
 <div class="anexo">
@@ -514,143 +533,140 @@
     m.acc.appendChild(guardar);
   }
 
-  function abrirHuella(pad) {
-    var W = 240, H = 300, RADIO = 34, PASO = 2, PERIODO = 6.6;
-    var m = crearModal(pad.dataset.titulo || 'Huella', 'Apoye el dedo sobre la huella y deslícelo por encima, varias veces, hasta que se llene por completo (100 %).');
-    var caja = el('div', 'modal-huella');
-    var cv = document.createElement('canvas');
-    var dpr = Math.max(1, window.devicePixelRatio || 1);
-    cv.width = W * dpr; cv.height = H * dpr;
-    caja.appendChild(cv);
-    m.zona.appendChild(caja);
-    var ctx = cv.getContext('2d');
-    ctx.scale(dpr, dpr);
-    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-    var barra = el('div', 'modal-barra'), relleno = el('div');
-    barra.appendChild(relleno);
-    var texto = el('div', null, '0 %');
-    m.info.appendChild(texto); m.info.appendChild(barra);
+  // ===== Fotos de la cédula (cámara del celular) y huella recortada de la foto de la cédula =====
+  function elegirArchivo(camara, cb) {
+    var inp = document.createElement('input');
+    inp.type = 'file'; inp.accept = 'image/*';
+    if (camara) inp.setAttribute('capture', 'environment');
+    inp.style.display = 'none';
+    document.body.appendChild(inp);
+    inp.addEventListener('change', function () { var f = inp.files && inp.files[0]; inp.remove(); if (f) cb(f); });
+    inp.click();
+  }
+  function cargarImagen(archivo, cb) {
+    function porImg() {
+      var lector = new FileReader();
+      lector.onload = function () { var im = new Image(); im.onload = function () { cb(im); }; im.src = lector.result; };
+      lector.readAsDataURL(archivo);
+    }
+    if (window.createImageBitmap) createImageBitmap(archivo, { imageOrientation: 'from-image' }).then(cb).catch(porImg); else porImg();
+  }
+  function medidas(img) { return { w: img.width || img.naturalWidth, h: img.height || img.naturalHeight }; }
+  function encajar(img, W, H) {
+    var c = document.createElement('canvas'); c.width = W; c.height = H;
+    var x = c.getContext('2d'), d = medidas(img), k = Math.min(W / d.w, H / d.h);
+    x.fillStyle = '#fff'; x.fillRect(0, 0, W, H);
+    x.drawImage(img, (W - d.w * k) / 2, (H - d.h * k) / 2, d.w * k, d.h * k);
+    return c;
+  }
+  function reducir(img, max) {
+    var d = medidas(img), k = Math.min(1, max / Math.max(d.w, d.h));
+    var c = document.createElement('canvas'); c.width = Math.round(d.w * k); c.height = Math.round(d.h * k);
+    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+    return c;
+  }
 
-    // ---- La huella: crestas = curvas de nivel de un campo (lazo en el centro, líneas casi horizontales abajo), dentro de un óvalo de yema ----
-    function mitad(t) { return 82 * Math.sqrt(Math.max(0, 1 - Math.pow(2 * t - 1, 2))) * (0.8 + 0.2 * t); }
-    function dentro(x, y) { var t = (y - 28) / 242; return t > 0 && t < 1 && Math.abs(x - 120) <= mitad(t); }
-    var P1 = { x: 112, y: 176 }, P2 = { x: 130, y: 122 };
-    function distRanura(x, y) {
-      var vx = P2.x - P1.x, vy = P2.y - P1.y;
-      var t = Math.max(0, Math.min(1, ((x - P1.x) * vx + (y - P1.y) * vy) / (vx * vx + vy * vy)));
-      var dx = x - (P1.x + t * vx), dy = y - (P1.y + t * vy);
-      return Math.sqrt(dx * dx + dy * dy);
+  function abrirFoto(slot) {
+    var m = crearModal(slot.dataset.titulo || 'Foto de la cédula', 'Ponga la cédula sobre una superficie plana, con buena luz, y tome la foto de modo que se lea todo.');
+    var previo = slot.querySelector('.pad-img');
+    if (previo) {
+      var im = document.createElement('img');
+      im.src = previo.src; im.style.cssText = 'max-width:100%;border:1px solid #94a3b8;border-radius:6px';
+      m.zona.appendChild(im);
     }
-    function campo(x, y) {
-      var arriba = distRanura(x, y);
-      var abajo = (y - P1.y) + Math.abs(x - P1.x) * 0.16;
-      var w = Math.max(0, Math.min(1, (y - P1.y - 6) / 46)); w = w * w * (3 - 2 * w);
-      return arriba * (1 - w) + abajo * w + 1.4 * Math.sin(x * 0.06 + y * 0.045) + 1.0 * Math.sin(y * 0.09 - x * 0.035 + 1.3);
+    function recibir(archivo) {
+      cargarImagen(archivo, function (img) { ponerPad(slot, encajar(img, 1200, 757).toDataURL('image/jpeg', 0.85)); cerrarModal(); });
     }
-    var NX = Math.ceil(W / PASO) + 1, NY = Math.ceil(H / PASO) + 1, vals = new Float32Array(NX * NY);
-    for (var gy = 0; gy < NY; gy++) for (var gx = 0; gx < NX; gx++) vals[gy * NX + gx] = campo(gx * PASO, gy * PASO);
-    var X1 = [], Y1 = [], X2 = [], Y2 = [], MX = [], MY = [];
-    function poner(ax, ay, bx, by) {
-      var mx = (ax + bx) / 2, my = (ay + by) / 2;
-      if (!dentro(mx, my)) return;
-      X1.push(ax); Y1.push(ay); X2.push(bx); Y2.push(by); MX.push(mx); MY.push(my);
-    }
-    for (gy = 0; gy < NY - 1; gy++) for (gx = 0; gx < NX - 1; gx++) {
-      var x = gx * PASO, y = gy * PASO;
-      if (!dentro(x + PASO / 2, y + PASO / 2)) continue;
-      var va = vals[gy * NX + gx], vb = vals[gy * NX + gx + 1], vc = vals[(gy + 1) * NX + gx + 1], vd = vals[(gy + 1) * NX + gx];
-      var lo = Math.min(va, vb, vc, vd), hi = Math.max(va, vb, vc, vd);
-      var kHi = Math.floor(hi / PERIODO);
-      if (kHi <= Math.floor(lo / PERIODO) || kHi < 1) continue;
-      var L = kHi * PERIODO;
-      var idx = (va >= L ? 8 : 0) | (vb >= L ? 4 : 0) | (vc >= L ? 2 : 0) | (vd >= L ? 1 : 0);
-      var ti = [x + PASO * (L - va) / (vb - va), y], rd = [x + PASO, y + PASO * (L - vb) / (vc - vb)],
-          bo = [x + PASO * (L - vd) / (vc - vd), y + PASO], le = [x, y + PASO * (L - va) / (vd - va)];
-      var pares = {
-        1: [[le, bo]], 2: [[bo, rd]], 3: [[le, rd]], 4: [[ti, rd]], 5: [[ti, le], [bo, rd]], 6: [[ti, bo]], 7: [[ti, le]],
-        8: [[ti, le]], 9: [[ti, bo]], 10: [[ti, rd], [le, bo]], 11: [[ti, rd]], 12: [[le, rd]], 13: [[bo, rd]], 14: [[le, bo]]
-      }[idx] || [];
-      pares.forEach(function (pq) { poner(pq[0][0], pq[0][1], pq[1][0], pq[1][1]); });
-    }
-    var N = X1.length, ok = new Uint8Array(N), hechos = 0;
-    var activo = false, foco = null, validada = false, guardar;
-
-    function esquinas(color) {
-      ctx.strokeStyle = color; ctx.lineWidth = 3; ctx.shadowBlur = 0;
-      var l = 14, r = 226, t = 12, b = 288, k = 28;
-      ctx.beginPath();
-      ctx.moveTo(l, t + k); ctx.lineTo(l, t); ctx.lineTo(l + k, t);
-      ctx.moveTo(r - k, t); ctx.lineTo(r, t); ctx.lineTo(r, t + k);
-      ctx.moveTo(r, b - k); ctx.lineTo(r, b); ctx.lineTo(r - k, b);
-      ctx.moveTo(l + k, b); ctx.lineTo(l, b); ctx.lineTo(l, b - k);
-      ctx.stroke();
-    }
-    function pintar() {
-      ctx.clearRect(0, 0, W, H);
-      esquinas(validada ? '#4ade80' : (activo ? '#38bdf8' : '#e2e8f0'));
-      if (foco && !validada) { ctx.fillStyle = 'rgba(56,189,248,.16)'; ctx.beginPath(); ctx.arc(foco.x, foco.y, RADIO, 0, Math.PI * 2); ctx.fill(); }
-      var sin = new Path2D(), con = new Path2D();
-      for (var i = 0; i < N; i++) { var p = ok[i] ? con : sin; p.moveTo(X1[i], Y1[i]); p.lineTo(X2[i], Y2[i]); }
-      ctx.lineWidth = 1.7; ctx.strokeStyle = 'rgba(148,163,184,.30)'; ctx.stroke(sin);
-      ctx.strokeStyle = validada ? '#ecfdf5' : '#e0f2fe'; ctx.shadowColor = validada ? '#4ade80' : '#38bdf8'; ctx.shadowBlur = 5; ctx.lineWidth = 2;
-      ctx.stroke(con);
-      ctx.shadowBlur = 0;
-    }
-    function exportar() {
-      var out = document.createElement('canvas');
-      out.width = W * 2; out.height = H * 2;
-      var o = out.getContext('2d');
-      o.scale(2, 2); o.lineCap = 'round'; o.strokeStyle = '#0f172a'; o.lineWidth = 2.1;
-      var pa = new Path2D();
-      for (var i = 0; i < N; i++) { pa.moveTo(X1[i], Y1[i]); pa.lineTo(X2[i], Y2[i]); }
-      o.stroke(pa);
-      return out.toDataURL('image/png');
-    }
-    function avance() {
-      if (!validada && hechos >= 0.97 * N) { for (var i = 0; i < N; i++) ok[i] = 1; hechos = N; }
-      var pct = Math.floor(hechos * 100 / N);
-      relleno.style.width = pct + '%';
-      if (hechos === N) { validada = true; foco = null; texto.textContent = '✔ Huella validada'; guardar.disabled = false; }
-      else texto.textContent = pct + ' %';
-    }
-    function revelar(e) {
-      var r = cv.getBoundingClientRect();
-      var x = (e.clientX - r.left) * (W / r.width), y = (e.clientY - r.top) * (H / r.height);
-      foco = { x: x, y: y };
-      var r2 = RADIO * RADIO;
-      for (var i = 0; i < N; i++) {
-        if (!ok[i] && (MX[i] - x) * (MX[i] - x) + (MY[i] - y) * (MY[i] - y) <= r2) { ok[i] = 1; hechos++; }
-      }
-      avance(); pintar();
-    }
-    cv.addEventListener('pointerdown', function (e) {
-      e.preventDefault();
-      if (validada) return;
-      try { cv.setPointerCapture(e.pointerId); } catch (x) {}
-      activo = true; revelar(e);
-    });
-    cv.addEventListener('pointermove', function (e) { if (activo && !validada) { e.preventDefault(); revelar(e); } });
-    function fin() { activo = false; foco = null; pintar(); }
-    cv.addEventListener('pointerup', fin);
-    cv.addEventListener('pointercancel', fin);
-    cv.addEventListener('contextmenu', function (e) { e.preventDefault(); });
-
-    if (pad.classList.contains('firmado')) m.acc.appendChild(botonModal('Quitar huella', function () { borrarPad(pad); cerrarModal(); }));
-    m.acc.appendChild(botonModal('Volver a empezar', function () {
-      ok.fill(0); hechos = 0; validada = false; foco = null; guardar.disabled = true; avance(); pintar();
-    }));
+    if (previo) m.acc.appendChild(botonModal('Quitar foto', function () { borrarPad(slot); cerrarModal(); }));
     m.acc.appendChild(botonModal('Cancelar', cerrarModal));
-    guardar = botonModal('Guardar huella', function () { if (validada) { ponerPad(pad, exportar()); cerrarModal(); } }, 'principal');
-    guardar.disabled = true;
-    m.acc.appendChild(guardar);
-    pintar();
+    m.acc.appendChild(botonModal('🖼 Galería', function () { elegirArchivo(false, recibir); }));
+    m.acc.appendChild(botonModal('📷 Tomar foto', function () { elegirArchivo(true, recibir); }, 'principal'));
+  }
+
+  function abrirHuella(pad) {
+    var slot = pad.dataset.slot ? document.querySelector('.pad-foto[data-id="' + pad.dataset.slot + '"]') : null;
+    var fotoSlot = slot && slot.querySelector('.pad-img');
+    var m = crearModal(pad.dataset.titulo || 'Huella', 'La huella se toma de la foto de la cédula: la cara donde aparece la huella de la persona. Luego se recorta el cuadro de la huella.');
+    function nueva(archivo) {
+      cargarImagen(archivo, function (img) {
+        if (slot) ponerPad(slot, encajar(img, 1200, 757).toDataURL('image/jpeg', 0.85));
+        cerrarModal(); abrirRecorte(pad, reducir(img, 1600));
+      });
+    }
+    if (pad.classList.contains('firmado')) m.acc.appendChild(botonModal('Quitar huella', function () { borrarPad(pad); cerrarModal(); }));
+    m.acc.appendChild(botonModal('Cancelar', cerrarModal));
+    m.acc.appendChild(botonModal('🖼 Galería', function () { elegirArchivo(false, nueva); }));
+    m.acc.appendChild(botonModal('📷 Tomar foto de la cédula', function () { elegirArchivo(true, nueva); }, fotoSlot ? '' : 'principal'));
+    if (fotoSlot) m.acc.appendChild(botonModal('Usar la foto ya tomada', function () {
+      var im = new Image();
+      im.onload = function () { cerrarModal(); abrirRecorte(pad, im); };
+      im.src = fotoSlot.src;
+    }, 'principal'));
+  }
+
+  function abrirRecorte(pad, img) {
+    var m = crearModal(pad.dataset.titulo || 'Huella', 'Mueva el recuadro hasta que quede justo sobre la huella y ajuste su tamaño con la barra.');
+    var d = medidas(img), RAT = 0.786;
+    var maxW = Math.min(520, window.innerWidth - 56), maxH = Math.round(window.innerHeight * 0.45);
+    var k = Math.min(maxW / d.w, maxH / d.h), vw = Math.round(d.w * k), vh = Math.round(d.h * k);
+    var caja = el('div');
+    caja.style.cssText = 'position:relative;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;border-radius:6px;width:' + vw + 'px;height:' + vh + 'px;';
+    var cv = document.createElement('canvas');
+    cv.width = vw; cv.height = vh; cv.style.cssText = 'display:block;width:' + vw + 'px;height:' + vh + 'px;';
+    cv.getContext('2d').drawImage(img, 0, 0, vw, vh);
+    var rec = el('div');
+    rec.style.cssText = 'position:absolute;border:3px solid #38bdf8;box-shadow:0 0 0 9999px rgba(15,23,42,.55);cursor:move;touch-action:none;';
+    caja.appendChild(cv); caja.appendChild(rec);
+    m.zona.appendChild(caja);
+    var rw = Math.round(Math.min(vw, vh * RAT) * 0.4), rx = (vw - rw) / 2, ry = (vh - rw / RAT) / 2;
+    function colocar() {
+      var rh = rw / RAT;
+      rx = Math.max(0, Math.min(vw - rw, rx)); ry = Math.max(0, Math.min(vh - rh, ry));
+      rec.style.left = rx + 'px'; rec.style.top = ry + 'px'; rec.style.width = rw + 'px'; rec.style.height = rh + 'px';
+    }
+    colocar();
+    var arrastre = null;
+    rec.addEventListener('pointerdown', function (e) { e.preventDefault(); try { rec.setPointerCapture(e.pointerId); } catch (x) {} arrastre = { x: e.clientX, y: e.clientY }; });
+    rec.addEventListener('pointermove', function (e) { if (!arrastre) return; e.preventDefault(); rx += e.clientX - arrastre.x; ry += e.clientY - arrastre.y; arrastre = { x: e.clientX, y: e.clientY }; colocar(); });
+    function soltar() { arrastre = null; }
+    rec.addEventListener('pointerup', soltar); rec.addEventListener('pointercancel', soltar);
+    caja.addEventListener('pointerdown', function (e) {  // un toque fuera del recuadro lo lleva allí
+      if (e.target === rec) return;
+      var r = caja.getBoundingClientRect(); rx = e.clientX - r.left - rw / 2; ry = e.clientY - r.top - (rw / RAT) / 2; colocar();
+    });
+    var etiqueta = el('div', null, 'Tamaño del recuadro');
+    var barra = document.createElement('input');
+    barra.type = 'range'; barra.min = 40; barra.max = Math.floor(Math.min(vw, vh * RAT)); barra.value = rw;
+    barra.style.cssText = 'width:100%;margin-top:6px;';
+    barra.addEventListener('input', function () {
+      var cx = rx + rw / 2, cy = ry + (rw / RAT) / 2;
+      rw = +barra.value; rx = cx - rw / 2; ry = cy - (rw / RAT) / 2; colocar();
+    });
+    m.info.appendChild(etiqueta); m.info.appendChild(barra);
+    m.acc.appendChild(botonModal('Cancelar', cerrarModal));
+    m.acc.appendChild(botonModal('Guardar huella', function () {
+      var OW = 480, OH = Math.round(OW / RAT);
+      var out = document.createElement('canvas'); out.width = OW; out.height = OH;
+      var o = out.getContext('2d');
+      o.fillStyle = '#fff'; o.fillRect(0, 0, OW, OH);
+      o.drawImage(img, rx / k, ry / k, rw / k, (rw / RAT) / k, 0, 0, OW, OH);
+      var datos = o.getImageData(0, 0, OW, OH), px = datos.data;   // blanco y negro con un poco más de contraste
+      for (var i = 0; i < px.length; i += 4) {
+        var g = 0.299 * px[i] + 0.587 * px[i + 1] + 0.114 * px[i + 2];
+        g = Math.max(0, Math.min(255, (g - 128) * 1.25 + 128));
+        px[i] = px[i + 1] = px[i + 2] = g;
+      }
+      o.putImageData(datos, 0, 0);
+      ponerPad(pad, out.toDataURL('image/jpeg', 0.9));
+      cerrarModal();
+    }, 'principal'));
   }
 
   pads.forEach(function (pad) {
     pad.tabIndex = 0;
     pad.setAttribute('role', 'button');
     pad.setAttribute('aria-label', pad.dataset.titulo || 'Firma');
-    function abrir() { if (pad.classList.contains('pad-huella')) abrirHuella(pad); else abrirFirma(pad); }
+    function abrir() { if (pad.classList.contains('pad-huella')) abrirHuella(pad); else if (pad.classList.contains('pad-foto')) abrirFoto(pad); else abrirFirma(pad); }
     pad.addEventListener('click', abrir);
     pad.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrir(); } });
   });
@@ -787,7 +803,7 @@
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', scrollX: 0, scrollY: 0, windowWidth: Math.max(760, window.innerWidth) },
       jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' },
-      pagebreak: { mode: ['css', 'legacy'], avoid: ['.clausula', '.firmas', '.firmas-anexo', '.datos', 'p', '.nl'] }
+      pagebreak: { mode: ['css', 'legacy'], avoid: ['.clausula', '.firmas', '.firmas-anexo', '.cedulas', '.datos', 'p', '.nl'] }
     }).from(hoja).toContainer().then(function () {
       // la librería centra la hoja y la recorta en pantallas angostas: se alinea a la izquierda
       var ct = document.querySelector('.html2pdf__container');
