@@ -474,7 +474,7 @@
   }
 
   function abrirHuella(pad) {
-    var W = 240, H = 300, ANILLOS = 26, RADIO = 34;
+    var W = 240, H = 300, RADIO = 34, PASO = 2, PERIODO = 6.6;
     var m = crearModal(pad.dataset.titulo || 'Huella', 'Apoye el dedo sobre la huella y deslícelo por encima, varias veces, hasta que se llene por completo (100 %).');
     var caja = el('div', 'modal-huella');
     var cv = document.createElement('canvas');
@@ -490,68 +490,96 @@
     var texto = el('div', null, '0 %');
     m.info.appendChild(texto); m.info.appendChild(barra);
 
-    // Una sola huella con forma de yema de dedo, hecha de crestas partidas en tramos; cada toque "revela" los tramos cercanos
-    var segs = [], nucleo = { x: W / 2 + 4, y: 156 };
-    function dentro(x, y) {
-      if (y < 130) return Math.pow((x - 120) / 84, 2) + Math.pow((y - 130) / 112, 2) <= 1;
-      return Math.abs(x - 120) <= 84 && y <= 270;
+    // ---- La huella: crestas = curvas de nivel de un campo (lazo en el centro, líneas casi horizontales abajo), dentro de un óvalo de yema ----
+    function mitad(t) { return 82 * Math.sqrt(Math.max(0, 1 - Math.pow(2 * t - 1, 2))) * (0.8 + 0.2 * t); }
+    function dentro(x, y) { var t = (y - 28) / 242; return t > 0 && t < 1 && Math.abs(x - 120) <= mitad(t); }
+    var P1 = { x: 112, y: 176 }, P2 = { x: 130, y: 122 };
+    function distRanura(x, y) {
+      var vx = P2.x - P1.x, vy = P2.y - P1.y;
+      var t = Math.max(0, Math.min(1, ((x - P1.x) * vx + (y - P1.y) * vy) / (vx * vx + vy * vy)));
+      var dx = x - (P1.x + t * vx), dy = y - (P1.y + t * vy);
+      return Math.sqrt(dx * dx + dy * dy);
     }
-    function trocear(linea, desf) {
-      for (var s0 = desf; s0 + 3 < linea.length; s0 += 10) {
-        var parte = linea.slice(s0, s0 + 9);
-        if (parte.length >= 3) { var mid = parte[Math.floor(parte.length / 2)]; segs.push({ pts: parte, mx: mid[0], my: mid[1], ok: false }); }
-      }
+    function campo(x, y) {
+      var arriba = distRanura(x, y);
+      var abajo = (y - P1.y) + Math.abs(x - P1.x) * 0.16;
+      var w = Math.max(0, Math.min(1, (y - P1.y - 6) / 46)); w = w * w * (3 - 2 * w);
+      return arriba * (1 - w) + abajo * w + 1.4 * Math.sin(x * 0.06 + y * 0.045) + 1.0 * Math.sin(y * 0.09 - x * 0.035 + 1.3);
     }
-    for (var i = 1; i <= ANILLOS; i++) {
-      var base = 4 + i * 5.4, linea = [];
-      for (var ang = 0; ang <= 2 * Math.PI + 0.001; ang += Math.PI / 60) {
-        var f = 1 + 0.03 * Math.sin(3 * ang + i * 0.5) + 0.02 * Math.sin(7 * ang - i);
-        var yy = nucleo.y + base * 1.22 * f * Math.sin(ang);
-        var xx = nucleo.x + base * f * Math.cos(ang) + 0.1 * (yy - nucleo.y);
-        if (dentro(xx, yy)) linea.push([xx, yy]); else { trocear(linea, (i * 4) % 10); linea = []; }
-      }
-      trocear(linea, (i * 4) % 10);
+    var NX = Math.ceil(W / PASO) + 1, NY = Math.ceil(H / PASO) + 1, vals = new Float32Array(NX * NY);
+    for (var gy = 0; gy < NY; gy++) for (var gx = 0; gx < NX; gx++) vals[gy * NX + gx] = campo(gx * PASO, gy * PASO);
+    var X1 = [], Y1 = [], X2 = [], Y2 = [], MX = [], MY = [];
+    function poner(ax, ay, bx, by) {
+      var mx = (ax + bx) / 2, my = (ay + by) / 2;
+      if (!dentro(mx, my)) return;
+      X1.push(ax); Y1.push(ay); X2.push(bx); Y2.push(by); MX.push(mx); MY.push(my);
     }
+    for (gy = 0; gy < NY - 1; gy++) for (gx = 0; gx < NX - 1; gx++) {
+      var x = gx * PASO, y = gy * PASO;
+      if (!dentro(x + PASO / 2, y + PASO / 2)) continue;
+      var va = vals[gy * NX + gx], vb = vals[gy * NX + gx + 1], vc = vals[(gy + 1) * NX + gx + 1], vd = vals[(gy + 1) * NX + gx];
+      var lo = Math.min(va, vb, vc, vd), hi = Math.max(va, vb, vc, vd);
+      var kHi = Math.floor(hi / PERIODO);
+      if (kHi <= Math.floor(lo / PERIODO) || kHi < 1) continue;
+      var L = kHi * PERIODO;
+      var idx = (va >= L ? 8 : 0) | (vb >= L ? 4 : 0) | (vc >= L ? 2 : 0) | (vd >= L ? 1 : 0);
+      var ti = [x + PASO * (L - va) / (vb - va), y], rd = [x + PASO, y + PASO * (L - vb) / (vc - vb)],
+          bo = [x + PASO * (L - vd) / (vc - vd), y + PASO], le = [x, y + PASO * (L - va) / (vd - va)];
+      var pares = {
+        1: [[le, bo]], 2: [[bo, rd]], 3: [[le, rd]], 4: [[ti, rd]], 5: [[ti, le], [bo, rd]], 6: [[ti, bo]], 7: [[ti, le]],
+        8: [[ti, le]], 9: [[ti, bo]], 10: [[ti, rd], [le, bo]], 11: [[ti, rd]], 12: [[le, rd]], 13: [[bo, rd]], 14: [[le, bo]]
+      }[idx] || [];
+      pares.forEach(function (pq) { poner(pq[0][0], pq[0][1], pq[1][0], pq[1][1]); });
+    }
+    var N = X1.length, ok = new Uint8Array(N), hechos = 0;
     var activo = false, foco = null, validada = false, guardar;
-    function trazarSeg(sg) {
+
+    function esquinas(color) {
+      ctx.strokeStyle = color; ctx.lineWidth = 3; ctx.shadowBlur = 0;
+      var l = 14, r = 226, t = 12, b = 288, k = 28;
       ctx.beginPath();
-      ctx.moveTo(sg.pts[0][0], sg.pts[0][1]);
-      for (var q = 1; q < sg.pts.length; q++) ctx.lineTo(sg.pts[q][0], sg.pts[q][1]);
+      ctx.moveTo(l, t + k); ctx.lineTo(l, t); ctx.lineTo(l + k, t);
+      ctx.moveTo(r - k, t); ctx.lineTo(r, t); ctx.lineTo(r, t + k);
+      ctx.moveTo(r, b - k); ctx.lineTo(r, b); ctx.lineTo(r - k, b);
+      ctx.moveTo(l + k, b); ctx.lineTo(l, b); ctx.lineTo(l, b - k);
       ctx.stroke();
     }
     function pintar() {
       ctx.clearRect(0, 0, W, H);
-      // contorno del dedo
-      ctx.strokeStyle = 'rgba(148,163,184,.45)'; ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.ellipse(120, 130, 84, 112, 0, Math.PI, 2 * Math.PI); ctx.lineTo(204, 270); ctx.lineTo(36, 270); ctx.closePath(); ctx.stroke();
+      esquinas(validada ? '#4ade80' : (activo ? '#38bdf8' : '#e2e8f0'));
       if (foco && !validada) { ctx.fillStyle = 'rgba(56,189,248,.16)'; ctx.beginPath(); ctx.arc(foco.x, foco.y, RADIO, 0, Math.PI * 2); ctx.fill(); }
-      ctx.strokeStyle = 'rgba(148,163,184,.30)'; ctx.lineWidth = 1.4; ctx.shadowBlur = 0;
-      segs.forEach(function (sg) { if (!sg.ok) trazarSeg(sg); });
-      var color = validada ? '#4ade80' : '#38bdf8';
-      ctx.strokeStyle = color; ctx.shadowColor = color; ctx.shadowBlur = 6; ctx.lineWidth = 1.9;
-      segs.forEach(function (sg) { if (sg.ok) trazarSeg(sg); });
+      var sin = new Path2D(), con = new Path2D();
+      for (var i = 0; i < N; i++) { var p = ok[i] ? con : sin; p.moveTo(X1[i], Y1[i]); p.lineTo(X2[i], Y2[i]); }
+      ctx.lineWidth = 1.7; ctx.strokeStyle = 'rgba(148,163,184,.30)'; ctx.stroke(sin);
+      ctx.strokeStyle = validada ? '#ecfdf5' : '#e0f2fe'; ctx.shadowColor = validada ? '#4ade80' : '#38bdf8'; ctx.shadowBlur = 5; ctx.lineWidth = 2;
+      ctx.stroke(con);
       ctx.shadowBlur = 0;
     }
     function exportar() {
       var out = document.createElement('canvas');
       out.width = W * 2; out.height = H * 2;
       var o = out.getContext('2d');
-      o.scale(2, 2); o.lineCap = 'round'; o.lineJoin = 'round'; o.strokeStyle = '#0f172a'; o.lineWidth = 2.2;
-      segs.forEach(function (sg) { o.beginPath(); o.moveTo(sg.pts[0][0], sg.pts[0][1]); for (var q = 1; q < sg.pts.length; q++) o.lineTo(sg.pts[q][0], sg.pts[q][1]); o.stroke(); });
+      o.scale(2, 2); o.lineCap = 'round'; o.strokeStyle = '#0f172a'; o.lineWidth = 2.1;
+      var pa = new Path2D();
+      for (var i = 0; i < N; i++) { pa.moveTo(X1[i], Y1[i]); pa.lineTo(X2[i], Y2[i]); }
+      o.stroke(pa);
       return out.toDataURL('image/png');
     }
     function avance() {
-      var n = segs.filter(function (sg) { return sg.ok; }).length;
-      var pct = Math.floor(n * 100 / segs.length);
+      if (!validada && hechos >= 0.97 * N) { for (var i = 0; i < N; i++) ok[i] = 1; hechos = N; }
+      var pct = Math.floor(hechos * 100 / N);
       relleno.style.width = pct + '%';
-      if (n === segs.length) { validada = true; foco = null; texto.textContent = '✔ Huella validada'; guardar.disabled = false; }
+      if (hechos === N) { validada = true; foco = null; texto.textContent = '✔ Huella validada'; guardar.disabled = false; }
       else texto.textContent = pct + ' %';
     }
     function revelar(e) {
       var r = cv.getBoundingClientRect();
       var x = (e.clientX - r.left) * (W / r.width), y = (e.clientY - r.top) * (H / r.height);
       foco = { x: x, y: y };
-      segs.forEach(function (sg) { if (!sg.ok && (sg.mx - x) * (sg.mx - x) + (sg.my - y) * (sg.my - y) <= RADIO * RADIO) sg.ok = true; });
+      var r2 = RADIO * RADIO;
+      for (var i = 0; i < N; i++) {
+        if (!ok[i] && (MX[i] - x) * (MX[i] - x) + (MY[i] - y) * (MY[i] - y) <= r2) { ok[i] = 1; hechos++; }
+      }
       avance(); pintar();
     }
     cv.addEventListener('pointerdown', function (e) {
@@ -568,7 +596,7 @@
 
     if (pad.classList.contains('firmado')) m.acc.appendChild(botonModal('Quitar huella', function () { borrarPad(pad); cerrarModal(); }));
     m.acc.appendChild(botonModal('Volver a empezar', function () {
-      segs.forEach(function (sg) { sg.ok = false; }); validada = false; foco = null; guardar.disabled = true; avance(); pintar();
+      ok.fill(0); hechos = 0; validada = false; foco = null; guardar.disabled = true; avance(); pintar();
     }));
     m.acc.appendChild(botonModal('Cancelar', cerrarModal));
     guardar = botonModal('Guardar huella', function () { if (validada) { ponerPad(pad, exportar()); cerrarModal(); } }, 'principal');
