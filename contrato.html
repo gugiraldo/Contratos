@@ -45,6 +45,10 @@
   .barra button#btnDescargar:hover { background: #1d4ed8; }
   .barra button:disabled { opacity: .6; cursor: wait; }
   .barra [hidden] { display: none; }
+  .barra-cuerpo { display: contents; }
+  .barra-toggle { display: none; }
+  .b-cab { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  #aviso { display: block; }
   .oculto { display: none !important; }
   .barra .garantias { gap: 16px; }
   .barra .garantias label { display: inline-flex; gap: 5px; align-items: center; cursor: pointer; }
@@ -87,6 +91,23 @@
   .modal-acc button.principal { background: #2563eb; border-color: #2563eb; color: #fff; font-weight: bold; }
   .modal-acc button:disabled { opacity: .45; cursor: not-allowed; }
   @media print { .modal { display: none; } .pad-ph { display: none; } }
+  @media (max-width: 640px) {
+    .barra-toggle { display: inline-block; min-height: 40px; padding: 8px 14px; font-size: 14px; }
+    .barra-cuerpo { display: none; width: 100%; }
+    .barra.abierto .barra-in { max-height: 85vh; overflow-y: auto; }
+    .barra.abierto .barra-cuerpo { display: block; }
+    .b-acciones { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .b-acciones button { min-height: 46px; font-size: 14px; padding: 8px 10px; }
+    #btnDescargar { grid-column: 1 / -1; order: 1; font-size: 15px; }
+    #btnAudio { order: 2; }
+    #btnLimpiar { order: 3; }
+    #btnArr { order: 4; }
+    #btnImprimir { order: 5; }
+    #confirmar:not([hidden]) { grid-column: 1 / -1; order: 6; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .barra .garantias { display: grid; gap: 4px; margin-top: 12px; padding-top: 12px; border-top: 1px solid #334155; }
+    .barra .garantias label { min-height: 40px; font-size: 14px; align-items: center; }
+    .barra .garantias input { width: 20px; height: 20px; }
+  }
   table.hoja { table-layout: fixed; }
   .pagina { overflow-wrap: anywhere; }
   .linea { max-width: 100%; }
@@ -138,25 +159,30 @@
 <header class="barra">
   <div class="barra-in">
     <div class="b-titulo">
-      <b>Contrato de arrendamiento</b>
+      <div class="b-cab">
+        <b>Contrato de arrendamiento</b>
+        <button id="btnMenu" type="button" class="barra-toggle" aria-expanded="false" aria-controls="barraCuerpo">☰ Menú</button>
+      </div>
       <small>Haz clic en cualquier línea o dato y escribe. Los datos del propietario e inmueble se guardan en este navegador.</small>
-    </div>
-    <div class="b-grupo">
-      <button id="btnImprimir" type="button">Imprimir / Guardar PDF</button>
-      <button id="btnDescargar" type="button">Descargar PDF</button>
-      <button id="btnAudio" type="button">🎧 Escuchar el contrato</button>
-      <button id="btnLimpiar" type="button">Limpiar datos del inquilino</button>
-      <button id="btnArr" type="button">Datos del arrendador…</button>
-      <span id="confirmar" hidden>¿Borrar los datos del inquilino?
-        <button id="btnSi" type="button">Sí, borrar</button>
-        <button id="btnNo" type="button">Cancelar</button>
-      </span>
       <span id="aviso" role="status"></span>
     </div>
-    <div class="b-grupo garantias">
-      <b>Este contrato lleva:</b>
-      <label><input type="checkbox" data-opcion="codeudor" checked> Codeudor</label>
-      <label><input type="checkbox" data-opcion="referencias"> Referencias personales (2 personas)</label>
+    <div class="barra-cuerpo" id="barraCuerpo">
+      <div class="b-grupo b-acciones">
+        <button id="btnImprimir" type="button">Imprimir / Guardar PDF</button>
+        <button id="btnDescargar" type="button">Descargar PDF</button>
+        <button id="btnAudio" type="button">🎧 Escuchar el contrato</button>
+        <button id="btnLimpiar" type="button">Limpiar datos del inquilino</button>
+        <button id="btnArr" type="button">Datos del arrendador…</button>
+        <span id="confirmar" hidden>¿Borrar los datos del inquilino?
+          <button id="btnSi" type="button">Sí, borrar</button>
+          <button id="btnNo" type="button">Cancelar</button>
+        </span>
+      </div>
+      <div class="b-grupo garantias">
+        <b>Este contrato lleva:</b>
+        <label><input type="checkbox" data-opcion="codeudor" checked> Codeudor</label>
+        <label><input type="checkbox" data-opcion="referencias"> Referencias personales (2 personas)</label>
+      </div>
     </div>
   </div>
 </header>
@@ -673,6 +699,18 @@
     c.addEventListener('change', function () { opciones[c.dataset.opcion] = c.checked; aplicarOpciones(); });
   });
   aplicarOpciones();
+
+  // Menú del celular: se despliega con el botón y se cierra al elegir una acción
+  var barra = document.querySelector('.barra'), btnMenu = document.getElementById('btnMenu');
+  function menu(abrir) {
+    barra.classList.toggle('abierto', abrir);
+    btnMenu.setAttribute('aria-expanded', abrir ? 'true' : 'false');
+    btnMenu.textContent = abrir ? '✕ Cerrar' : '☰ Menú';
+  }
+  btnMenu.addEventListener('click', function () { menu(!barra.classList.contains('abierto')); });
+  ['btnDescargar', 'btnImprimir', 'btnAudio', 'btnArr'].forEach(function (id) {
+    document.getElementById(id).addEventListener('click', function () { menu(false); });
+  });
 
   var aviso = document.getElementById('aviso');
   var avisoT;
