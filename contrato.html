@@ -32,6 +32,8 @@
   .linea[contenteditable] { cursor: text; }
   .barra { position: sticky; top: 0; background: #f1f5f9; border: 1px solid #94a3b8; padding: 8px 12px; margin-bottom: 12px; font: 13px Arial, sans-serif; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
   .barra button { padding: 6px 14px; font-size: 13px; cursor: pointer; }
+  .barra [hidden] { display: none; }
+  #aviso { font-weight: bold; color: #166534; }
   @media print { .barra { display: none; } [contenteditable]:focus { background: none; } }
   table.hoja { width: 100%; border-collapse: collapse; }
   table.hoja td { padding: 0; }
@@ -43,8 +45,14 @@
 
 <div class="barra">
   <span>Haz clic en cualquier línea o dato y escribe. Los datos del propietario e inmueble se guardan en este navegador.</span>
-  <button onclick="window.print()">Imprimir / Guardar PDF</button>
-  <button onclick="limpiar()">Limpiar datos del inquilino</button>
+  <button id="btnImprimir" type="button">Imprimir / Guardar PDF</button>
+  <button id="btnDescargar" type="button" hidden>Descargar archivo para imprimir</button>
+  <button id="btnLimpiar" type="button">Limpiar datos del inquilino</button>
+  <span id="confirmar" hidden>¿Borrar los datos del inquilino?
+    <button id="btnSi" type="button">Sí, borrar</button>
+    <button id="btnNo" type="button">Cancelar</button>
+  </span>
+  <span id="aviso" role="status"></span>
 </div>
 
 <table class="hoja"><thead><tr><td><div class="esp"></div></td></tr></thead><tfoot><tr><td><div class="esp"></div></td></tr></tfoot><tbody><tr><td>
@@ -173,11 +181,46 @@
       fijos.forEach(function (o) { if (o !== e && o.dataset.key === k) o.textContent = t; });
     });
   });
-  window.limpiar = function () {
-    if (confirm('¿Borrar los datos escritos del inquilino y del contrato (no los del propietario)?')) {
-      lineas.forEach(function (e) { e.textContent = ''; });
-    }
-  };
+  var aviso = document.getElementById('aviso');
+  var avisoT;
+  function decir(t) {
+    aviso.textContent = t;
+    clearTimeout(avisoT);
+    avisoT = setTimeout(function () { aviso.textContent = ''; }, 6000);
+  }
+
+  // Imprimir / Guardar PDF
+  document.getElementById('btnImprimir').addEventListener('click', function () {
+    try { window.print(); }
+    catch (x) { decir('No se pudo abrir la impresión aquí. Use "Descargar archivo para imprimir" o Ctrl+P.'); }
+  });
+
+  // Limpiar datos del inquilino (confirmación dentro de la página, sin confirm())
+  var btnLimpiar = document.getElementById('btnLimpiar');
+  var cuadro = document.getElementById('confirmar');
+  function pedir(si) { cuadro.hidden = !si; btnLimpiar.hidden = si; }
+  btnLimpiar.addEventListener('click', function () { pedir(true); });
+  document.getElementById('btnNo').addEventListener('click', function () { pedir(false); });
+  document.getElementById('btnSi').addEventListener('click', function () {
+    lineas.forEach(function (e) { e.textContent = ''; });
+    pedir(false);
+    decir('Datos del inquilino borrados.');
+  });
+
+  // Descargar copia del contrato (con lo escrito) para abrirla y imprimirla desde el navegador
+  var btnDescargar = document.getElementById('btnDescargar');
+  if (window.claude && claude.use) {
+    claude.use('downloads').then(function (downloads) {
+      if (!downloads) return;
+      btnDescargar.hidden = false;
+      btnDescargar.addEventListener('click', function () {
+        var html = '<!doctype html>\n' + document.documentElement.outerHTML;
+        downloads.save({ filename: 'contrato-arrendamiento.html', data: html })
+          .then(function () { decir('Archivo guardado. Ábralo y use Ctrl+P para imprimir o guardar PDF.'); })
+          .catch(function (e) { if (!e || e.code !== 'declined') decir('No se pudo descargar el archivo.'); });
+      });
+    }).catch(function () {});
+  }
 })();
 </script>
 </body>
