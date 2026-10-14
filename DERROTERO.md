@@ -31,6 +31,7 @@ Archivo principal: `contrato.html` (página web editable; se descarga como PDF).
 
 ## Sobre el depósito (decidido)
 - Se **quitó** de la cláusula séptima la frase "No se exige depósito en dinero". No es obligatoria, pero quitarla **no vuelve legal** el depósito: el art. 16 de la Ley 820 de 2003 lo prohíbe igual, y según las fuentes consultadas también prohíbe disfrazarlo (primer mes más caro con "descuento" después, cobro verbal, otro nombre).
+- Cláusula séptima: con codeudor dice solo que el codeudor responde por las obligaciones; sin codeudor (con o sin referencias) dice una frase neutral de la ley: el arrendatario responde con todos sus bienes (art. 2488, Código Civil). Las referencias no agregan texto a esa cláusula.
 - La cláusula segunda sigue diciendo que solo se paga por anticipado el primer mes de arriendo.
 - Formas legales de protegerse: canon bien fijado (tope 1 % del valor comercial), codeudor, seguro de arrendamiento, cláusula penal, recibos de servicios al día al entregar, inventario con fotos, y buen estudio del arrendatario antes de firmar.
 - Pendiente: sección "Garantías y condiciones de entrega".

@@ -289,7 +289,7 @@
 <p>La terminación se hará efectiva por las vías legales; si el arrendatario no restituye el inmueble, el arrendador acudirá al proceso de restitución ante la autoridad judicial.</p>
 
 <h2>SÉPTIMA – GARANTÍA</h2>
-<p><span data-si="codeudor">El codeudor responde solidariamente por todas las obligaciones del arrendatario.</span> <span data-si="referencias">Las personas de referencia indicadas en este contrato son personas que conocen al arrendatario; el arrendador podrá contactarlas únicamente para ubicarlo y ellas <b>no asumen ninguna obligación de pago</b>.</span> <span data-si="ninguna">No se pacta codeudor ni otra garantía personal.</span></p>
+<p><span data-si="codeudor">El codeudor responde solidariamente por todas las obligaciones del arrendatario.</span><span data-si="sincodeudor">El arrendatario responde por el cumplimiento de las obligaciones de este contrato con todos sus bienes, presentes y futuros, conforme a la ley (art. 2488, Código Civil).</span></p>
 
 <h2>OCTAVA – CLÁUSULA PENAL (DISTINTA DEL CANON)</h2>
 <p>Si el arrendatario incumple cualquiera de las obligaciones de este contrato, pagará al arrendador, <b>a título de pena</b>, una suma equivalente a <span class="fijo" data-key="penal">1</span> canon(es) mensual(es) de arrendamiento. Esta pena es la <b>estimación anticipada y total de los perjuicios</b> causados por el incumplimiento y no se acumula con otra indemnización (art. 1592 y ss., Código Civil). Es <b>independiente del canon mensual</b>: no se paga al ingresar, no se imputa al arriendo ni se considera depósito o garantía entregada, y solo se causa por el incumplimiento. No exime al arrendatario de pagar los cánones y servicios adeudados ni de restituir el inmueble.</p>
@@ -301,7 +301,7 @@
 <p>Las partes aceptan como válidas las notificaciones enviadas a la dirección del inmueble y a los correos o números de contacto indicados en este contrato.</p>
 
 <h2>UNDÉCIMA – AUTORIZACIÓN DE DATOS PERSONALES</h2>
-<p>El arrendatario<span data-si="codeudor"> y el codeudor</span> autoriza<span data-si="codeudor">n</span> al arrendador, conforme a la Ley 1581 de 2012, a recolectar y conservar sus datos personales y copia de su cédula de ciudadanía, que se anexa al presente contrato, con la única finalidad de ejecutar y respaldar este contrato. <span data-si="referencias">El arrendatario declara que las personas de referencia conocen y aceptan que sus datos de contacto se entreguen al arrendador solo para ubicarlo.</span></p>
+<p>El arrendatario<span data-si="codeudor"> y el codeudor</span> autoriza<span data-si="codeudor">n</span> al arrendador, conforme a la Ley 1581 de 2012, a recolectar y conservar sus datos personales y copia de su cédula de ciudadanía, que se anexa al presente contrato, con la única finalidad de ejecutar y respaldar este contrato. <span data-si="referencias">El arrendatario declara que las personas de referencia conocen y aceptan que sus datos de contacto se entreguen al arrendador para los fines de este contrato.</span></p>
 
 <h2>DUODÉCIMA – MÉRITO EJECUTIVO</h2>
 <p>Este contrato presta mérito ejecutivo para exigir el pago de las obligaciones aquí contenidas.</p>
@@ -829,7 +829,7 @@
   // Qué lleva el contrato: cada opción muestra u oculta sus partes (data-si)
   var opciones = {};
   function aplicarOpciones() {
-    opciones.ninguna = !opciones.codeudor && !opciones.referencias;
+    opciones.sincodeudor = !opciones.codeudor;
     document.querySelectorAll('[data-si]').forEach(function (e) { e.classList.toggle('oculto', !opciones[e.dataset.si]); });
   }
   document.querySelectorAll('input[data-opcion]').forEach(function (c) {
@@ -1075,7 +1075,7 @@
       CAMPOS_PERSONA.forEach(function (c) { entrada(cu, campo(rol, c[0]), c[1], { tipo: c[2], minusculas: c[0] === 'correo', cambio: cambio }); });
     },
     refs: function (cu, rol, cambio) {
-      cu.appendChild(el('p', null, 'Dos personas que lo conozcan (familiares o conocidos), para poder ubicarlo si hace falta. No asumen ninguna deuda.'));
+      cu.appendChild(el('p', null, 'Dos personas que lo conozcan (familiares o conocidos), como referencia personal para este contrato.'));
       ['r1', 'r2'].forEach(function (r, n) {
         cu.appendChild(el('p', 'ok', 'Referencia ' + (n + 1)));
         [['nombre', 'Nombre completo', 'text'], ['parentesco', 'Parentesco o relación', 'text'], ['telefono', 'Teléfono', 'tel'], ['direccion', 'Dirección o barrio', 'text']].forEach(function (c) {
