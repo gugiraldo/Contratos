@@ -16,6 +16,7 @@ Archivo principal: `contrato.html` (página web editable; se descarga como PDF).
 - PDF en 4 páginas (5 si lleva codeudor y referencias a la vez), igual desde cualquier pantalla.
 - Página pública con GitHub Pages: https://gugiraldo.github.io/Contratos/
 - Menú del celular desplegable, con botones grandes.
+- Tiempos del contrato para elegir con un botón ▾: plazo (3, 6 o 12 meses, u otro escrito a mano) y día de pago (5 o 10, u otro). La prórroga sigue al plazo ("períodos iguales"). El preaviso queda fijo en el texto porque lo regula la ley.
 - Pie en cada hoja del PDF: nombres de las partes y "Hoja X de N" (como en las escrituras), para que no se pierda ni se cambie una hoja.
 - Fotos de la cédula (cara con la foto y cara con la huella) con la cámara; en el computador usa la cámara web. Se pueden girar, enderezar, acercar y encuadrar.
 - Huella tomada de la foto de la cédula (se recorta con un recuadro); ya no hay huella dibujada.

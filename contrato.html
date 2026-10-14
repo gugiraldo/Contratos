@@ -103,6 +103,12 @@
   .volver-proceso { position: fixed; right: 12px; bottom: 12px; z-index: 95; padding: 14px 18px; font-size: 15px; font-weight: bold; border-radius: 28px; border: 0; background: #2563eb; color: #fff; box-shadow: 0 4px 14px rgba(0,0,0,.35); cursor: pointer; }
   @media print { .asistente, .volver-proceso, .inicio-proceso { display: none !important; } }
   @media (max-width: 640px) { #btnProceso { grid-column: 1 / -1; order: 0; font-size: 15px; } }
+  .opcwrap { position: relative; display: inline-block; }
+  .btnopc { border: 1px solid #94a3b8; background: #f1f5f9; border-radius: 4px; font-size: 11px; padding: 0 5px; margin-left: 3px; cursor: pointer; vertical-align: middle; line-height: 1.5; color: #0f172a; }
+  .menu-opc { position: absolute; left: 0; top: 100%; z-index: 30; background: #fff; border: 1px solid #94a3b8; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,.25); padding: 4px; display: flex; flex-direction: column; min-width: 150px; font: 14px Arial, sans-serif; white-space: nowrap; }
+  .menu-opc button { border: 0; background: none; text-align: left; padding: 9px 10px; cursor: pointer; border-radius: 6px; font: 14px Arial, sans-serif; color: #0f172a; }
+  .menu-opc button:hover { background: #dbeafe; }
+  @media print { .btnopc, .menu-opc { display: none; } }
   .cedulas { margin: 8px 0; break-inside: avoid; }
   .cedula-fila { display: flex; gap: 12px; margin-top: 4px; }
   .cedula-fila > div { flex: 1; }
@@ -405,6 +411,57 @@
       var k = e.dataset.key, t = e.textContent;
       guardar(k, t === '' ? '__vacio__' : t);
       fijos.forEach(function (o) { if (o !== e && o.dataset.key === k) o.textContent = t; });
+      if (ENLACE[k]) fijar(ENLACE[k], t);
+    });
+  });
+  // La prórroga es "por periodos iguales": sigue siempre al plazo inicial
+  var ENLACE = { plazo: 'plazo2' };
+  function fijar(k, t) {
+    document.querySelectorAll('.fijo[data-key="' + k + '"]').forEach(function (o) { o.textContent = t; });
+    guardar(k, t === '' ? '__vacio__' : t);
+    if (ENLACE[k]) fijar(ENLACE[k], t);
+  }
+  var plazoIni = document.querySelector('.fijo[data-key="plazo"]');
+  if (plazoIni) fijar('plazo2', plazoIni.textContent);
+  document.querySelectorAll('.fijo[data-key="plazo2"]').forEach(function (e) { e.setAttribute('contenteditable', 'false'); });
+
+  // Botón ▾ con opciones para elegir (también se puede escribir otro valor a mano)
+  var OPCIONES = { plazo: { valores: ['3', '6', '12'], unidad: ' meses' }, diapago: { valores: ['5', '10'], unidad: ' días' } };
+  var menuOpc = null;
+  function cerrarMenuOpc() { if (menuOpc) { menuOpc.remove(); menuOpc = null; } }
+  document.addEventListener('click', cerrarMenuOpc);
+  Object.keys(OPCIONES).forEach(function (k) {
+    var campo1 = document.querySelector('.fijo[data-key="' + k + '"]');
+    if (!campo1) return;
+    var env = document.createElement('span');
+    env.className = 'opcwrap';
+    campo1.parentNode.insertBefore(env, campo1); env.appendChild(campo1);
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'btnopc'; b.textContent = '▾'; b.title = 'Elegir una opción'; b.setAttribute('aria-label', 'Elegir una opción');
+    env.appendChild(b);
+    b.addEventListener('click', function (ev) {
+      ev.stopPropagation();
+      var abierto = menuOpc && menuOpc.parentNode === env;
+      cerrarMenuOpc();
+      if (abierto) return;
+      var m = document.createElement('div');
+      m.className = 'menu-opc'; m.contentEditable = 'false';
+      m.addEventListener('click', function (e) { e.stopPropagation(); });
+      OPCIONES[k].valores.forEach(function (o) {
+        var ob = document.createElement('button');
+        ob.type = 'button'; ob.textContent = o + OPCIONES[k].unidad;
+        ob.addEventListener('click', function () { fijar(k, o); cerrarMenuOpc(); });
+        m.appendChild(ob);
+      });
+      var otro = document.createElement('button');
+      otro.type = 'button'; otro.textContent = 'Otro: escribir…';
+      otro.addEventListener('click', function () {
+        cerrarMenuOpc(); campo1.focus();
+        var r = document.createRange(); r.selectNodeContents(campo1);
+        var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      });
+      m.appendChild(otro);
+      env.appendChild(m); menuOpc = m;
     });
   });
   // Casillas: las del mismo grupo (data-grupo) se excluyen entre sí, pero se pueden desmarcar
@@ -911,7 +968,7 @@
       marca.style.cssText = 'font-size:15px;line-height:1;';
       c.replaceWith(marca);
     });
-    hoja.querySelectorAll('.btnfecha, .cal, .pad-ph, .oculto').forEach(function (e) { e.remove(); });
+    hoja.querySelectorAll('.btnfecha, .cal, .pad-ph, .btnopc, .menu-opc, .oculto').forEach(function (e) { e.remove(); });
     hoja.classList.add('pdf');
     // Une cada título con su texto para que no quede un título solo al final de una página
     var celda = hoja.querySelector('tbody td');
