@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Contrato de Arrendamiento de Vivienda Urbana</title>
+<style>
+  @page { size: letter; margin: 2cm; }
+  body { font-family: "Times New Roman", serif; font-size: 12pt; line-height: 1.45; max-width: 18cm; margin: 0 auto; padding: 1cm; color: #000; }
+  h1 { text-align: center; font-size: 15pt; margin-bottom: 4px; }
+  h2 { font-size: 12pt; margin: 14px 0 3px; break-after: avoid; }
+  p { margin: 5px 0; text-align: left; line-height: 1.55; }
+  p.sub { margin-left: 0.8cm; }
+  p.fila { line-height: 2.2; }
+  .linea { display: inline-block; border-bottom: 1px solid #000; min-width: 4.5cm; height: 1.1em; vertical-align: bottom; white-space: nowrap; }
+  .datos { display: grid; grid-template-columns: auto 1fr auto 1fr; gap: 8px 10px; align-items: end; margin: 8px 0 12px; }
+  .datos .tit { grid-column: 1 / -1; }
+  .datos .et { white-space: nowrap; }
+  .campo { display: block; min-width: 0; width: 100%; }
+  .corta { min-width: 2.5cm; }
+  .larga { min-width: 8cm; }
+  /* DATOS FIJOS: editar UNA sola vez aquí */
+  .fijo { font-weight: bold; }
+  .firmas { display: flex; gap: 1.2cm; margin-top: 1.2cm; }
+  .firma { flex: 1; text-align: center; font-size: 11pt; line-height: 1.4; }
+  .nl { display: block; border-bottom: 1px solid #000; height: 1.2em; margin: 8px 0; min-width: 0; }
+  .firma .raya { border-top: 1px solid #000; margin-bottom: 4px; height: 1.2cm; }
+  .huella { width: 2.2cm; height: 2.8cm; border: 1px solid #000; margin: 6px auto 0; font-size: 8pt; display: flex; align-items: flex-end; justify-content: center; }
+  .anexo { margin-top: 18px; break-inside: avoid; }
+  .firmas { break-inside: avoid; }
+  .cuadro { border: 1px dashed #000; height: 7cm; margin: 8px 0; display:flex; align-items:center; justify-content:center; font-size: 10pt; }
+  [contenteditable]:focus { outline: none; background: #fff8c5; }
+  .linea[contenteditable] { cursor: text; }
+  .barra { position: sticky; top: 0; background: #f1f5f9; border: 1px solid #94a3b8; padding: 8px 12px; margin-bottom: 12px; font: 13px Arial, sans-serif; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .barra button { padding: 6px 14px; font-size: 13px; cursor: pointer; }
+  @media print { .barra { display: none; } [contenteditable]:focus { background: none; } }
+  table.hoja { width: 100%; border-collapse: collapse; }
+  table.hoja td { padding: 0; }
+  .esp { height: 0; }
+  @media print { .esp { height: 1.8cm; } body { padding: 0 1.8cm; } }
+</style>
+</head>
+<body>
+
+<div class="barra">
+  <span>Haz clic en cualquier línea o dato y escribe. Los datos del propietario e inmueble se guardan en este navegador.</span>
+  <button onclick="window.print()">Imprimir / Guardar PDF</button>
+  <button onclick="limpiar()">Limpiar datos del inquilino</button>
+</div>
+
+<table class="hoja"><thead><tr><td><div class="esp"></div></td></tr></thead><tfoot><tr><td><div class="esp"></div></td></tr></tfoot><tbody><tr><td>
+<h1>CONTRATO DE ARRENDAMIENTO DE VIVIENDA URBANA</h1>
+<p style="text-align:center">(Ley 820 de 2003 – República de Colombia)</p>
+
+<h2>PARTES</h2>
+<p><b>ARRENDADOR:</b> <span class="fijo" data-key="nombre">JOSEFA MARÍA MESTRA</span>, C.C. <span class="fijo" data-key="cc">39.405.410</span>.</p>
+<div class="datos">
+  <b class="tit">ARRENDATARIO</b>
+  <span class="et">Nombre completo:</span><span class="linea campo" style="grid-column: span 3"></span>
+  <span class="et">C.C. N.°:</span><span class="linea campo"></span>
+  <span class="et">Expedida en:</span><span class="linea campo"></span>
+  <span class="et">Teléfono:</span><span class="linea campo"></span>
+  <span class="et">Correo:</span><span class="linea campo"></span>
+</div>
+<div class="datos">
+  <b class="tit">CODEUDOR (si aplica)</b>
+  <span class="et">Nombre completo:</span><span class="linea campo" style="grid-column: span 3"></span>
+  <span class="et">C.C. N.°:</span><span class="linea campo"></span>
+  <span class="et">Expedida en:</span><span class="linea campo"></span>
+  <span class="et">Teléfono:</span><span class="linea campo"></span>
+  <span class="et">Correo:</span><span class="linea campo"></span>
+</div>
+
+<h2>PRIMERA – OBJETO E INMUEBLE</h2>
+<p>El arrendador entrega en arrendamiento al arrendatario el inmueble ubicado en <span class="fijo" data-key="direccion">CR 65B N.° 67-36, Carepa, Antioquia (por la 2.ª calle de La Empedrada, finalizando la cuadra subiendo)</span>, destinado <b>exclusivamente a vivienda</b>. Su estado consta en el inventario del Anexo 2, que puede ser <b>digital (fotos, videos y audios en una carpeta compartida enviada al correo del arrendatario) o escrito</b>; ambas formas son válidas como prueba.</p>
+
+<h2>SEGUNDA – CANON</h2>
+<p>El canon mensual es de <span style="white-space:nowrap">$ <span class="linea corta"></span> (<span class="linea larga"></span> pesos)</span>, pagadero dentro de los primeros <span class="fijo" data-key="diapago">5</span> días de cada mes, <b>en efectivo o por transferencia</b>, según lo acuerden las partes. El <b>primer canon</b> se paga por anticipado, al momento de recibir el inmueble; ese pago corresponde al primer mes de arriendo y no a otra suma. Todo pago se soporta con recibo o comprobante. El canon no excederá el 1 % del valor comercial del inmueble (art. 18, Ley 820 de 2003).</p>
+
+<h2>TERCERA – REAJUSTE</h2>
+<p>Cada doce (12) meses el canon se reajustará hasta en un porcentaje que no supere el 100 % del IPC del año anterior (art. 20, Ley 820 de 2003).</p>
+
+<h2>CUARTA – PLAZO</h2>
+<p>El plazo es de <span class="fijo" data-key="plazo">3</span> meses, contado desde el <span class="linea"></span>. Al vencer, el contrato se prorroga <b>automáticamente por periodos iguales</b> de <span class="fijo" data-key="plazo2">3</span> meses, en las mismas condiciones, mientras ninguna de las partes avise por escrito su no renovación con la antelación que fija la ley (art. 22 y siguientes, Ley 820 de 2003).</p>
+
+<h2>QUINTA – SERVICIOS PÚBLICOS</h2>
+<p>Los servicios públicos del inmueble de pago mensual (agua, energía, gas, aseo, internet y los demás) están a cargo del arrendatario y los pagará oportunamente. Entregará copia del recibo cancelado cuando el arrendador lo solicite. El arrendatario <b>no podrá alterar, manipular, puentear ni retirar</b> medidores, sellos ni dispositivos externos de los servicios.</p>
+
+<h2>SEXTA – CAUSALES DE TERMINACIÓN POR EL ARRENDADOR</h2>
+<p>Además de las previstas en el art. 22 de la Ley 820 de 2003, son causales de terminación por incumplimiento del arrendatario:</p>
+<p class="sub">a) La mora en el pago del canon.</p>
+<p class="sub">b) La mora <b>superior a un (1) mes</b> en el pago de cualquier servicio público de pago mensual.</p>
+<p class="sub">c) La alteración o manipulación de medidores o dispositivos externos de los servicios (cláusula quinta).</p>
+<p class="sub">d) El subarriendo, la cesión del contrato o el cambio de destinación sin autorización escrita del arrendador.</p>
+<p class="sub">e) El incumplimiento de cualquier otra obligación de este contrato, no subsanado dentro de cinco (5) días hábiles contados desde el requerimiento escrito del arrendador.</p>
+<p>La terminación se hará efectiva por las vías legales; si el arrendatario no restituye el inmueble, el arrendador acudirá al proceso de restitución ante la autoridad judicial.</p>
+
+<h2>SÉPTIMA – GARANTÍA</h2>
+<p>No se exige depósito en dinero (art. 16, Ley 820 de 2003). El codeudor responde solidariamente por todas las obligaciones del arrendatario.</p>
+
+<h2>OCTAVA – CLÁUSULA PENAL (DISTINTA DEL CANON)</h2>
+<p>Si el arrendatario incumple cualquiera de las obligaciones de este contrato, pagará al arrendador, <b>a título de pena</b>, una suma equivalente a <span class="fijo" data-key="penal">1</span> canon(es) mensual(es) de arrendamiento. Esta pena es la <b>estimación anticipada y total de los perjuicios</b> causados por el incumplimiento y no se acumula con otra indemnización (art. 1592 y ss., Código Civil). Es <b>independiente del canon mensual</b>: no se paga al ingresar, no se imputa al arriendo ni se considera depósito o garantía entregada, y solo se causa por el incumplimiento. No exime al arrendatario de pagar los cánones y servicios adeudados ni de restituir el inmueble.</p>
+
+<h2>NOVENA – CONSERVACIÓN Y RESTITUCIÓN</h2>
+<p>El arrendatario cuidará el inmueble, responderá por daños distintos al deterioro natural por el uso, y lo restituirá al terminar el contrato en el estado recibido según el inventario, con los servicios al día y las llaves.</p>
+
+<h2>DÉCIMA – NOTIFICACIONES</h2>
+<p>Las partes aceptan como válidas las notificaciones enviadas a la dirección del inmueble y a los correos o números de contacto indicados en este contrato.</p>
+
+<h2>UNDÉCIMA – AUTORIZACIÓN DE DATOS PERSONALES</h2>
+<p>El arrendatario y el codeudor autorizan al arrendador, conforme a la Ley 1581 de 2012, a recolectar y conservar sus datos personales y copia de su cédula de ciudadanía, que se anexa al presente contrato, con la única finalidad de ejecutar y respaldar este contrato.</p>
+
+<h2>DUODÉCIMA – MÉRITO EJECUTIVO</h2>
+<p>Este contrato presta mérito ejecutivo para exigir el pago de las obligaciones aquí contenidas.</p>
+
+<h2>DECIMOTERCERA – CONVIVENCIA Y OCUPANTES</h2>
+<p>Está prohibido destinar el inmueble a <b>actividades ilícitas</b> y generar <b>ruido excesivo</b> o conductas que perturben a los vecinos. El inmueble será habitado por un máximo de <span class="linea corta"></span> personas: <span class="linea larga"></span>. Cualquier cambio en el número de ocupantes requiere autorización del arrendador, que se anota aquí con fecha y aceptación de las partes: <span class="linea larga"></span></p>
+
+<h2>DECIMOCUARTA – REPARACIONES Y MEJORAS</h2>
+<p>Las <b>reparaciones locativas</b> (desgaste por el uso, daños por mal uso, bombillos, cerraduras, llaves, griferías, mantenimiento menor) son a cargo del arrendatario. Las reparaciones <b>necesarias</b> no causadas por el arrendatario (estructura, techos, redes internas) son a cargo del arrendador, quien las hará una vez el arrendatario le avise por escrito y sin demora. No se harán mejoras ni cambios sin autorización escrita del arrendador, y las autorizadas no generan reembolso salvo pacto distinto.</p>
+
+<h2>DECIMOQUINTA – TERMINACIÓN POR EL ARRENDATARIO</h2>
+<p>El arrendatario puede terminar el contrato avisando por escrito al arrendador con un preaviso mínimo de <span class="fijo" data-key="preaviso">3</span> meses, con el preaviso e indemnización que fije la ley, y entregando el inmueble conforme a la cláusula novena. Seguirá pagando el canon y los servicios hasta la entrega efectiva.</p>
+
+<h2>DECIMOSEXTA – CENTRALES DE RIESGO</h2>
+<p>El arrendatario y el codeudor autorizan de forma expresa al arrendador a consultar su información financiera y a reportar el incumplimiento de las obligaciones de este contrato ante las centrales de riesgo, previo aviso conforme a la ley (Ley 1266 de 2008).</p>
+
+<h2>DECIMOSÉPTIMA – DOMICILIO Y EJEMPLARES</h2>
+<p>El domicilio contractual es <b>Carepa, Antioquia</b>. Este contrato se firma en <b>dos (2) ejemplares</b> del mismo tenor, uno para cada parte.</p>
+
+<p class="fila" style="margin-top:14px">En constancia se firma en <span class="linea"></span>, el <span class="linea corta"></span> de <span class="linea"></span> de <span class="linea corta"></span>.</p>
+
+<div class="firmas">
+  <div class="firma"><div class="raya"></div>ARRENDADOR<br>C.C. <span class="fijo" data-key="cc">39.405.410</span><div class="huella">Huella</div></div>
+  <div class="firma"><div class="raya"></div>ARRENDATARIO<br>C.C. <span class="linea corta"></span><div class="huella">Huella</div></div>
+  <div class="firma"><div class="raya"></div>CODEUDOR<br>C.C. <span class="linea corta"></span><div class="huella">Huella</div></div>
+</div>
+
+<div class="anexo">
+  <h2>ANEXO 1 – COPIA DE CÉDULA</h2>
+  <p>Anexar copia de la cédula del arrendatario y del codeudor, por ambos lados.</p>
+</div>
+
+<div class="anexo">
+  <h2>ANEXO 2 – INVENTARIO Y ESTADO DEL INMUEBLE</h2>
+  <p class="fila">Fecha de entrega: <span class="linea"></span></p>
+  <p class="fila">Lecturas de medidores &ndash; Agua: <span class="linea corta"></span> &nbsp; Energía: <span class="linea corta"></span> &nbsp; Gas: <span class="linea corta"></span></p>
+  <p>El inventario del estado del inmueble (puertas, pisos, paredes, baños, cocina, instalaciones, llaves, etc.) se hace así:</p>
+  <p class="sub">☐ <b>Digital:</b> fotos, videos y/o audios del estado del inmueble, <b>guardados en una carpeta compartida</b> (no se adjuntan al contrato). El arrendador envía el enlace de la carpeta al <b>correo electrónico del arrendatario</b> indicado en este contrato el día de la entrega. El envío y la recepción de ese correo quedan como prueba de que ambas partes conocen y aceptan el inventario.</p>
+  <p class="sub">☐ <b>Escrito:</b> descripción por espacios en las líneas de abajo, firmada por ambas partes. Si se hace por escrito, también es válido.</p>
+  <p>Pueden usarse las dos formas a la vez. Cada parte conservará copia del material.</p>
+  <p class="fila">Enlace de la carpeta compartida: <span class="linea larga"></span></p>
+  <p>Descripción escrita (opcional):</p>
+  <span class="nl"></span><span class="nl"></span><span class="nl"></span>
+  <p class="fila" style="margin-top:.6cm">Firma arrendador: <span class="linea"></span> &nbsp; Firma arrendatario: <span class="linea"></span></p>
+</div>
+
+
+</td></tr></tbody></table>
+<script>
+(function () {
+  var lineas = document.querySelectorAll('.linea');
+  var fijos = document.querySelectorAll('.fijo');
+  lineas.forEach(function (e) { e.setAttribute('contenteditable', 'true'); e.setAttribute('spellcheck', 'false'); });
+  fijos.forEach(function (e) { e.setAttribute('contenteditable', 'true'); e.setAttribute('spellcheck', 'false'); });
+  function leer(k) { try { return localStorage.getItem('contrato_' + k); } catch (x) { return null; } }
+  function guardar(k, v) { try { localStorage.setItem('contrato_' + k, v); } catch (x) {} }
+  fijos.forEach(function (e) {
+    var v = leer(e.dataset.key);
+    if (v) e.textContent = v;
+    e.addEventListener('input', function () {
+      var k = e.dataset.key, t = e.textContent;
+      guardar(k, t);
+      fijos.forEach(function (o) { if (o !== e && o.dataset.key === k) o.textContent = t; });
+    });
+  });
+  window.limpiar = function () {
+    if (confirm('¿Borrar los datos escritos del inquilino y del contrato (no los del propietario)?')) {
+      lineas.forEach(function (e) { e.textContent = ''; });
+    }
+  };
+})();
+</script>
+</body>
+</html>
