@@ -16,6 +16,7 @@ Archivo principal: `contrato.html` (página web editable; se descarga como PDF).
 - PDF en 4 páginas (5 si lleva codeudor y referencias a la vez), igual desde cualquier pantalla.
 - Página pública con GitHub Pages: https://gugiraldo.github.io/Contratos/
 - Menú del celular desplegable, con botones grandes.
+- **Cláusula decimoséptima, Normas de la vivienda** (las exigencias del arrendador): personas, visitas, servicios, mascotas, cambios, instalación eléctrica, cuidado, daños, comunicación, aseo del frente con casillas de días, video del recorrido y devolución. Se redactó para que lo importante sea **avisar**; el incumplimiento se maneja con la cláusula sexta, letra e) (aviso por escrito y plazo para corregir). "Domicilio y ejemplares" pasó a ser la decimoctava. PDF de 6 páginas.
 - Tiempos del contrato para elegir con un botón ▾: plazo (3, 6 o 12 meses, u otro escrito a mano) y día de pago (5 o 10, u otro). La prórroga sigue al plazo ("períodos iguales"). El preaviso queda fijo en el texto porque lo regula la ley.
 - Pie en cada hoja del PDF: nombres de las partes y "Hoja X de N" (como en las escrituras), para que no se pierda ni se cambie una hoja.
 - Fotos de la cédula (cara con la foto y cara con la huella) con la cámara; en el computador usa la cámara web. Se pueden girar, enderezar, acercar y encuadrar.
@@ -24,8 +25,8 @@ Archivo principal: `contrato.html` (página web editable; se descarga como PDF).
 
 ## Pendiente (en este orden de prioridad lo que falta)
 0. ~~Firma remota con las dos partes~~ **Decidido**: sin firma a distancia. Al interesado solo se le comparte el audio (y el enlace para leer); si decide tomarlo, confirma por teléfono/WhatsApp y la firma se hace **presencial** al día siguiente, llenando todo en el celular de la arrendadora (así el PDF final lleva las dos partes). Quien llega lleva el dinero completo que diga el contrato.
-1. **Sección de exigencias del arrendador**: condiciones que no se negocian, separadas de las demás. (Por definir con el dueño del contrato.)
-2. **Audio del contrato**: generarlo en NotebookLM (modo debate, con el prompt acordado) y publicarlo como `contrato-audio.mp3`.
+1. ~~Sección de exigencias del arrendador~~ Hecha (cláusula decimoséptima). Falta revisar si se quiere ajustar algo.
+2. **Audio del contrato**: generarlo en NotebookLM (modo debate, con el prompt acordado, cambiando "de la primera a la decimoséptima" por "decimoctava") y publicarlo como `contrato-audio.mp3`. Antes, decidir si se agrega el borrador de entrega y restitución (`BORRADOR-garantias-y-entrega.md`), que cambiaría la numeración otra vez.
 3. ~~Botón Compartir PDF y declaración "leí o escuché el contrato"~~ Hechos dentro del asistente de firma.
 4. Modo "solo leer y escuchar" para el enlace que se le envía al interesado (propuesto, por decidir).
 5. **PIN de acceso a la página — AL FINAL**, cuando el contrato esté completamente listo. Nota: un PIN escrito en una página pública no protege datos de verdad; la opción segura es cifrar el contrato con el PIN (ver conversación).
