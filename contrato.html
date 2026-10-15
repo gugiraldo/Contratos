@@ -367,8 +367,8 @@
 
 <div class="firmas">
   <div class="firma"><div class="pad pad-firma" data-titulo="Firma del arrendador" data-rol="arrendador"><span class="pad-ph">Toque aquí para firmar</span></div>ARRENDADOR<br>C.C. <span class="fijo" data-key="cc" data-ph="CÉDULA">39.405.410</span><div class="huella pad pad-huella" data-titulo="Huella del arrendador" data-rol="arrendador"><span class="pad-et">Huella</span><span class="pad-ph">Toque aquí para la huella (de la cédula)</span></div></div>
-  <div class="firma"><div class="pad pad-firma" data-titulo="Firma del arrendatario" data-rol="arrendatario"><span class="pad-ph">Toque aquí para firmar</span></div>ARRENDATARIO<br>C.C. <span class="linea corta"></span><div class="huella pad pad-huella" data-titulo="Huella del arrendatario" data-rol="arrendatario" data-slot="arr-dorso"><span class="pad-et">Huella</span><span class="pad-ph">Toque aquí para la huella (de la cédula)</span></div></div>
-  <div class="firma" data-si="codeudor"><div class="pad pad-firma" data-titulo="Firma del codeudor" data-rol="codeudor"><span class="pad-ph">Toque aquí para firmar</span></div>CODEUDOR<br>C.C. <span class="linea corta"></span><div class="huella pad pad-huella" data-titulo="Huella del codeudor" data-rol="codeudor" data-slot="cod-dorso"><span class="pad-et">Huella</span><span class="pad-ph">Toque aquí para la huella (de la cédula)</span></div></div>
+  <div class="firma"><div class="pad pad-firma" data-titulo="Firma del arrendatario" data-rol="arrendatario"><span class="pad-ph">Toque aquí para firmar</span></div>ARRENDATARIO<br>C.C. <span class="linea corta" data-espejo="arrendatario-cc"></span><div class="huella pad pad-huella" data-titulo="Huella del arrendatario" data-rol="arrendatario" data-slot="arr-dorso"><span class="pad-et">Huella</span><span class="pad-ph">Toque aquí para la huella (de la cédula)</span></div></div>
+  <div class="firma" data-si="codeudor"><div class="pad pad-firma" data-titulo="Firma del codeudor" data-rol="codeudor"><span class="pad-ph">Toque aquí para firmar</span></div>CODEUDOR<br>C.C. <span class="linea corta" data-espejo="codeudor-cc"></span><div class="huella pad pad-huella" data-titulo="Huella del codeudor" data-rol="codeudor" data-slot="cod-dorso"><span class="pad-et">Huella</span><span class="pad-ph">Toque aquí para la huella (de la cédula)</span></div></div>
 </div>
 
 <div class="anexo">
@@ -988,7 +988,16 @@
       pdf.text('Hoja ' + i + ' de ' + n, w - 13, h - 5.5, { align: 'right' });
     }
   }
+  // La cédula escrita arriba (datos de la persona) se copia sola al renglón de C.C. que está debajo de su firma
+  function espejarCC() {
+    ['arrendatario', 'codeudor'].forEach(function (r) {
+      var o = campo(r, 'cc'), d = document.querySelector('[data-espejo="' + r + '-cc"]');
+      if (o && d && d.textContent !== o.textContent) d.textContent = o.textContent;
+    });
+  }
+  document.addEventListener('input', espejarCC);
   function crearPDF() {
+    espejarCC();
     var hoja = document.querySelector('table.hoja').cloneNode(true);
     ['thead', 'tfoot'].forEach(function (t) { var x = hoja.querySelector(t); if (x) x.remove(); });
     hoja.querySelectorAll('[contenteditable]').forEach(function (e) { e.removeAttribute('contenteditable'); });
