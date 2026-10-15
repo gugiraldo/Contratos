@@ -24,6 +24,9 @@ Archivo principal: `contrato.html` (página web editable; se descarga como PDF).
 - Huella tomada de la foto de la cédula (se recorta con un recuadro); ya no hay huella dibujada.
 - **Asistente de firma paso a paso** (botón "Iniciar proceso de firma"): elegir quién firma → leer/escuchar y "Sí, lo acepto" (queda fecha y hora en el contrato) → datos → referencias → fotos de la cédula → huella → firma → resumen y PDF final (descargar o compartir). Sin selfie: se decidió que es incómodo; la cédula es el documento de identificación.
 
+- Por defecto el contrato viene con **referencias personales** marcadas y **codeudor** sin marcar. Cláusula cuarta: la prórroga puede ser de 6 o 12 meses si las partes lo acuerdan por escrito.
+- Texto y prompt para el **audio público** (NotebookLM, debate, enfocado en referencias, sin datos personales) entregados; falta que se genere y se suba el audio.
+
 ## Pendiente (en este orden de prioridad lo que falta)
 0. ~~Firma remota con las dos partes~~ **Decidido**: sin firma a distancia. Al interesado solo se le comparte el audio (y el enlace para leer); si decide tomarlo, confirma por teléfono/WhatsApp y la firma se hace **presencial** al día siguiente, llenando todo en el celular de la arrendadora (así el PDF final lleva las dos partes). Quien llega lleva el dinero completo que diga el contrato.
 1. ~~Sección de exigencias del arrendador~~ Hecha (cláusula decimoséptima). Falta revisar si se quiere ajustar algo.
