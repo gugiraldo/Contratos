@@ -25,15 +25,16 @@ Archivo principal: `contrato.html` (página web editable; se descarga como PDF).
 - **Asistente de firma paso a paso** (botón "Iniciar proceso de firma"): elegir quién firma → leer/escuchar y "Sí, lo acepto" (queda fecha y hora en el contrato) → datos → referencias → fotos de la cédula → huella → firma → resumen y PDF final (descargar o compartir). Sin selfie: se decidió que es incómodo; la cédula es el documento de identificación.
 
 - Por defecto el contrato viene con **referencias personales** marcadas y **codeudor** sin marcar. Cláusula cuarta: la prórroga puede ser de 6 o 12 meses si las partes lo acuerdan por escrito.
-- Texto y prompt para el **audio público** (NotebookLM, debate, enfocado en referencias, sin datos personales) entregados; falta que se genere y se suba el audio.
+- **Audio público** generado en NotebookLM (debate, 13 min, enfocado en referencias, dice "doña María") y publicado como `contrato-audio.mp3`; el botón "Escuchar el contrato" ya funciona.
+- **Decidido**: los datos de la arrendadora (nombre, cédula, dirección) quedan prellenados en la página pública; no hay PIN. Flujo: el interesado escucha el audio, habla con doña María y, si ambos están de acuerdo, se llenan los datos del inquilino y se firma en persona.
 
 ## Pendiente (en este orden de prioridad lo que falta)
 0. ~~Firma remota con las dos partes~~ **Decidido**: sin firma a distancia. Al interesado solo se le comparte el audio (y el enlace para leer); si decide tomarlo, confirma por teléfono/WhatsApp y la firma se hace **presencial** al día siguiente, llenando todo en el celular de la arrendadora (así el PDF final lleva las dos partes). Quien llega lleva el dinero completo que diga el contrato.
 1. ~~Sección de exigencias del arrendador~~ Hecha (cláusula decimoséptima). Falta revisar si se quiere ajustar algo.
-2. **Audio del contrato**: generarlo en NotebookLM (modo debate, con el prompt acordado, cambiando "de la primera a la decimoséptima" por "decimoctava") y publicarlo como `contrato-audio.mp3`. Antes, decidir si se agrega el borrador de entrega y restitución (`BORRADOR-garantias-y-entrega.md`), que cambiaría la numeración otra vez.
+2. ~~Audio del contrato~~ Hecho. (Antes: generarlo en NotebookLM (modo debate, con el prompt acordado, cambiando "de la primera a la decimoséptima" por "decimoctava") y publicarlo como `contrato-audio.mp3`. Antes, decidir si se agrega el borrador de entrega y restitución (`BORRADOR-garantias-y-entrega.md`), que cambiaría la numeración otra vez.)
 3. ~~Botón Compartir PDF y declaración "leí o escuché el contrato"~~ Hechos dentro del asistente de firma.
 4. Modo "solo leer y escuchar" para el enlace que se le envía al interesado (propuesto, por decidir).
-5. **PIN de acceso a la página — AL FINAL**, cuando el contrato esté completamente listo. Nota: un PIN escrito en una página pública no protege datos de verdad; la opción segura es cifrar el contrato con el PIN (ver conversación).
+5. ~~PIN de acceso a la página~~ **Descartado por ahora** (datos de la arrendadora prellenados a propósito). Nota original, cuando el contrato esté completamente listo. Nota: un PIN escrito en una página pública no protege datos de verdad; la opción segura es cifrar el contrato con el PIN (ver conversación).
 6. ~~Publicación para el arrendatario~~ Hecho con GitHub Pages sobre el repositorio `Contratos` (público).
 
 ## Sobre el depósito (decidido)
