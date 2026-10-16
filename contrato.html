@@ -1294,9 +1294,6 @@
       cu.appendChild(el('p', 'asis-sub', 'Lugar y fecha de la firma'));
       entrada(cu, lin('ciudad-firma'), 'Ciudad donde se firma', { tipo: 'text', cambio: cambio });
       entradaFecha(cu, lin('fecha-firma'), 'Fecha de la firma', cambio);
-      cu.appendChild(el('p', 'asis-sub', 'Otras condiciones (normalmente no se cambian)'));
-      elegir(cu, 'Cláusula penal: equivale a cuántos cánones', 'penal', ['1', '2'], ' × canon', cambio);
-      elegir(cu, 'Preaviso mínimo para que el arrendatario termine', 'preaviso', ['3'], ' meses', cambio);
     },
     convivencia: function (cu, rol, cambio) {
       elegir(cu, 'Máximo de personas que pueden vivir en el apartamento', 'personas', ['2', '3', '4', '5'], ' personas', cambio);
