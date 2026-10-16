@@ -25,6 +25,10 @@
   .fijo { font-weight: bold; }
   .firmas { display: flex; gap: 1.2cm; margin-top: 1.2cm; }
   .firma { flex: 1; text-align: center; font-size: 11pt; line-height: 1.4; }
+  .notas { display: block; min-height: 5.4em; line-height: 1.8em; white-space: pre-wrap; overflow-wrap: anywhere; margin: 6px 0 8px; background-image: repeating-linear-gradient(to bottom, transparent 0, transparent calc(1.8em - 1px), #000 calc(1.8em - 1px), #000 1.8em); background-attachment: local; }
+  .notas[contenteditable] { cursor: text; }
+  .notas[contenteditable]:focus { background-color: #fff8c5; background-image: repeating-linear-gradient(to bottom, transparent 0, transparent calc(1.8em - 1px), #000 calc(1.8em - 1px), #000 1.8em); }
+  .asis-caja textarea { width: 100%; padding: 11px; font: 16px Arial, sans-serif; border: 1px solid #94a3b8; border-radius: 8px; box-sizing: border-box; resize: vertical; }
   .nl { display: block; border-bottom: 1px solid #000; height: 1.2em; margin: 8px 0; min-width: 0; }
   .firma .raya { border-top: 1px solid #000; margin-bottom: 4px; height: 1.2cm; }
   .huella { width: 2.2cm; height: 2.8cm; border: 1px solid #000; margin: 6px auto 0; font-size: 8pt; display: flex; align-items: flex-end; justify-content: center; }
@@ -422,7 +426,7 @@
   <p>Pueden usarse las dos formas a la vez. Cada parte conservará copia del material.</p>
   <p class="fila">Enlace de la carpeta compartida: <span class="linea larga min" data-campo="enlace-carpeta"></span></p>
   <p>Descripción escrita (opcional):</p>
-  <span class="nl"></span><span class="nl"></span><span class="nl"></span>
+  <div class="notas" data-campo="notas-inventario"></div>
   <div class="firmas-anexo">
     <div>Firma arrendador:<div class="pad pad-firma" data-titulo="Firma del arrendador (inventario)" data-inv="arrendador"><span class="pad-ph">Toque aquí para firmar</span></div></div>
     <div>Firma arrendatario:<div class="pad pad-firma" data-titulo="Firma del arrendatario (inventario)" data-inv="arrendatario"><span class="pad-ph">Toque aquí para firmar</span></div></div>
@@ -441,6 +445,7 @@
   var fijos = document.querySelectorAll('.fijo');
   lineas.forEach(function (e) { e.setAttribute('contenteditable', 'true'); e.setAttribute('spellcheck', 'false'); });
   fijos.forEach(function (e) { e.setAttribute('contenteditable', 'true'); e.setAttribute('spellcheck', 'false'); });
+  document.querySelectorAll('.notas').forEach(function (e) { e.setAttribute('contenteditable', 'true'); });
   function leer(k) { try { return localStorage.getItem('contrato_' + k); } catch (x) { return null; } }
   function guardar(k, v) { try { localStorage.setItem('contrato_' + k, v); } catch (x) {} }
   fijos.forEach(function (e) {
@@ -1010,6 +1015,7 @@
   document.getElementById('btnNo').addEventListener('click', function () { pedir(false); });
   document.getElementById('btnSi').addEventListener('click', function () {
     lineas.forEach(function (e) { e.textContent = ''; });
+    document.querySelectorAll('.notas').forEach(function (e) { e.textContent = ''; });
     document.querySelectorAll('.chk input').forEach(function (c) { c.checked = false; });
     pads.forEach(borrarPad);
     aplicarPredeterminados();
@@ -1052,6 +1058,13 @@
     var hoja = document.querySelector('table.hoja').cloneNode(true);
     ['thead', 'tfoot'].forEach(function (t) { var x = hoja.querySelector(t); if (x) x.remove(); });
     hoja.querySelectorAll('[contenteditable]').forEach(function (e) { e.removeAttribute('contenteditable'); });
+    // Notas del inventario: en el PDF cada renglón lleva su raya (mínimo 3 renglones)
+    hoja.querySelectorAll('.notas').forEach(function (e, i) {
+      var o = document.querySelectorAll('.notas')[i], l = (o ? o.innerText : '').replace(/\n+$/, '').split('\n');
+      while (l.length < 3) l.push('');
+      e.textContent = ''; e.style.cssText = 'background:none;min-height:0;';
+      l.forEach(function (t) { var d = el('div', 'nl', t); d.style.cssText = 'height:auto;min-height:1.2em;line-height:1.3;'; e.appendChild(d); });
+    });
     var orig = document.querySelectorAll('table.hoja .chk input');
     hoja.querySelectorAll('.chk input').forEach(function (c, i) {
       var marca = document.createElement('span');
@@ -1091,7 +1104,7 @@
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', scrollX: 0, scrollY: 0, windowWidth: Math.max(760, window.innerWidth) },
       jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' },
-      pagebreak: { mode: ['css', 'legacy'], avoid: ['.clausula', '.firmas', '.firmas-anexo', '.cedulas', '.datos', 'p', '.nl'] }
+      pagebreak: { mode: ['css', 'legacy'], avoid: ['.clausula', '.firmas', '.firmas-anexo', '.cedulas', '.datos', 'p', '.nl', '.notas'] }
     }).from(hoja).toContainer().then(function () {
       // la librería centra la hoja y la recorta en pantallas angostas: se alinea a la izquierda
       var ct = document.querySelector('.html2pdf__container');
@@ -1331,6 +1344,12 @@
       casilla(cu, document.querySelector('input[data-form="digital"]'), 'Digital: fotos, videos o audios en una carpeta compartida', cambio);
       casilla(cu, document.querySelector('input[data-form="escrito"]'), 'Escrito: descripción firmada por ambas partes', cambio);
       entrada(cu, lin('enlace-carpeta'), 'Enlace de la carpeta compartida (si es digital)', { tipo: 'text', minusculas: true, cambio: cambio });
+      cu.appendChild(el('label', 'asis-campo', 'Notas del inventario (opcional)'));
+      cu.appendChild(el('p', null, 'Por ejemplo: qué carpeta es, qué contiene (fotos del baño, video del recorrido) o detalles del estado del apartamento.'));
+      var ta = document.createElement('textarea'); ta.rows = 5;
+      ta.value = lin('notas-inventario').innerText.replace(/\n+$/, '');
+      ta.addEventListener('input', function () { lin('notas-inventario').textContent = ta.value; cambio(); });
+      cu.appendChild(ta);
     },
     revisar: function (cu, rol, cambio) {
       var todo = condListas() && convListas() && anexoListo();
