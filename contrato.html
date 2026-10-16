@@ -104,6 +104,10 @@
   .volver-proceso { position: fixed; right: 12px; bottom: 12px; z-index: 95; padding: 14px 18px; font-size: 15px; font-weight: bold; border-radius: 28px; border: 0; background: #2563eb; color: #fff; box-shadow: 0 4px 14px rgba(0,0,0,.35); cursor: pointer; }
   @media print { .asistente, .volver-proceso, .inicio-proceso { display: none !important; } }
   @media (max-width: 640px) { #btnProceso { grid-column: 1 / -1; order: 0; font-size: 15px; } }
+  .asis-sel { padding: 11px 6px; font-size: 16px; border: 1px solid #94a3b8; border-radius: 8px; background: #fff; color: #0f172a; min-height: 46px; flex: 1 1 90px; }
+  .asis-caja input.asis-otro { width: 96px; flex: none; }
+  .asis-sub { margin: 18px 0 2px; padding-top: 10px; border-top: 1px solid #e2e8f0; font-weight: bold; color: #475569; }
+  .fijo[data-key="canonletras"] { text-transform: uppercase; }
   .opcwrap { position: relative; display: inline-block; }
   .btnopc { border: 1px solid #94a3b8; background: #f1f5f9; border-radius: 4px; font-size: 11px; padding: 0 5px; margin-left: 3px; cursor: pointer; vertical-align: middle; line-height: 1.5; color: #0f172a; }
   .menu-opc { position: absolute; left: 0; top: 100%; z-index: 30; background: #fff; border: 1px solid #94a3b8; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,.25); padding: 4px; display: flex; flex-direction: column; min-width: 150px; font: 14px Arial, sans-serif; white-space: nowrap; }
@@ -276,13 +280,13 @@
 <p>El arrendador entrega en arrendamiento al arrendatario el inmueble ubicado en <span class="fijo" data-key="direccion" data-ph="DIRECCIÓN DEL INMUEBLE">CR 65B N.° 67-36, Carepa, Antioquia (por la 2.ª calle de La Empedrada, finalizando la cuadra subiendo)</span>, destinado <b>exclusivamente a vivienda</b>. Su estado consta en el inventario del Anexo 2, que puede ser <b>digital (fotos, videos y audios en una carpeta compartida enviada al correo del arrendatario) o escrito</b>; ambas formas son válidas como prueba.</p>
 
 <h2>SEGUNDA – CANON</h2>
-<p>El canon mensual es de <span style="white-space:nowrap">$ <span class="linea corta"></span> (<span class="linea larga"></span> pesos)</span>, pagadero dentro de los primeros <span class="fijo" data-key="diapago">5</span> días de cada mes, <b>en efectivo o por transferencia</b>, según lo acuerden las partes. El <b>primer canon</b> se paga por anticipado, al momento de recibir el inmueble; ese pago corresponde al primer mes de arriendo y no a otra suma. Todo pago se soporta con recibo o comprobante. El canon no excederá el 1 % del valor comercial del inmueble (art. 18, Ley 820 de 2003).</p>
+<p>El canon mensual es de <span style="white-space:nowrap">$ <span class="fijo" data-key="canon" data-ph="VALOR">400.000</span> (<span class="fijo" data-key="canonletras" data-ph="EN LETRAS">cuatrocientos mil</span> pesos)</span>, pagadero dentro de los primeros <span class="fijo" data-key="diapago">5</span> días de cada mes, <b>en efectivo o por transferencia</b>, según lo acuerden las partes. El <b>primer canon</b> se paga por anticipado, al momento de recibir el inmueble; ese pago corresponde al primer mes de arriendo y no a otra suma. Todo pago se soporta con recibo o comprobante. El canon no excederá el 1 % del valor comercial del inmueble (art. 18, Ley 820 de 2003).</p>
 
 <h2>TERCERA – REAJUSTE</h2>
 <p>Cada doce (12) meses el canon se reajustará hasta en un porcentaje que no supere el 100 % del IPC del año anterior (art. 20, Ley 820 de 2003).</p>
 
 <h2>CUARTA – PLAZO</h2>
-<p>El plazo es de <span class="fijo" data-key="plazo">3</span> meses, contado desde el <span class="fecha"><span class="linea"></span><button type="button" class="btnfecha" title="Elegir fecha en el calendario" aria-label="Elegir fecha">📅</button></span>. Al vencer, el contrato se prorroga <b>automáticamente por periodos iguales</b> de <span class="fijo" data-key="plazo2">3</span> meses, en las mismas condiciones, mientras ninguna de las partes avise por escrito su no renovación con la antelación que fija la ley (art. 22 y siguientes, Ley 820 de 2003). Si las partes lo acuerdan por escrito, las prórrogas pueden ser de seis (6) o doce (12) meses.</p>
+<p>El plazo es de <span class="fijo" data-key="plazo">3</span> meses, contado desde el <span class="fecha"><span class="linea" data-campo="fecha-inicio"></span><button type="button" class="btnfecha" title="Elegir fecha en el calendario" aria-label="Elegir fecha">📅</button></span>. Al vencer, el contrato se prorroga <b>automáticamente por periodos iguales</b> de <span class="fijo" data-key="plazo2">3</span> meses, en las mismas condiciones, mientras ninguna de las partes avise por escrito su no renovación con la antelación que fija la ley (art. 22 y siguientes, Ley 820 de 2003). Si las partes lo acuerdan por escrito, las prórrogas pueden ser de seis (6) o doce (12) meses.</p>
 
 <h2>QUINTA – SERVICIOS PÚBLICOS</h2>
 <p>Los servicios públicos del inmueble de pago mensual (agua, energía, gas, aseo, internet y los demás) están a cargo del arrendatario y los pagará oportunamente. Entregará copia del recibo cancelado cuando el arrendador lo solicite. El arrendatario <b>no podrá alterar, manipular, puentear ni retirar</b> medidores, sellos ni dispositivos externos de los servicios.</p>
@@ -315,7 +319,7 @@
 <p>Este contrato presta mérito ejecutivo para exigir el pago de las obligaciones aquí contenidas.</p>
 
 <h2>DECIMOTERCERA – CONVIVENCIA Y OCUPANTES</h2>
-<p>Está prohibido destinar el inmueble a <b>actividades ilícitas</b> y generar <b>ruido excesivo</b> o conductas que perturben a los vecinos. El inmueble será habitado por un máximo de <span class="linea corta"></span> personas: <span class="linea larga"></span>. Cualquier cambio en el número de ocupantes requiere autorización del arrendador, que se anota aquí con fecha y aceptación de las partes: <span class="linea larga"></span></p>
+<p>Está prohibido destinar el inmueble a <b>actividades ilícitas</b> y generar <b>ruido excesivo</b> o conductas que perturben a los vecinos. El inmueble será habitado por un máximo de <span class="fijo" data-key="personas">4</span> personas: <span class="linea larga" data-campo="ocupantes"></span>. Cualquier cambio en el número de ocupantes requiere autorización del arrendador, que se anota aquí con fecha y aceptación de las partes: <span class="linea larga"></span></p>
 
 <h2>DECIMOCUARTA – REPARACIONES Y MEJORAS</h2>
 <p>Las <b>reparaciones locativas</b> (desgaste por el uso, daños por mal uso, bombillos, cerraduras, llaves, griferías, mantenimiento menor) son a cargo del arrendatario. Las reparaciones <b>necesarias</b> no causadas por el arrendatario (estructura, techos, redes internas) son a cargo del arrendador, quien las hará una vez el arrendatario le avise por escrito y sin demora. No se harán mejoras ni cambios sin autorización escrita del arrendador, y las autorizadas no generan reembolso salvo pacto distinto.</p>
@@ -329,7 +333,7 @@
 <h2>DECIMOSÉPTIMA – NORMAS DE LA VIVIENDA</h2>
 <p>Para vivir bien en la vivienda y cuidarla, las partes acuerdan estas normas. Si alguna no se cumple, se maneja como dice la cláusula sexta, letra e): primero el arrendador avisa por escrito y el arrendatario tiene un plazo para corregirlo.</p>
 <div class="normas">
-<p class="sub"><b>1. Personas.</b> En la vivienda pueden vivir hasta cuatro (4) personas, adultos o niños, identificadas en la cláusula decimotercera.</p>
+<p class="sub"><b>1. Personas.</b> En la vivienda pueden vivir hasta <span class="fijo" data-key="personasletras">cuatro</span> (<span class="fijo" data-key="personas">4</span>) personas, adultos o niños, identificadas en la cláusula decimotercera.</p>
 <p class="sub"><b>2. Visitas.</b> Las visitas son normales y bienvenidas. Si una visita va a quedarse a dormir, el arrendatario avisa al arrendador, diciendo más o menos cuántas personas son y cuántas noches se quedan, para que se sepa que hay alguien nuevo en el inmueble. Si una persona va a vivir allí de hecho, el arrendatario pide autorización. Si una persona adicional se queda más de quince (15) días sin avisar ni ser autorizada, es causal de terminación del contrato.</p>
 <p class="sub"><b>3. Forma de los servicios.</b> La forma de cada servicio (por ejemplo, agua por factura, gas por pipeta, energía recargable) es la que se marca en el Anexo 2.</p>
 <p class="sub"><b>4. Pago de los servicios.</b> El arrendatario los paga en su fecha. Si por una razón justificada no alcanza a pagar uno, avisa al arrendador ese mismo día, deja el dinero apartado y lo paga en cuanto le sea posible, siempre antes de completar un (1) mes de atraso. Si el servicio se corta por falta de pago, el arrendatario asume los costos de reconexión.</p>
@@ -340,7 +344,7 @@
 <p class="sub"><b>9. Para colgar cosas.</b> No se usan clavos: se usa chazo, y los huecos pequeños se resanan al salir.</p>
 <p class="sub"><b>10. Daños.</b> Los daños causados por el arrendatario los repara él, a su costo, con autorización previa del arrendador. Si algo es urgente, avisa y evita que el daño crezca.</p>
 <p class="sub"><b>11. Comunicación.</b> El arrendatario avisa toda novedad. Lo urgente (fugas de agua, daños graves) se avisa de inmediato por llamada, y lo que no es urgente (gustos, mejoras) por WhatsApp para decidirlo juntos.</p>
-<p class="sub"><b>12. Aseo del frente.</b> El arrendatario mantiene limpio el frente y el andén de la vivienda los días que se acuerden al firmar, según su horario de trabajo. Días a cargo del arrendatario: <label class="chk"><input type="checkbox"> Lunes</label> <label class="chk"><input type="checkbox"> Martes</label> <label class="chk"><input type="checkbox"> Miércoles</label> <label class="chk"><input type="checkbox"> Jueves</label> <label class="chk"><input type="checkbox"> Viernes</label> <label class="chk"><input type="checkbox"> Sábado</label> <label class="chk"><input type="checkbox"> Domingo</label> Los demás días lo hace el arrendador. Si el arrendatario no puede ningún día fijo, lo acuerdan así: <span class="linea larga"></span></p>
+<p class="sub"><b>12. Aseo del frente.</b> El arrendatario mantiene limpio el frente y el andén de la vivienda los días que se acuerden al firmar, según su horario de trabajo. Días a cargo del arrendatario: <label class="chk"><input type="checkbox" data-dia="lunes"> Lunes</label> <label class="chk"><input type="checkbox" data-dia="martes"> Martes</label> <label class="chk"><input type="checkbox" data-dia="miercoles"> Miércoles</label> <label class="chk"><input type="checkbox" data-dia="jueves"> Jueves</label> <label class="chk"><input type="checkbox" data-dia="viernes"> Viernes</label> <label class="chk"><input type="checkbox" data-dia="sabado"> Sábado</label> <label class="chk"><input type="checkbox" data-dia="domingo"> Domingo</label> Los demás días lo hace el arrendador. Si el arrendatario no puede ningún día fijo, lo acuerdan así: <span class="linea larga" data-campo="aseo-otro"></span></p>
 <p class="sub"><b>13. Video del recorrido.</b> Al entregar y al devolver el inmueble se graba un video del recorrido, que guardan ambas partes.</p>
 <p class="sub"><b>14. Devolución.</b> El arrendatario devuelve la vivienda como la recibió, salvo el desgaste normal por el uso. Se pinta solo si hay manchas, rayones o daños, o si se cambió el color.</p>
 </div>
@@ -392,31 +396,35 @@
 
 <div class="anexo">
   <h2>ANEXO 2 – INVENTARIO Y ESTADO DEL INMUEBLE</h2>
-  <p class="fila">Fecha de entrega: <span class="fecha"><span class="linea"></span><button type="button" class="btnfecha" title="Elegir fecha en el calendario" aria-label="Elegir fecha">📅</button></span></p>
+  <p class="fila">Fecha de entrega: <span class="fecha"><span class="linea" data-campo="fecha-entrega"></span><button type="button" class="btnfecha" title="Elegir fecha en el calendario" aria-label="Elegir fecha">📅</button></span></p>
   <p><b>Servicios y lecturas de medidores</b> (marque lo que aplique):</p>
   <p class="fila medidor"><span class="et">Agua:</span>
-    <label class="chk"><input type="checkbox" data-grupo="agua"> Aplica</label>
+    <label class="chk"><input type="checkbox" data-grupo="agua" data-pre="1"> Aplica</label>
     <label class="chk"><input type="checkbox" data-grupo="agua"> No aplica</label>
-    Lectura: <span class="linea corta"></span></p>
+    Forma: <label class="chk"><input type="checkbox" data-grupo="agua-forma" data-pre="1"> Por factura</label>
+    <label class="chk"><input type="checkbox" data-grupo="agua-forma"> Recargable</label>
+    Lectura: <span class="linea corta" data-campo="lec-agua"></span></p>
   <p class="fila medidor"><span class="et">Energía:</span>
-    <label class="chk"><input type="checkbox" data-grupo="energia"> Aplica</label>
+    <label class="chk"><input type="checkbox" data-grupo="energia" data-pre="1"> Aplica</label>
     <label class="chk"><input type="checkbox" data-grupo="energia"> No aplica</label>
-    Lectura: <span class="linea corta"></span></p>
+    Forma: <label class="chk"><input type="checkbox" data-grupo="energia-forma"> Por factura</label>
+    <label class="chk"><input type="checkbox" data-grupo="energia-forma" data-pre="1"> Recargable</label>
+    Lectura: <span class="linea corta" data-campo="lec-energia"></span></p>
   <p class="fila medidor"><span class="et">Gas:</span>
     <label class="chk"><input type="checkbox" data-grupo="gas"> Por red (con medidor)</label>
-    <label class="chk"><input type="checkbox" data-grupo="gas"> Pipeta (la compra el arrendatario)</label>
+    <label class="chk"><input type="checkbox" data-grupo="gas" data-pre="1"> Pipeta (la compra el arrendatario)</label>
     <label class="chk"><input type="checkbox" data-grupo="gas"> No aplica</label></p>
-  <p class="fila medidor sub">Lectura del medidor de gas (solo si es por red): <span class="linea corta"></span></p>
+  <p class="fila medidor sub">Lectura del medidor de gas (solo si es por red): <span class="linea corta" data-campo="lec-gas"></span></p>
   <p>El inventario del estado del inmueble (puertas, pisos, paredes, baños, cocina, instalaciones, llaves, etc.) se hace así:</p>
-  <p class="sub"><label class="chk"><input type="checkbox"> <span><b>Digital:</b></span></label> fotos, videos y/o audios del estado del inmueble, <b>guardados en una carpeta compartida</b> (no se adjuntan al contrato). El arrendador envía el enlace de la carpeta al <b>correo electrónico del arrendatario</b> indicado en este contrato el día de la entrega. El envío y la recepción de ese correo quedan como prueba de que ambas partes conocen y aceptan el inventario.</p>
-  <p class="sub"><label class="chk"><input type="checkbox"> <span><b>Escrito:</b></span></label> descripción por espacios en las líneas de abajo, firmada por ambas partes. Si se hace por escrito, también es válido.</p>
+  <p class="sub"><label class="chk"><input type="checkbox" data-form="digital" data-pre="1"> <span><b>Digital:</b></span></label> fotos, videos y/o audios del estado del inmueble, <b>guardados en una carpeta compartida</b> (no se adjuntan al contrato). El arrendador envía el enlace de la carpeta al <b>correo electrónico del arrendatario</b> indicado en este contrato el día de la entrega. El envío y la recepción de ese correo quedan como prueba de que ambas partes conocen y aceptan el inventario.</p>
+  <p class="sub"><label class="chk"><input type="checkbox" data-form="escrito"> <span><b>Escrito:</b></span></label> descripción por espacios en las líneas de abajo, firmada por ambas partes. Si se hace por escrito, también es válido.</p>
   <p>Pueden usarse las dos formas a la vez. Cada parte conservará copia del material.</p>
-  <p class="fila">Enlace de la carpeta compartida: <span class="linea larga min"></span></p>
+  <p class="fila">Enlace de la carpeta compartida: <span class="linea larga min" data-campo="enlace-carpeta"></span></p>
   <p>Descripción escrita (opcional):</p>
   <span class="nl"></span><span class="nl"></span><span class="nl"></span>
   <div class="firmas-anexo">
-    <div>Firma arrendador:<div class="pad pad-firma" data-titulo="Firma del arrendador (inventario)"><span class="pad-ph">Toque aquí para firmar</span></div></div>
-    <div>Firma arrendatario:<div class="pad pad-firma" data-titulo="Firma del arrendatario (inventario)"><span class="pad-ph">Toque aquí para firmar</span></div></div>
+    <div>Firma arrendador:<div class="pad pad-firma" data-titulo="Firma del arrendador (inventario)" data-inv="arrendador"><span class="pad-ph">Toque aquí para firmar</span></div></div>
+    <div>Firma arrendatario:<div class="pad pad-firma" data-titulo="Firma del arrendatario (inventario)" data-inv="arrendatario"><span class="pad-ph">Toque aquí para firmar</span></div></div>
   </div>
 </div>
 
@@ -443,18 +451,51 @@
       guardar(k, t === '' ? '__vacio__' : t);
       fijos.forEach(function (o) { if (o !== e && o.dataset.key === k) o.textContent = t; });
       if (ENLACE[k]) fijar(ENLACE[k], t);
+      if (DERIVA[k]) fijar(DERIVA[k][0], DERIVA[k][1](t));
     });
   });
   // La prórroga es "por periodos iguales": sigue siempre al plazo inicial
   var ENLACE = { plazo: 'plazo2' };
+  // Números en letras: el canon y el número de personas escriben solos su texto
+  function enLetras(n) {
+    var U = ['cero', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve', 'veinte', 'veintiuno', 'veintidós', 'veintitrés', 'veinticuatro', 'veinticinco', 'veintiséis', 'veintisiete', 'veintiocho', 'veintinueve'];
+    var D = ['', '', '', 'treinta', 'cuarenta', 'cincuenta', 'sesenta', 'setenta', 'ochenta', 'noventa'];
+    var C = ['', 'ciento', 'doscientos', 'trescientos', 'cuatrocientos', 'quinientos', 'seiscientos', 'setecientos', 'ochocientos', 'novecientos'];
+    function menosMil(x) {
+      if (x === 100) return 'cien';
+      var c = Math.floor(x / 100), r = x % 100, t = [];
+      if (c) t.push(C[c]);
+      if (r) { if (r < 30) t.push(U[r]); else { var d = Math.floor(r / 10), u = r % 10; t.push(D[d] + (u ? ' y ' + U[u] : '')); } }
+      return t.join(' ');
+    }
+    function apocope(x) { return menosMil(x).replace(/veintiuno$/, 'veintiún').replace(/uno$/, 'un'); }
+    if (n === 0) return 'cero';
+    var partes = [], mill = Math.floor(n / 1000000), miles = Math.floor((n % 1000000) / 1000), resto = n % 1000;
+    if (mill) partes.push(mill === 1 ? 'un millón' : apocope(mill) + ' millones');
+    if (mill && !miles && !resto) partes.push('de');
+    if (miles) partes.push(miles === 1 ? 'mil' : apocope(miles) + ' mil');
+    if (resto) partes.push(menosMil(resto));
+    return partes.join(' ');
+  }
+  function numDe(t) { var n = parseInt(String(t).replace(/\D/g, ''), 10); return n > 0 && n < 1000000000 ? n : 0; }
+  var DERIVA = {
+    canon: ['canonletras', function (t) { var n = numDe(t); return n ? enLetras(n) : ''; }],
+    personas: ['personasletras', function (t) { var n = numDe(t); return n ? enLetras(n) : ''; }]
+  };
   function fijar(k, t) {
     document.querySelectorAll('.fijo[data-key="' + k + '"]').forEach(function (o) { o.textContent = t; });
     guardar(k, t === '' ? '__vacio__' : t);
     if (ENLACE[k]) fijar(ENLACE[k], t);
+    if (DERIVA[k]) fijar(DERIVA[k][0], DERIVA[k][1](t));
   }
   var plazoIni = document.querySelector('.fijo[data-key="plazo"]');
   if (plazoIni) fijar('plazo2', plazoIni.textContent);
   document.querySelectorAll('.fijo[data-key="plazo2"]').forEach(function (e) { e.setAttribute('contenteditable', 'false'); });
+  Object.keys(DERIVA).forEach(function (k) {
+    document.querySelectorAll('.fijo[data-key="' + DERIVA[k][0] + '"]').forEach(function (e) { e.setAttribute('contenteditable', 'false'); });
+    var f = document.querySelector('.fijo[data-key="' + k + '"]');
+    if (f) fijar(DERIVA[k][0], DERIVA[k][1](f.textContent));
+  });
 
   // Botón ▾ con opciones para elegir (también se puede escribir otro valor a mano)
   var OPCIONES = { plazo: { valores: ['3', '6', '12'], unidad: ' meses' }, diapago: { valores: ['5', '10'], unidad: ' días' } };
@@ -952,6 +993,14 @@
     catch (x) { decir('No se pudo abrir la impresión aquí. Use "Descargar PDF".'); }
   });
 
+  // Valores que ya vienen marcados o escritos (se pueden cambiar); también vuelven al limpiar
+  function aplicarPredeterminados() {
+    document.querySelectorAll('input[data-pre]').forEach(function (c) { c.checked = true; });
+    var ciudad = document.querySelector('[data-campo="ciudad-firma"]');
+    if (ciudad && !ciudad.textContent.trim()) ciudad.textContent = 'Carepa';
+  }
+  aplicarPredeterminados();
+
   // Limpiar datos del inquilino (confirmación dentro de la página, sin confirm())
   var btnLimpiar = document.getElementById('btnLimpiar');
   var cuadro = document.getElementById('confirmar');
@@ -962,6 +1011,7 @@
     lineas.forEach(function (e) { e.textContent = ''; });
     document.querySelectorAll('.chk input').forEach(function (c) { c.checked = false; });
     pads.forEach(borrarPad);
+    aplicarPredeterminados();
     pedir(false);
     decir('Datos del inquilino borrados.');
   });
@@ -1082,13 +1132,13 @@
 
   // ===== Asistente de firma: paso a paso =====
   var ROLES = {
-    arrendatario: { titulo: 'Arrendatario (quien va a arrendar)', datos: true, fotos: true, refs: true },
+    arrendatario: { titulo: 'Arrendatario (quien va a arrendar)', datos: true, fotos: true, refs: true, revisar: true, inv: true },
     codeudor: { titulo: 'Codeudor', datos: true, fotos: true, refs: false },
-    arrendador: { titulo: 'Arrendador (propietaria)', datosArr: true, fotos: false, refs: false }
+    arrendador: { titulo: 'Arrendador (propietaria)', datosArr: true, fotos: false, refs: false, cond: true, inv: true }
   };
   var PREFIJO = { arrendatario: 'arr', codeudor: 'cod' };
   var CAMPOS_PERSONA = [['nombre', 'Nombre completo', 'text'], ['cc', 'Cédula de ciudadanía (solo números)', 'tel'], ['expedida', 'Cédula expedida en (ciudad)', 'text'], ['telefono', 'Teléfono celular', 'tel'], ['correo', 'Correo electrónico', 'email']];
-  var TITULOS = { aceptar: 'Lea o escuche el contrato', datosArr: 'Datos del arrendador', datos: 'Sus datos', refs: 'Referencias personales', frente: 'Cédula: cara con su foto', dorso: 'Cédula: cara con su huella', huella: 'Su huella', firma: 'Su firma', resumen: 'Resumen y PDF final' };
+  var TITULOS = { aceptar: 'Lea o escuche el contrato', datosArr: 'Datos del arrendador', condiciones: 'Condiciones del arriendo', convivencia: 'Personas y aseo del frente', anexo: 'Entrega, servicios e inventario', revisar: 'Revise las condiciones', firmaInv: 'Firma del inventario', datos: 'Sus datos', refs: 'Referencias personales', frente: 'Cédula: cara con su foto', dorso: 'Cédula: cara con su huella', huella: 'Su huella', firma: 'Su firma', resumen: 'Resumen y PDF final' };
   var asis = null;
   var cont = document.getElementById('asistente'), flotante = document.getElementById('volverProceso');
 
@@ -1100,6 +1150,13 @@
   function datosListos(rol) { return !!(txt(campo(rol, 'nombre')) && txt(campo(rol, 'cc')) && txt(campo(rol, 'telefono'))); }
   function refsListas() { return ['r1', 'r2'].every(function (r) { return txt(campo('referencias', r + '-nombre')) && txt(campo('referencias', r + '-telefono')); }); }
   function datosArrListos() { return !!(txt(document.querySelector('.fijo[data-key="nombre"]')) && txt(document.querySelector('.fijo[data-key="cc"]'))); }
+  function lin(n) { return document.querySelector('[data-campo="' + n + '"]'); }
+  function fj(k) { return document.querySelector('.fijo[data-key="' + k + '"]'); }
+  function diasAseo() { return Array.prototype.slice.call(document.querySelectorAll('input[data-dia]')); }
+  function condListas() { return !!(txt(fj('canon')) && txt(fj('diapago')) && txt(fj('plazo')) && txt(lin('fecha-inicio')) && txt(lin('ciudad-firma')) && txt(lin('fecha-firma'))); }
+  function convListas() { return !!(txt(fj('personas')) && (diasAseo().some(function (c) { return c.checked; }) || txt(lin('aseo-otro')))); }
+  function anexoListo() { return !!(txt(lin('fecha-entrega')) && Array.prototype.some.call(document.querySelectorAll('input[data-form]'), function (c) { return c.checked; })); }
+  function padInv(rol) { return document.querySelector('.pad-firma[data-inv="' + rol + '"]'); }
   function fotoLista(rol, lado) { var f = foto(PREFIJO[rol] + '-' + lado); return !!(f && f.classList.contains('firmado')); }
   function padListo(clase, rol) { var q = padDe(clase, rol); return !!(q && q.classList.contains('firmado')); }
   function listo(rol, k) {
@@ -1107,6 +1164,10 @@
       case 'aceptar': return aceptado(rol);
       case 'datosArr': return datosArrListos();
       case 'datos': return datosListos(rol);
+      case 'condiciones': return condListas();
+      case 'convivencia': return convListas();
+      case 'anexo': return anexoListo();
+      case 'revisar': return condListas() && convListas() && anexoListo();
       case 'refs': return refsListas();
       case 'frente': return fotoLista(rol, 'frente');
       case 'dorso': return fotoLista(rol, 'dorso');
@@ -1118,10 +1179,14 @@
   function pasosDe(rol) {
     var c = ROLES[rol], p = ['aceptar'];
     if (c.datosArr) p.push('datosArr');
+    if (c.cond) p.push('condiciones', 'convivencia', 'anexo');
     if (c.datos) p.push('datos');
     if (c.refs && opciones.referencias) p.push('refs');
+    if (c.revisar) p.push('revisar');
     if (c.fotos) p.push('frente', 'dorso');
-    p.push('huella', 'firma', 'resumen');
+    p.push('huella', 'firma');
+    if (c.inv) p.push('firmaInv');
+    p.push('resumen');
     return p;
   }
   function fechaLarga(d) { return d.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' }); }
@@ -1154,7 +1219,142 @@
     var v = document.createElement('img'); v.className = 'asis-vista'; v.src = im.src; cu.appendChild(v);
   }
 
+  // Controles del asistente para llenar y marcar las cláusulas del contrato
+  function elegir(cu, etiqueta, clave, valores, unidad, cambio) {
+    cu.appendChild(el('label', 'asis-campo', etiqueta));
+    var fila = el('div', 'asis-fila'); cu.appendChild(fila);
+    function pintar() {
+      fila.textContent = '';
+      var actual = txt(fj(clave)), enLista = valores.indexOf(actual) >= 0;
+      valores.forEach(function (v) { fila.appendChild(btn(v + unidad, function () { fijar(clave, v); pintar(); cambio(); }, actual === v)); });
+      var o = document.createElement('input'); o.type = 'tel'; o.inputMode = 'numeric'; o.className = 'asis-otro'; o.placeholder = 'Otro'; o.value = enLista ? '' : actual;
+      o.addEventListener('input', function () { o.value = o.value.replace(/\D/g, ''); fijar(clave, o.value); cambio(); });
+      fila.appendChild(o);
+    }
+    pintar();
+  }
+  function entradaFecha(cu, span, etiqueta, cambio) {
+    cu.appendChild(el('label', 'asis-campo', etiqueta));
+    var fila = el('div', 'asis-fila'); cu.appendChild(fila);
+    var m = /(\d{1,2}) de ([a-záéíóú]+) de (\d{4})/i.exec(txt(span)), hoy = new Date();
+    var ini = m ? { d: m[1], m: String(MESES.indexOf(m[2].toLowerCase())), y: m[3] } : { d: '', m: '', y: '' };
+    if (ini.m === '-1') ini.m = '';
+    function sel(ph, opts, valor) {
+      var s = document.createElement('select'); s.className = 'asis-sel';
+      var o0 = document.createElement('option'); o0.value = ''; o0.textContent = ph; s.appendChild(o0);
+      opts.forEach(function (o) { var e = document.createElement('option'); e.value = o[0]; e.textContent = o[1]; s.appendChild(e); });
+      s.value = valor; return s;
+    }
+    var dias = [], i;
+    for (i = 1; i <= 31; i++) dias.push([String(i), String(i)]);
+    var anios = []; for (i = hoy.getFullYear() - 1; i <= hoy.getFullYear() + 3; i++) anios.push([String(i), String(i)]);
+    var sd = sel('Día', dias, ini.d), sm = sel('Mes', MESES.map(function (n, k) { return [String(k), n]; }), ini.m), sy = sel('Año', anios, ini.y);
+    function poner() {
+      span.textContent = (sd.value && sm.value !== '' && sy.value) ? sd.value + ' de ' + MESES[+sm.value] + ' de ' + sy.value : '';
+      cambio();
+    }
+    [sd, sm, sy].forEach(function (x) { x.addEventListener('change', poner); fila.appendChild(x); });
+    fila.appendChild(btn('Hoy', function () { sd.value = String(hoy.getDate()); sm.value = String(hoy.getMonth()); sy.value = String(hoy.getFullYear()); poner(); }));
+  }
+  function grupo(cu, etiqueta, nombre, textos, cambio) {
+    cu.appendChild(el('label', 'asis-campo', etiqueta));
+    var fila = el('div', 'asis-fila'); cu.appendChild(fila);
+    var cs = document.querySelectorAll('input[data-grupo="' + nombre + '"]');
+    function pintar() {
+      fila.textContent = '';
+      Array.prototype.forEach.call(cs, function (c, k) {
+        fila.appendChild(btn(textos[k], function () { c.checked = !c.checked; c.dispatchEvent(new Event('change')); pintar(); cambio(); }, c.checked));
+      });
+    }
+    pintar();
+  }
+  function casilla(cu, c, texto, cambio) {
+    var lab = el('label', 'asis-chk'), cb = document.createElement('input');
+    cb.type = 'checkbox'; cb.checked = c.checked;
+    cb.addEventListener('change', function () { c.checked = cb.checked; cambio(); });
+    lab.appendChild(cb); lab.appendChild(document.createTextNode(texto)); cu.appendChild(lab);
+  }
+
   var PASOS = {
+    condiciones: function (cu, rol, cambio) {
+      cu.appendChild(el('p', null, 'Elija las condiciones de este arriendo. Lo que ponga aquí se escribe solo en el contrato.'));
+      cu.appendChild(el('label', 'asis-campo', 'Canon mensual (solo números, en pesos)'));
+      var ci = document.createElement('input'); ci.type = 'tel'; ci.inputMode = 'numeric'; ci.value = txt(fj('canon'));
+      var prev = el('p', 'ok');
+      function mostrar() { var l = txt(fj('canonletras')); prev.textContent = l ? '(' + l + ' pesos)' : ''; }
+      ci.addEventListener('input', function () {
+        var d = ci.value.replace(/\D/g, '');
+        ci.value = d.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        fijar('canon', ci.value); mostrar(); cambio();
+      });
+      cu.appendChild(ci); cu.appendChild(prev); mostrar();
+      elegir(cu, 'Se paga dentro de los primeros… días de cada mes', 'diapago', ['5', '10'], ' días', cambio);
+      elegir(cu, 'Plazo del contrato', 'plazo', ['3', '6', '12'], ' meses', cambio);
+      entradaFecha(cu, lin('fecha-inicio'), 'Fecha en que empieza el contrato', cambio);
+      cu.appendChild(el('p', 'asis-sub', 'Lugar y fecha de la firma'));
+      entrada(cu, lin('ciudad-firma'), 'Ciudad donde se firma', { tipo: 'text', cambio: cambio });
+      entradaFecha(cu, lin('fecha-firma'), 'Fecha de la firma', cambio);
+      cu.appendChild(el('p', 'asis-sub', 'Otras condiciones (normalmente no se cambian)'));
+      elegir(cu, 'Cláusula penal: equivale a cuántos cánones', 'penal', ['1', '2'], ' × canon', cambio);
+      elegir(cu, 'Preaviso mínimo para que el arrendatario termine', 'preaviso', ['3'], ' meses', cambio);
+    },
+    convivencia: function (cu, rol, cambio) {
+      elegir(cu, 'Máximo de personas que pueden vivir en el apartamento', 'personas', ['2', '3', '4', '5'], ' personas', cambio);
+      entrada(cu, lin('ocupantes'), 'Nombres de quienes van a vivir (opcional, separados por coma)', { tipo: 'text', cambio: cambio });
+      cu.appendChild(el('p', 'asis-sub', 'Aseo del frente y el andén'));
+      cu.appendChild(el('p', null, 'Marque los días que le tocan al arrendatario. Los demás días lo hace el arrendador.'));
+      var nombres = { lunes: 'Lunes', martes: 'Martes', miercoles: 'Miércoles', jueves: 'Jueves', viernes: 'Viernes', sabado: 'Sábado', domingo: 'Domingo' };
+      diasAseo().forEach(function (c) { casilla(cu, c, nombres[c.dataset.dia], cambio); });
+      entrada(cu, lin('aseo-otro'), 'Si no puede ningún día fijo, escriba cómo lo acuerdan (opcional)', { tipo: 'text', cambio: cambio });
+    },
+    anexo: function (cu, rol, cambio) {
+      cu.appendChild(el('p', null, 'Entrega del apartamento: fecha, servicios y cómo se hace el inventario.'));
+      if (!txt(lin('fecha-entrega')) && txt(lin('fecha-inicio'))) lin('fecha-entrega').textContent = txt(lin('fecha-inicio'));
+      entradaFecha(cu, lin('fecha-entrega'), 'Fecha de entrega', cambio);
+      cu.appendChild(el('p', 'asis-sub', 'Agua'));
+      grupo(cu, 'Aplica', 'agua', ['Aplica', 'No aplica'], cambio);
+      grupo(cu, 'Forma', 'agua-forma', ['Por factura', 'Recargable'], cambio);
+      entrada(cu, lin('lec-agua'), 'Lectura del medidor (opcional)', { tipo: 'tel', cambio: cambio });
+      cu.appendChild(el('p', 'asis-sub', 'Energía'));
+      grupo(cu, 'Aplica', 'energia', ['Aplica', 'No aplica'], cambio);
+      grupo(cu, 'Forma', 'energia-forma', ['Por factura', 'Recargable'], cambio);
+      entrada(cu, lin('lec-energia'), 'Lectura del medidor (opcional)', { tipo: 'tel', cambio: cambio });
+      cu.appendChild(el('p', 'asis-sub', 'Gas'));
+      grupo(cu, 'Cómo es el gas', 'gas', ['Por red', 'Pipeta', 'No aplica'], cambio);
+      entrada(cu, lin('lec-gas'), 'Lectura del medidor de gas (solo si es por red)', { tipo: 'tel', cambio: cambio });
+      cu.appendChild(el('p', 'asis-sub', 'Inventario del estado del apartamento'));
+      cu.appendChild(el('p', null, 'Elija una o las dos formas.'));
+      casilla(cu, document.querySelector('input[data-form="digital"]'), 'Digital: fotos, videos o audios en una carpeta compartida', cambio);
+      casilla(cu, document.querySelector('input[data-form="escrito"]'), 'Escrito: descripción firmada por ambas partes', cambio);
+      entrada(cu, lin('enlace-carpeta'), 'Enlace de la carpeta compartida (si es digital)', { tipo: 'text', minusculas: true, cambio: cambio });
+    },
+    revisar: function (cu, rol, cambio) {
+      var todo = condListas() && convListas() && anexoListo();
+      if (!todo) { cu.appendChild(el('p', 'falta', 'Falta que la arrendadora termine de llenar las condiciones. Pídale que entre como "Arrendador" y complete sus pasos; luego vuelva aquí.')); return; }
+      cu.appendChild(el('p', null, 'Estas son las condiciones que quedaron en el contrato. Si algo no está bien, díganselo a la arrendadora antes de seguir.'));
+      var dias = diasAseo().filter(function (c) { return c.checked; }).map(function (c) { return c.parentNode.textContent.trim(); });
+      var ul = el('ul', 'asis-lista');
+      [
+        'Canon: $ ' + txt(fj('canon')) + ' (' + txt(fj('canonletras')) + ' pesos) al mes',
+        'Pago: dentro de los primeros ' + txt(fj('diapago')) + ' días de cada mes',
+        'Plazo: ' + txt(fj('plazo')) + ' meses, desde el ' + txt(lin('fecha-inicio')),
+        'Máximo de personas: ' + txt(fj('personas')),
+        'Aseo del frente a su cargo: ' + (dias.length ? dias.join(', ') : (txt(lin('aseo-otro')) || 'según se acordó')),
+        'Entrega del apartamento: ' + txt(lin('fecha-entrega')),
+        'Firma en ' + txt(lin('ciudad-firma')) + ', el ' + txt(lin('fecha-firma'))
+      ].forEach(function (t) { ul.appendChild(el('li', null, '• ' + t)); });
+      cu.appendChild(ul);
+    },
+    firmaInv: function (cu, rol) {
+      var q = padInv(rol), base = padDe('pad-firma', rol), hecho = q.classList.contains('firmado');
+      cu.appendChild(el('p', null, 'Firma del inventario y estado del apartamento (al final del contrato). Puede usar la misma firma que ya hizo o firmar de nuevo.'));
+      miniatura(cu, q);
+      if (hecho) cu.appendChild(el('p', 'ok', '✔ Firma del inventario guardada.'));
+      var fila = el('div', 'asis-fila'); cu.appendChild(fila);
+      if (base && base.classList.contains('firmado')) fila.appendChild(btn('✔ Usar la misma firma', function () { ponerPad(q, base.querySelector('.pad-img').src); }, !hecho));
+      fila.appendChild(btn(hecho ? 'Firmar de nuevo' : '✍ Firmar aquí', function () { abrirFirma(q); }));
+      cu.appendChild(el('p', null, 'Este paso es opcional: si prefiere, puede seguir sin firmarlo y firmarlo a mano después.'));
+    },
     aceptar: function (cu, rol) {
       cu.appendChild(el('p', null, 'Antes de aceptar, lea el contrato completo o escúchelo. Si prefiere hacerlo con calma, puede salir y volver cuando quiera: lo que ya hizo queda en esta página.'));
       var fila = el('div', 'asis-fila');
@@ -1217,12 +1417,15 @@
     resumen: function (cu, rol) {
       var c = ROLES[rol], items = [['Aceptación del contrato', aceptado(rol)]];
       if (c.datosArr) items.push(['Datos del arrendador', datosArrListos()]);
+      if (c.cond) items.push(['Condiciones del arriendo', condListas()], ['Personas y aseo del frente', convListas()], ['Entrega, servicios e inventario', anexoListo()]);
       if (c.datos) items.push(['Sus datos', datosListos(rol)]);
       if (c.refs && opciones.referencias) items.push(['Referencias personales', refsListas()]);
       if (c.fotos) items.push(['Cédula: cara con su foto', fotoLista(rol, 'frente')], ['Cédula: cara con su huella', fotoLista(rol, 'dorso')]);
       items.push(['Huella', padListo('pad-huella', rol)], ['Firma', padListo('pad-firma', rol)]);
+      var extra = c.inv && padInv(rol) && !padInv(rol).classList.contains('firmado');
       var ul = el('ul', 'asis-lista');
       items.forEach(function (it) { ul.appendChild(el('li', it[1] ? 'ok' : 'falta', (it[1] ? '✔ ' : '✘ ') + it[0])); });
+      if (c.inv && padInv(rol)) ul.appendChild(el('li', extra ? null : 'ok', extra ? '○ Firma del inventario (opcional, sin hacer)' : '✔ Firma del inventario'));
       cu.appendChild(ul);
       var todo = items.every(function (it) { return it[1]; });
       cu.appendChild(el('p', null, todo ? 'Todo listo. El PDF final lleva el contrato con sus datos, las fotos de la cédula, la huella y la firma.' : 'Falta completar algunos pasos. Use "Atrás" para terminarlos.'));
@@ -1294,7 +1497,7 @@
   }
   flotante.addEventListener('click', function () { flotante.classList.add('oculto'); if (asis && asis.rol) pintarPaso(); else pantallaRol(); });
   document.addEventListener('pad-cambio', function () {
-    if (asis && asis.rol && !cont.classList.contains('oculto') && ['frente', 'dorso', 'huella', 'firma'].indexOf(asis.pasos[asis.i]) >= 0) pintarPaso();
+    if (asis && asis.rol && !cont.classList.contains('oculto') && ['frente', 'dorso', 'huella', 'firma', 'firmaInv'].indexOf(asis.pasos[asis.i]) >= 0) pintarPaso();
   });
   ['btnProceso', 'btnProceso2'].forEach(function (id) {
     document.getElementById(id).addEventListener('click', function () { menu(false); pantallaRol(); });
