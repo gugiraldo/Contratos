@@ -106,6 +106,7 @@
   @media (max-width: 640px) { #btnProceso { grid-column: 1 / -1; order: 0; font-size: 15px; } }
   .asis-sel { padding: 11px 6px; font-size: 16px; border: 1px solid #94a3b8; border-radius: 8px; background: #fff; color: #0f172a; min-height: 46px; flex: 1 1 90px; }
   .asis-caja input.asis-otro { width: 96px; flex: none; }
+  .asis-caja input.asis-otro.activo { background: #2563eb; border-color: #2563eb; color: #fff; font-weight: bold; }
   .asis-sub { margin: 18px 0 2px; padding-top: 10px; border-top: 1px solid #e2e8f0; font-weight: bold; color: #475569; }
   .fijo[data-key="canonletras"] { text-transform: uppercase; }
   .opcwrap { position: relative; display: inline-block; }
@@ -1223,15 +1224,21 @@
   function elegir(cu, etiqueta, clave, valores, unidad, cambio) {
     cu.appendChild(el('label', 'asis-campo', etiqueta));
     var fila = el('div', 'asis-fila'); cu.appendChild(fila);
-    function pintar() {
-      fila.textContent = '';
+    var botones = [], o = document.createElement('input');
+    function marcar() {
       var actual = txt(fj(clave)), enLista = valores.indexOf(actual) >= 0;
-      valores.forEach(function (v) { fila.appendChild(btn(v + unidad, function () { fijar(clave, v); pintar(); cambio(); }, actual === v)); });
-      var o = document.createElement('input'); o.type = 'tel'; o.inputMode = 'numeric'; o.className = 'asis-otro'; o.placeholder = 'Otro'; o.value = enLista ? '' : actual;
-      o.addEventListener('input', function () { o.value = o.value.replace(/\D/g, ''); fijar(clave, o.value); cambio(); });
-      fila.appendChild(o);
+      botones.forEach(function (b, k) { b.classList.toggle('principal', valores[k] === actual); });
+      o.classList.toggle('activo', !!actual && !enLista);
     }
-    pintar();
+    valores.forEach(function (v) {
+      var b = btn(v + unidad, function () { fijar(clave, v); o.value = ''; marcar(); cambio(); });
+      botones.push(b); fila.appendChild(b);
+    });
+    o.type = 'tel'; o.inputMode = 'numeric'; o.className = 'asis-otro'; o.placeholder = 'Otro';
+    o.value = valores.indexOf(txt(fj(clave))) >= 0 ? '' : txt(fj(clave));
+    o.addEventListener('input', function () { o.value = o.value.replace(/\D/g, ''); fijar(clave, o.value); marcar(); cambio(); });
+    fila.appendChild(o);
+    marcar();
   }
   function entradaFecha(cu, span, etiqueta, cambio) {
     cu.appendChild(el('label', 'asis-campo', etiqueta));
