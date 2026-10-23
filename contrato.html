@@ -122,6 +122,7 @@
   .cedulas { margin: 8px 0; break-inside: avoid; }
   .cedula-fila { display: flex; gap: 12px; margin-top: 4px; }
   .cedula-fila > div { flex: 1; }
+  .pie-foto { font: 9pt Arial, sans-serif; text-align: center; margin-top: 2px; color: #334155; }
   .pad-foto { aspect-ratio: 1.585 / 1; border: 1px solid #000; }
   @media (max-width: 640px) { .hoja:not(.pdf) .cedula-fila { flex-direction: column; } }
   .firmas-anexo { display: flex; gap: 1cm; margin-top: .6cm; break-inside: avoid; }
@@ -235,6 +236,7 @@
         <b>Este contrato lleva:</b>
         <label><input type="checkbox" data-opcion="codeudor"> Codeudor</label>
         <label><input type="checkbox" data-opcion="referencias" checked> Referencias personales (2 personas)</label>
+        <label><input type="checkbox" data-opcion="papel"> Firma en papel (imprimir)</label>
       </div>
     </div>
   </div>
@@ -368,7 +370,7 @@
 <p>El domicilio contractual es <b>Carepa, Antioquia</b>. Este contrato se firma en <b>dos (2) ejemplares</b> del mismo tenor, uno para cada parte.</p>
 
 <p class="fila" style="margin-top:14px">En constancia se firma en <span class="linea" data-campo="ciudad-firma"></span>, el <span class="fecha"><span class="linea" data-campo="fecha-firma"></span><button type="button" class="btnfecha" title="Elegir fecha en el calendario" aria-label="Elegir fecha">📅</button></span>.</p>
-<div class="aceptaciones">
+<div class="aceptaciones" data-si="sinpapel">
   <p class="fila"><b>Aceptación digital del arrendador:</b> <span class="linea larga" data-acepta="arrendador"></span></p>
   <p class="fila"><b>Aceptación digital del arrendatario:</b> <span class="linea larga" data-acepta="arrendatario"></span></p>
   <p class="fila" data-si="codeudor"><b>Aceptación digital del codeudor:</b> <span class="linea larga" data-acepta="codeudor"></span></p>
@@ -382,19 +384,19 @@
 
 <div class="anexo">
   <h2>ANEXO 1 – COPIA DE CÉDULA</h2>
-  <p>Con la cámara del celular, tome una foto de cada cara de la cédula: la cara donde aparece su foto y la cara donde aparece su huella. Si prefiere hacerlo en papel, deje los recuadros en blanco y pegue las fotocopias.</p>
+  <p><span data-si="sinpapel">Con la cámara del celular, tome una foto de cada cara de la cédula: la cara donde aparece su foto y la cara donde aparece su huella. Si prefiere hacerlo en papel, deje los recuadros en blanco y pegue las fotocopias.</span><span data-si="papel">Pegue en los recuadros la fotocopia de la cédula: en uno el lado donde aparece la foto y en el otro el lado donde aparece la huella.</span></p>
   <div class="cedulas">
     <b>Cédula del arrendatario</b>
     <div class="cedula-fila">
-      <div><div class="pad pad-foto" data-id="arr-frente" data-titulo="Cédula del arrendatario – cara con la foto"><span class="pad-ph">Toque aquí para tomar la foto<br>(cara con su foto)</span></div></div>
-      <div><div class="pad pad-foto" data-id="arr-dorso" data-titulo="Cédula del arrendatario – cara con la huella"><span class="pad-ph">Toque aquí para tomar la foto<br>(cara con su huella)</span></div></div>
+      <div><div class="pad pad-foto" data-id="arr-frente" data-titulo="Cédula del arrendatario – cara con la foto"><span class="pad-ph">Toque aquí para tomar la foto<br>(cara con su foto)</span></div><div class="pie-foto" data-si="papel">Fotocopia: lado de la foto</div></div>
+      <div><div class="pad pad-foto" data-id="arr-dorso" data-titulo="Cédula del arrendatario – cara con la huella"><span class="pad-ph">Toque aquí para tomar la foto<br>(cara con su huella)</span></div><div class="pie-foto" data-si="papel">Fotocopia: lado de la huella</div></div>
     </div>
   </div>
   <div class="cedulas" data-si="codeudor">
     <b>Cédula del codeudor</b>
     <div class="cedula-fila">
-      <div><div class="pad pad-foto" data-id="cod-frente" data-titulo="Cédula del codeudor – cara con la foto"><span class="pad-ph">Toque aquí para tomar la foto<br>(cara con su foto)</span></div></div>
-      <div><div class="pad pad-foto" data-id="cod-dorso" data-titulo="Cédula del codeudor – cara con la huella"><span class="pad-ph">Toque aquí para tomar la foto<br>(cara con su huella)</span></div></div>
+      <div><div class="pad pad-foto" data-id="cod-frente" data-titulo="Cédula del codeudor – cara con la foto"><span class="pad-ph">Toque aquí para tomar la foto<br>(cara con su foto)</span></div><div class="pie-foto" data-si="papel">Fotocopia: lado de la foto</div></div>
+      <div><div class="pad pad-foto" data-id="cod-dorso" data-titulo="Cédula del codeudor – cara con la huella"><span class="pad-ph">Toque aquí para tomar la foto<br>(cara con su huella)</span></div><div class="pie-foto" data-si="papel">Fotocopia: lado de la huella</div></div>
     </div>
   </div>
 </div>
@@ -965,6 +967,7 @@
   var opciones = {};
   function aplicarOpciones() {
     opciones.sincodeudor = !opciones.codeudor;
+    opciones.sinpapel = !opciones.papel;
     document.querySelectorAll('[data-si]').forEach(function (e) { e.classList.toggle('oculto', !opciones[e.dataset.si]); });
   }
   document.querySelectorAll('input[data-opcion]').forEach(function (c) {
@@ -1197,9 +1200,9 @@
     if (c.datos) p.push('datos');
     if (c.refs && opciones.referencias) p.push('refs');
     if (c.revisar) p.push('revisar');
-    if (c.fotos) p.push('frente', 'dorso');
-    p.push('huella', 'firma');
-    if (c.inv) p.push('firmaInv');
+    if (c.fotos && !opciones.papel) p.push('frente', 'dorso');
+    if (!opciones.papel) p.push('huella', 'firma');
+    if (c.inv && !opciones.papel) p.push('firmaInv');
     p.push('resumen');
     return p;
   }
@@ -1443,15 +1446,20 @@
       if (c.cond) items.push(['Condiciones del arriendo', condListas()], ['Personas y aseo del frente', convListas()], ['Entrega, servicios e inventario', anexoListo()]);
       if (c.datos) items.push(['Sus datos', datosListos(rol)]);
       if (c.refs && opciones.referencias) items.push(['Referencias personales', refsListas()]);
-      if (c.fotos) items.push(['Cédula: cara con su foto', fotoLista(rol, 'frente')], ['Cédula: cara con su huella', fotoLista(rol, 'dorso')]);
-      items.push(['Huella', padListo('pad-huella', rol)], ['Firma', padListo('pad-firma', rol)]);
-      var extra = c.inv && padInv(rol) && !padInv(rol).classList.contains('firmado');
+      var extra = false;
+      if (!opciones.papel) {
+        if (c.fotos) items.push(['Cédula: cara con su foto', fotoLista(rol, 'frente')], ['Cédula: cara con su huella', fotoLista(rol, 'dorso')]);
+        items.push(['Huella', padListo('pad-huella', rol)], ['Firma', padListo('pad-firma', rol)]);
+        extra = c.inv && padInv(rol) && !padInv(rol).classList.contains('firmado');
+      }
       var ul = el('ul', 'asis-lista');
       items.forEach(function (it) { ul.appendChild(el('li', it[1] ? 'ok' : 'falta', (it[1] ? '✔ ' : '✘ ') + it[0])); });
-      if (c.inv && padInv(rol)) ul.appendChild(el('li', extra ? null : 'ok', extra ? '○ Firma del inventario (opcional, sin hacer)' : '✔ Firma del inventario'));
+      if (!opciones.papel && c.inv && padInv(rol)) ul.appendChild(el('li', extra ? null : 'ok', extra ? '○ Firma del inventario (opcional, sin hacer)' : '✔ Firma del inventario'));
       cu.appendChild(ul);
       var todo = items.every(function (it) { return it[1]; });
-      cu.appendChild(el('p', null, todo ? 'Todo listo. El PDF final lleva el contrato con sus datos, las fotos de la cédula, la huella y la firma.' : 'Falta completar algunos pasos. Use "Atrás" para terminarlos.'));
+      cu.appendChild(el('p', null, !todo ? 'Falta completar algunos pasos. Use "Atrás" para terminarlos.' : (opciones.papel
+        ? 'Todo listo para imprimir. Descargue el PDF e imprímalo. Cada parte firma y pone su huella a mano, y pega en el Anexo 1 la fotocopia de su cédula, por los dos lados.'
+        : 'Todo listo. El PDF final lleva el contrato con sus datos, las fotos de la cédula, la huella y la firma.')));
       var zona = el('div', 'asis-fila'), estado = el('p');
       cu.appendChild(zona); cu.appendChild(estado);
       var gen = btn('📄 Generar el PDF final', function () {
@@ -1514,6 +1522,12 @@
       b.style.cssText = 'display:block;width:100%;margin:8px 0;';
       caja.appendChild(b);
     });
+    var cbp = document.querySelector('input[data-opcion="papel"]');
+    var labp = el('label', 'asis-chk'), cp = document.createElement('input');
+    cp.type = 'checkbox'; cp.checked = !!opciones.papel;
+    cp.addEventListener('change', function () { cbp.checked = cp.checked; cbp.dispatchEvent(new Event('change')); });
+    labp.appendChild(cp); labp.appendChild(document.createTextNode('Firmaremos en papel: se llenan los datos aquí, se descarga el PDF y se imprime (sin fotos ni firma en pantalla).'));
+    caja.appendChild(labp);
     var s = btn('Salir', salirAsistente); s.style.marginTop = '10px';
     caja.appendChild(s); cont.appendChild(caja);
     mostrarAsistente(true);

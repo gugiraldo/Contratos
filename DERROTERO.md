@@ -30,6 +30,9 @@ Archivo principal: `contrato.html` (página web editable; se descarga como PDF).
 
 - **Asistente de firma completo** (incluye notas del inventario, un cuadro de varios renglones): ahora llena y marca todas las partes del contrato. Arrendador: condiciones (canon con su texto en letras automático, día de pago, plazo 3/6/12 u otro, fecha de inicio, ciudad y fecha de la firma, cláusula penal, preaviso), personas máximas (y su texto en letras) con nombres, días de aseo del frente, y Anexo 2 (fecha de entrega, agua/energía/gas con forma y lecturas, inventario digital/escrito y enlace). Arrendatario: ve un resumen para revisar. Firma del inventario (opcional, con "usar la misma firma"). Valores ya marcados por defecto (agua y energía aplican, agua por factura, energía recargable, gas pipeta, inventario digital, ciudad Carepa, canon 400.000, 4 personas); también vuelven al limpiar datos del inquilino.
 
+- **Firma en papel** (casilla "Firma en papel (imprimir)" arriba, o en la pantalla de elegir quién firma): se llenan los datos en el asistente sin fotos ni firma en pantalla, se descarga el PDF, se imprime, cada parte firma y pone la huella a mano y pega la fotocopia de la cédula (recuadros con "lado de la foto" / "lado de la huella"). Lo digital sigue igual.
+- Por decidir: firma a distancia con "Enviar mi parte" / "Cargar la parte del cliente" (archivo por WhatsApp).
+
 ## Pendiente (en este orden de prioridad lo que falta)
 0. ~~Firma remota con las dos partes~~ **Decidido**: sin firma a distancia. Al interesado solo se le comparte el audio (y el enlace para leer); si decide tomarlo, confirma por teléfono/WhatsApp y la firma se hace **presencial** al día siguiente, llenando todo en el celular de la arrendadora (así el PDF final lleva las dos partes). Quien llega lleva el dinero completo que diga el contrato.
 1. ~~Sección de exigencias del arrendador~~ Hecha (cláusula decimoséptima). Falta revisar si se quiere ajustar algo.
