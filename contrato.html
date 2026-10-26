@@ -694,6 +694,7 @@
     cv.addEventListener('contextmenu', function (e) { e.preventDefault(); });
 
     if (pad.classList.contains('firmado')) m.acc.appendChild(botonModal('Quitar firma', function () { borrarPad(pad); cerrarModal(); }));
+    m.acc.appendChild(botonModal('📷 Usar foto de la firma', function () { cerrarModal(); abrirFirmaFoto(pad); }));
     m.acc.appendChild(botonModal('Borrar trazo', function () { ctx.clearRect(0, 0, w, h); trazos = 0; caja = { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 }; guardar.disabled = true; }));
     m.acc.appendChild(botonModal('Cancelar', cerrarModal));
     guardar = botonModal('Guardar firma', function () {
@@ -864,7 +865,7 @@
         var datos = oc.getImageData(0, 0, OW, OH), px = datos.data;
         for (var i = 0; i < px.length; i += 4) {
           var g = 0.299 * px[i] + 0.587 * px[i + 1] + 0.114 * px[i + 2];
-          g = Math.max(0, Math.min(255, (g - 128) * 1.25 + 128));
+          g = Math.max(0, Math.min(255, (g - 128) * (o.contraste || 1.25) + 128));
           px[i] = px[i + 1] = px[i + 2] = g;
         }
         oc.putImageData(datos, 0, 0);
@@ -891,6 +892,22 @@
       m.zona.appendChild(im);
       m.acc.appendChild(botonModal('Quitar foto', function () { borrarPad(slot); cerrarModal(); }));
       m.acc.appendChild(botonModal('✂ Ajustar esta foto', function () { var x = new Image(); x.onload = function () { ajustar(x); }; x.src = previo.src; }));
+    }
+    m.acc.appendChild(botonModal('Cancelar', cerrarModal));
+    accionesFoto(m, ajustar);
+  }
+
+  // Firma hecha a mano en una hoja blanca y enviada como foto (por ejemplo por WhatsApp)
+  function abrirFirmaFoto(pad) {
+    var m = crearModal(pad.dataset.titulo || 'Firma', 'Elija la foto de la firma hecha a mano en una hoja blanca (con buena luz y letra grande). Después la encuadra: queda solo la firma, sin el fondo.');
+    var r = pad.getBoundingClientRect(), relacion = (r.width / r.height) || 2.6;
+    function ajustar(img) {
+      cerrarModal();
+      abrirAjuste({
+        titulo: pad.dataset.titulo, img: reducir(img, 1600), relacion: relacion, ancho: 700, alto: Math.round(700 / relacion), gris: true, contraste: 2.2, inicial: 0.9, textoGuardar: 'Guardar firma',
+        ayuda: 'Mueva el recuadro para que encierre solo la firma. Si la foto quedó torcida, enderécela con la barra o gírela.',
+        alGuardar: function (c) { ponerPad(pad, c.toDataURL('image/jpeg', 0.9)); }
+      });
     }
     m.acc.appendChild(botonModal('Cancelar', cerrarModal));
     accionesFoto(m, ajustar);
@@ -1379,6 +1396,7 @@
       var fila = el('div', 'asis-fila'); cu.appendChild(fila);
       if (base && base.classList.contains('firmado')) fila.appendChild(btn('✔ Usar la misma firma', function () { ponerPad(q, base.querySelector('.pad-img').src); }, !hecho));
       fila.appendChild(btn(hecho ? 'Firmar de nuevo' : '✍ Firmar aquí', function () { abrirFirma(q); }));
+      fila.appendChild(btn('📷 Usar foto de la firma', function () { abrirFirmaFoto(q); }));
       cu.appendChild(el('p', null, 'Este paso es opcional: si prefiere, puede seguir sin firmarlo y firmarlo a mano después.'));
     },
     aceptar: function (cu, rol) {
@@ -1387,7 +1405,27 @@
       fila.appendChild(btn('🎧 Escuchar el contrato', function () { document.getElementById('btnAudio').click(); }));
       fila.appendChild(btn('📄 Leer el contrato', function () { cont.classList.add('oculto'); document.body.style.overflow = ''; flotante.classList.remove('oculto'); }));
       cu.appendChild(fila);
-      if (aceptado(rol)) { cu.appendChild(el('p', 'ok', '✔ Aceptado el ' + txt(document.querySelector('[data-acepta="' + rol + '"]')))); return; }
+      if (aceptado(rol)) { cu.appendChild(el('p', 'ok', '✔ Aceptado: ' + txt(document.querySelector('[data-acepta="' + rol + '"]')))); return; }
+      if (ROLES[rol].datos) {
+        cu.appendChild(el('p', 'asis-sub', 'Si quien firma está en otro lugar'));
+        cu.appendChild(el('p', null, 'Si la persona ya escuchó o leyó el contrato y le escribió por WhatsApp que lo acepta, regístrelo aquí. Guarde ese mensaje: es su constancia.'));
+        var tmp = el('span'); tmp.textContent = fechaLarga(new Date());
+        entradaFecha(cu, tmp, 'Fecha del mensaje de aceptación', function () {});
+        var lw = el('label', 'asis-chk'), cw = document.createElement('input');
+        cw.type = 'checkbox'; lw.appendChild(cw);
+        lw.appendChild(document.createTextNode('Tengo el mensaje de WhatsApp donde esta persona dice que leyó o escuchó el contrato y lo acepta.'));
+        cu.appendChild(lw);
+        var bw = btn('Registrar aceptación por WhatsApp', function () {
+          var s1 = document.querySelector('[data-acepta="' + rol + '"]');
+          if (s1) s1.textContent = 'Por WhatsApp, el ' + (txt(tmp) || fechaLarga(new Date()));
+          var f = document.querySelector('[data-campo="fecha-firma"]');
+          if (f && !txt(f)) f.textContent = txt(tmp) || fechaLarga(new Date());
+          asis.i++; pintarPaso();
+        });
+        bw.disabled = true; cw.addEventListener('change', function () { bw.disabled = !cw.checked; });
+        cu.appendChild(bw);
+        cu.appendChild(el('p', 'asis-sub', 'Si la persona está aquí con usted'));
+      }
       var lab = el('label', 'asis-chk'), cb = document.createElement('input');
       cb.type = 'checkbox'; lab.appendChild(cb);
       lab.appendChild(document.createTextNode('Declaro que leí o escuché el contrato completo y lo acepto.'));
@@ -1438,7 +1476,10 @@
       cu.appendChild(el('p', null, 'Firme con el dedo o con un lápiz digital, como lo haría en papel.'));
       miniatura(cu, q);
       if (hecho) cu.appendChild(el('p', 'ok', '✔ Firma guardada.'));
-      cu.appendChild(btn(hecho ? 'Firmar de nuevo' : '✍ Firmar', function () { abrirFirma(q); }, !hecho));
+      var fila = el('div', 'asis-fila'); cu.appendChild(fila);
+      fila.appendChild(btn(hecho ? 'Firmar de nuevo' : '✍ Firmar', function () { abrirFirma(q); }, !hecho));
+      fila.appendChild(btn('📷 Usar foto de la firma', function () { abrirFirmaFoto(q); }));
+      cu.appendChild(el('p', null, 'Si la persona le envió una foto de su firma hecha a mano en una hoja blanca, use la foto.'));
     },
     resumen: function (cu, rol) {
       var c = ROLES[rol], items = [['Aceptación del contrato', aceptado(rol)]];
