@@ -1207,7 +1207,7 @@
   function lin(n) { return document.querySelector('[data-campo="' + n + '"]'); }
   function fj(k) { return document.querySelector('.fijo[data-key="' + k + '"]'); }
   function diasAseo() { return Array.prototype.slice.call(document.querySelectorAll('input[data-dia]')); }
-  function condListas() { return !!(txt(fj('canon')) && txt(fj('diapago')) && txt(fj('plazo')) && txt(lin('fecha-inicio')) && txt(lin('ciudad-firma')) && txt(lin('fecha-firma'))); }
+  function condListas() { return !!(txt(fj('canon')) && txt(fj('diapago')) && txt(fj('plazo')) && txt(lin('fecha-inicio')) && txt(lin('ciudad-firma'))); }
   function convListas() { return !!(txt(fj('personas')) && (diasAseo().some(function (c) { return c.checked; }) || txt(lin('aseo-otro')))); }
   function anexoListo() { return !!(txt(lin('fecha-entrega')) && Array.prototype.some.call(document.querySelectorAll('input[data-form]'), function (c) { return c.checked; })); }
   function padInv(rol) { return document.querySelector('.pad-firma[data-inv="' + rol + '"]'); }
@@ -1248,8 +1248,6 @@
   function registrarAceptacion(rol) {
     var d = new Date(), s1 = document.querySelector('[data-acepta="' + rol + '"]');
     if (s1) s1.textContent = fechaLarga(d) + ', ' + d.toLocaleTimeString('es-CO', { hour: 'numeric', minute: '2-digit' });
-    var f = document.querySelector('[data-campo="fecha-firma"]');
-    if (f && !txt(f)) f.textContent = fechaLarga(d);
   }
   function mostrarAsistente(si) { cont.classList.toggle('oculto', !si); document.body.style.overflow = si ? 'hidden' : ''; }
   function salirAsistente() { mostrarAsistente(false); flotante.classList.add('oculto'); asis = null; if (paquete.modo === 'cliente') flotante.classList.remove('oculto'); }
@@ -1354,7 +1352,7 @@
       entradaFecha(cu, lin('fecha-inicio'), 'Fecha en que empieza el contrato', cambio);
       cu.appendChild(el('p', 'asis-sub', 'Lugar y fecha de la firma'));
       entrada(cu, lin('ciudad-firma'), 'Ciudad donde se firma', { tipo: 'text', cambio: cambio });
-      entradaFecha(cu, lin('fecha-firma'), 'Fecha de la firma', cambio);
+      cu.appendChild(el('p', null, 'La fecha de la firma se escribe sola cuando el arrendatario firma.'));
     },
     convivencia: function (cu, rol, cambio) {
       elegir(cu, 'Máximo de personas que pueden vivir en el apartamento', 'personas', ['2', '3', '4', '5'], ' personas', cambio);
@@ -1439,8 +1437,6 @@
         var bw = btn('Registrar aceptación por WhatsApp', function () {
           var s1 = document.querySelector('[data-acepta="' + rol + '"]');
           if (s1) s1.textContent = 'Por WhatsApp, el ' + (txt(tmp) || fechaLarga(new Date()));
-          var f = document.querySelector('[data-campo="fecha-firma"]');
-          if (f && !txt(f)) f.textContent = txt(tmp) || fechaLarga(new Date());
           asis.i++; pintarPaso();
         });
         bw.disabled = true; cw.addEventListener('change', function () { bw.disabled = !cw.checked; });
@@ -1687,7 +1683,14 @@
     if (d1) m(d1.closest('p'), !diasAseo().some(function (c) { return c.checked; }) && !txt(lin('aseo-otro')));
   }
   ['input', 'change'].forEach(function (ev) { document.addEventListener(ev, marcarPendientes); });
-  document.addEventListener('pad-cambio', marcarPendientes);
+  // La fecha de la constancia se escribe sola cuando el arrendatario da su firma
+  function fechaAutomatica() {
+    var f = lin('fecha-firma'), q = padDe('pad-firma', 'arrendatario');
+    if (!f || !q) return;
+    if (q.classList.contains('firmado')) { if (!txt(f)) { f.textContent = fechaLarga(new Date()); f.dataset.auto = '1'; } }
+    else if (f.dataset.auto === '1') { f.textContent = ''; delete f.dataset.auto; }
+  }
+  document.addEventListener('pad-cambio', function () { fechaAutomatica(); marcarPendientes(); });
 
   // Lista de lo que falta, por persona
   function listaPendientes() {
@@ -1708,7 +1711,7 @@
     if (padInv('arrendador') && !padInv('arrendador').classList.contains('firmado')) arr.push('Firma del inventario (arrendadora)');
     if (!diasAseo().some(function (c) { return c.checked; }) && !txt(lin('aseo-otro'))) arr.push('Días de aseo del frente (se acuerdan con el arrendador)');
     [['fecha-inicio', 'Fecha en que empieza el contrato'], ['fecha-entrega', 'Fecha de entrega'], ['ciudad-firma', 'Ciudad de la firma']].forEach(function (x) { if (!txt(lin(x[0]))) arr.push(x[1]); });
-    if (!txt(lin('fecha-firma'))) com.push('Fecha de la firma (se completa sola al aceptar)');
+    if (!txt(lin('fecha-firma'))) com.push('Fecha de la firma (se escribe sola cuando el arrendatario firma)');
     return { ten: ten, arr: arr, com: com };
   }
   function contarPendientes() { var l = listaPendientes(); return l.ten.filter(function (t) { return !/opcional/.test(t); }).length + l.arr.length + l.com.length; }
