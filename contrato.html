@@ -116,6 +116,7 @@
   .lectura { position: fixed; left: 0; top: 0; right: 0; bottom: 0; z-index: 100; background: #e2e8f0; display: flex; flex-direction: column; font: 15px Arial, sans-serif; }
   .lectura-cab { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; background: #0f172a; color: #fff; }
   .lectura-cuerpo { flex: 1; overflow: auto; padding: 12px; }
+  .lectura-cuerpo .asis-caja { box-sizing: border-box; margin: 0 auto; }
   .lectura-cuerpo .pagina { background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,.2); border-radius: 4px; }
   .grande { display: block; width: 100%; margin: 8px 0; padding: 18px 14px; font-size: 18px; }
   body.cliente .barra, body.cliente .inicio-proceso { display: none !important; }
@@ -244,6 +245,7 @@
         <button id="btnLimpiar" type="button">Limpiar datos del inquilino</button>
         <button id="btnArr" type="button">Datos del arrendador…</button>
         <button id="btnCargarParte" type="button" hidden>📥 Cargar la parte del cliente</button>
+        <button id="btnPendientes" type="button" hidden>📋 Pendientes</button>
         <span id="confirmar" hidden>¿Borrar los datos del inquilino?
           <button id="btnSi" type="button">Sí, borrar</button>
           <button id="btnNo" type="button">Cancelar</button>
@@ -1687,6 +1689,50 @@
   ['input', 'change'].forEach(function (ev) { document.addEventListener(ev, marcarPendientes); });
   document.addEventListener('pad-cambio', marcarPendientes);
 
+  // Lista de lo que falta, por persona
+  function listaPendientes() {
+    function faltan(rol, cs, nombres) { return cs.filter(function (c) { return !txt(campo(rol, c)); }).map(function (c) { return nombres[c]; }); }
+    var ten = [], arr = [], com = [];
+    var f = faltan('arrendatario', ['nombre', 'cc', 'expedida', 'telefono', 'correo'], { nombre: 'nombre', cc: 'cédula', expedida: 'ciudad de expedición', telefono: 'teléfono', correo: 'correo' });
+    if (f.length) ten.push('Sus datos: ' + f.join(', '));
+    if (opciones.referencias) ['r1', 'r2'].forEach(function (r, n) {
+      var g = faltan('referencias', [r + '-nombre', r + '-parentesco', r + '-telefono', r + '-direccion'], (function () { var o = {}; o[r + '-nombre'] = 'nombre'; o[r + '-parentesco'] = 'parentesco'; o[r + '-telefono'] = 'teléfono'; o[r + '-direccion'] = 'dirección o barrio'; return o; })());
+      if (g.length) ten.push('Referencia ' + (n + 1) + ': ' + g.join(', '));
+    });
+    if (!aceptado('arrendatario')) ten.push('Aceptar el contrato (después de escucharlo o leerlo)');
+    if (!padListo('pad-huella', 'arrendatario')) ten.push('Su huella');
+    if (!padListo('pad-firma', 'arrendatario')) ten.push('Su firma');
+    if (padInv('arrendatario') && !padInv('arrendatario').classList.contains('firmado')) ten.push('Firma del inventario (opcional)');
+    if (!aceptado('arrendador')) arr.push('Aceptación del arrendador');
+    if (!padListo('pad-firma', 'arrendador')) arr.push('Firma de la arrendadora');
+    if (padInv('arrendador') && !padInv('arrendador').classList.contains('firmado')) arr.push('Firma del inventario (arrendadora)');
+    if (!diasAseo().some(function (c) { return c.checked; }) && !txt(lin('aseo-otro'))) arr.push('Días de aseo del frente (se acuerdan con el arrendador)');
+    [['fecha-inicio', 'Fecha en que empieza el contrato'], ['fecha-entrega', 'Fecha de entrega'], ['ciudad-firma', 'Ciudad de la firma']].forEach(function (x) { if (!txt(lin(x[0]))) arr.push(x[1]); });
+    if (!txt(lin('fecha-firma'))) com.push('Fecha de la firma (se completa sola al aceptar)');
+    return { ten: ten, arr: arr, com: com };
+  }
+  function contarPendientes() { var l = listaPendientes(); return l.ten.filter(function (t) { return !/opcional/.test(t); }).length + l.arr.length + l.com.length; }
+  function abrirPendientes(alContinuar) {
+    var l = listaPendientes();
+    var fondo = el('div', 'lectura'), cab = el('div', 'lectura-cab');
+    cab.appendChild(el('b', null, 'Lo que está pendiente'));
+    function cerrar() { fondo.remove(); document.body.style.overflow = (asis && !cont.classList.contains('oculto')) || (!cont.classList.contains('oculto')) ? 'hidden' : ''; }
+    cab.appendChild(btn('✕ Cerrar', cerrar));
+    var cuerpo = el('div', 'lectura-cuerpo'), caja = el('div', 'asis-caja asis-pend');
+    function grupo2(titulo, items, vacio) {
+      caja.appendChild(el('h2', null, titulo));
+      if (!items.length) { caja.appendChild(el('p', 'ok', '✔ ' + vacio)); return; }
+      var ul = el('ul', 'asis-lista'); items.forEach(function (t) { ul.appendChild(el('li', 'falta', '• ' + t)); }); caja.appendChild(ul);
+    }
+    grupo2('Lo que le toca a usted', l.ten, 'No le falta nada.');
+    grupo2('Lo que completa el arrendador', l.arr, 'Todo listo de su parte.');
+    if (l.com.length) grupo2('Se completa al firmar', l.com, '');
+    if (alContinuar) { var b = btn('✍ Completar ahora', function () { cerrar(); alContinuar(); }, true); b.classList.add('grande'); caja.appendChild(b); }
+    cuerpo.appendChild(caja); fondo.appendChild(cab); fondo.appendChild(cuerpo);
+    document.body.appendChild(fondo); document.body.style.overflow = 'hidden';
+  }
+  document.getElementById('btnPendientes').addEventListener('click', function () { abrirPendientes(); });
+
   // Lectura del contrato completo en una ventana (sin salir del proceso de firma)
   function abrirLectura() {
     var fondo = el('div', 'lectura'), cab = el('div', 'lectura-cab');
@@ -1731,6 +1777,8 @@
     var b1 = btn('🎧 Escuchar el contrato', function () { document.getElementById('btnAudio').click(); }, true); b1.classList.add('grande');
     var b2 = btn('📖 Leer el contrato', function () { abrirLectura(); }); b2.classList.add('grande');
     caja.appendChild(b1); caja.appendChild(b2);
+    var bp = btn('📋 Ver lo que falta (' + contarPendientes() + ')', function () { abrirPendientes(function () { asis = { rol: 'arrendatario', pasos: pasosDe('arrendatario'), i: 0 }; pintarPaso(); }); }); bp.classList.add('grande');
+    caja.appendChild(bp);
     caja.appendChild(el('p', 'asis-sub', 'Cuando termine'));
     var b3 = btn('✍ Continuar a firmar', function () { asis = { rol: 'arrendatario', pasos: pasosDe('arrendatario'), i: 0 }; pintarPaso(); }, true); b3.classList.add('grande');
     caja.appendChild(b3);
@@ -1758,7 +1806,7 @@
             document.querySelectorAll('.pad[data-rol="arrendador"], .pad[data-inv="arrendador"]').forEach(function (q) { q.style.pointerEvents = 'none'; });
             pantallaCliente();
           } else {
-            document.getElementById('btnCargarParte').hidden = false;
+            document.getElementById('btnCargarParte').hidden = false; document.getElementById('btnPendientes').hidden = false;
             mostrarAsistente(false);
           }
           marcarPendientes();
