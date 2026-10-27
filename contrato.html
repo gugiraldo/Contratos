@@ -113,6 +113,22 @@
   .asis-caja input.asis-otro.activo { background: #2563eb; border-color: #2563eb; color: #fff; font-weight: bold; }
   .asis-sub { margin: 18px 0 2px; padding-top: 10px; border-top: 1px solid #e2e8f0; font-weight: bold; color: #475569; }
   .fijo[data-key="canonletras"] { text-transform: uppercase; }
+  .lectura { position: fixed; left: 0; top: 0; right: 0; bottom: 0; z-index: 100; background: #e2e8f0; display: flex; flex-direction: column; font: 15px Arial, sans-serif; }
+  .lectura-cab { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; background: #0f172a; color: #fff; }
+  .lectura-cuerpo { flex: 1; overflow: auto; padding: 12px; }
+  .lectura-cuerpo .pagina { background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,.2); border-radius: 4px; }
+  .grande { display: block; width: 100%; margin: 8px 0; padding: 18px 14px; font-size: 18px; }
+  body.cliente .barra, body.cliente .inicio-proceso { display: none !important; }
+  body.paquete .huella[data-rol="arrendador"] { display: none; }
+  body.paquete .pad { position: relative; }
+  @media screen {
+    body.paquete .linea.pendiente, body.paquete .fijo.pendiente { background: #fff4d6; box-shadow: inset 0 0 0 1px #f59e0b; }
+    body.paquete .linea.pendiente:empty::before { content: 'PENDIENTE'; font: bold 9px Arial, sans-serif; color: #b45309; letter-spacing: .5px; }
+    body.paquete .pad.pendiente { background: #fff4d6 !important; box-shadow: inset 0 0 0 2px #f59e0b; }
+    body.paquete .pad.pendiente::before { content: 'PENDIENTE'; position: absolute; left: 4px; top: 2px; font: bold 9px Arial, sans-serif; color: #b45309; letter-spacing: .5px; }
+    body.paquete .pad.pendiente .pad-ph { color: #b45309; font-weight: bold; }
+    body.paquete p.pendiente { background: #fff4d6; box-shadow: -4px 0 0 #f59e0b; }
+  }
   .opcwrap { position: relative; display: inline-block; }
   .btnopc { border: 1px solid #94a3b8; background: #f1f5f9; border-radius: 4px; font-size: 11px; padding: 0 5px; margin-left: 3px; cursor: pointer; vertical-align: middle; line-height: 1.5; color: #0f172a; }
   .menu-opc { position: absolute; left: 0; top: 100%; z-index: 30; background: #fff; border: 1px solid #94a3b8; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,.25); padding: 4px; display: flex; flex-direction: column; min-width: 150px; font: 14px Arial, sans-serif; white-space: nowrap; }
@@ -227,6 +243,7 @@
         <button id="btnAudio" type="button">🎧 Escuchar el contrato</button>
         <button id="btnLimpiar" type="button">Limpiar datos del inquilino</button>
         <button id="btnArr" type="button">Datos del arrendador…</button>
+        <button id="btnCargarParte" type="button" hidden>📥 Cargar la parte del cliente</button>
         <span id="confirmar" hidden>¿Borrar los datos del inquilino?
           <button id="btnSi" type="button">Sí, borrar</button>
           <button id="btnNo" type="button">Cancelar</button>
@@ -449,7 +466,7 @@
   fijos.forEach(function (e) { e.setAttribute('contenteditable', 'true'); e.setAttribute('spellcheck', 'false'); });
   document.querySelectorAll('.notas').forEach(function (e) { e.setAttribute('contenteditable', 'true'); });
   function leer(k) { try { return localStorage.getItem('contrato_' + k); } catch (x) { return null; } }
-  function guardar(k, v) { try { localStorage.setItem('contrato_' + k, v); } catch (x) {} }
+  function guardar(k, v) { if (window.__sinGuardar) return; try { localStorage.setItem('contrato_' + k, v); } catch (x) {} }
   fijos.forEach(function (e) {
     e.dataset.def = e.textContent;
     var v = leer(e.dataset.key);
@@ -1078,6 +1095,7 @@
     var hoja = document.querySelector('table.hoja').cloneNode(true);
     ['thead', 'tfoot'].forEach(function (t) { var x = hoja.querySelector(t); if (x) x.remove(); });
     hoja.querySelectorAll('[contenteditable]').forEach(function (e) { e.removeAttribute('contenteditable'); });
+    hoja.querySelectorAll('.pendiente').forEach(function (e) { e.classList.remove('pendiente'); });
     // Notas del inventario: en el PDF cada renglón lleva su raya (mínimo 3 renglones)
     hoja.querySelectorAll('.notas').forEach(function (e, i) {
       var o = document.querySelectorAll('.notas')[i], l = (o ? o.innerText : '').replace(/\n+$/, '').split('\n');
@@ -1144,12 +1162,12 @@
     try { g = crearPDF(); } catch (e) { fin(); return Promise.reject(e); }
     return g.trabajo.outputPdf('blob').then(function (blob) { fin(); return blob; }, function (e) { fin(); throw e; });
   }
-  function guardarArchivo(blob) {
+  function guardarArchivo(blob, nombre) {
     var usar = (window.claude && claude.use) ? claude.use('downloads').catch(function () { return null; }) : Promise.resolve(null);
     return usar.then(function (downloads) {
-      if (downloads) return downloads.save({ filename: NOMBRE, data: blob });
+      if (downloads) return downloads.save({ filename: nombre || NOMBRE, data: blob });
       var a = document.createElement('a');
-      a.href = URL.createObjectURL(blob); a.download = NOMBRE; a.style.display = 'none';
+      a.href = URL.createObjectURL(blob); a.download = nombre || NOMBRE; a.style.display = 'none';
       document.body.appendChild(a); a.click();
       setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
     });
@@ -1201,7 +1219,7 @@
       case 'condiciones': return condListas();
       case 'convivencia': return convListas();
       case 'anexo': return anexoListo();
-      case 'revisar': return condListas() && convListas() && anexoListo();
+      case 'revisar': return paquete.modo === 'cliente' || (condListas() && convListas() && anexoListo());
       case 'refs': return refsListas();
       case 'frente': return fotoLista(rol, 'frente');
       case 'dorso': return fotoLista(rol, 'dorso');
@@ -1211,6 +1229,7 @@
     }
   }
   function pasosDe(rol) {
+    if (paquete.modo === 'cliente' && rol === 'arrendatario') return ['aceptar', 'datos'].concat(opciones.referencias ? ['refs'] : [], ['revisar', 'huella', 'firma', 'firmaInv', 'resumen']);
     var c = ROLES[rol], p = ['aceptar'];
     if (c.datosArr) p.push('datosArr');
     if (c.cond) p.push('condiciones', 'convivencia', 'anexo');
@@ -1218,7 +1237,7 @@
     if (c.refs && opciones.referencias) p.push('refs');
     if (c.revisar) p.push('revisar');
     if (c.fotos && !opciones.papel) p.push('frente', 'dorso');
-    if (!opciones.papel) p.push('huella', 'firma');
+    if (!opciones.papel) { if (!(paquete.modo && rol === 'arrendador')) p.push('huella'); p.push('firma'); }
     if (c.inv && !opciones.papel) p.push('firmaInv');
     p.push('resumen');
     return p;
@@ -1231,7 +1250,7 @@
     if (f && !txt(f)) f.textContent = fechaLarga(d);
   }
   function mostrarAsistente(si) { cont.classList.toggle('oculto', !si); document.body.style.overflow = si ? 'hidden' : ''; }
-  function salirAsistente() { mostrarAsistente(false); flotante.classList.add('oculto'); asis = null; }
+  function salirAsistente() { mostrarAsistente(false); flotante.classList.add('oculto'); asis = null; if (paquete.modo === 'cliente') flotante.classList.remove('oculto'); }
   function btn(texto, fn, principal) {
     var b = el('button', 'asis-btn' + (principal ? ' principal' : ''), texto);
     b.type = 'button'; b.addEventListener('click', fn);
@@ -1373,18 +1392,18 @@
     },
     revisar: function (cu, rol, cambio) {
       var todo = condListas() && convListas() && anexoListo();
-      if (!todo) { cu.appendChild(el('p', 'falta', 'Falta que la arrendadora termine de llenar las condiciones. Pídale que entre como "Arrendador" y complete sus pasos; luego vuelva aquí.')); return; }
+      if (!todo && paquete.modo !== 'cliente') { cu.appendChild(el('p', 'falta', 'Falta que la arrendadora termine de llenar las condiciones. Pídale que entre como "Arrendador" y complete sus pasos; luego vuelva aquí.')); return; }
       cu.appendChild(el('p', null, 'Estas son las condiciones que quedaron en el contrato. Si algo no está bien, díganselo a la arrendadora antes de seguir.'));
       var dias = diasAseo().filter(function (c) { return c.checked; }).map(function (c) { return c.parentNode.textContent.trim(); });
       var ul = el('ul', 'asis-lista');
       [
-        'Canon: $ ' + txt(fj('canon')) + ' (' + txt(fj('canonletras')) + ' pesos) al mes',
+        'Canon: $ ' + (txt(fj('canon')) || 'PENDIENTE') + ' (' + txt(fj('canonletras')) + ' pesos) al mes',
         'Pago: dentro de los primeros ' + txt(fj('diapago')) + ' días de cada mes',
-        'Plazo: ' + txt(fj('plazo')) + ' meses, desde el ' + txt(lin('fecha-inicio')),
+        'Plazo: ' + txt(fj('plazo')) + ' meses, desde el ' + (txt(lin('fecha-inicio')) || 'PENDIENTE'),
         'Máximo de personas: ' + txt(fj('personas')),
-        'Aseo del frente a su cargo: ' + (dias.length ? dias.join(', ') : (txt(lin('aseo-otro')) || 'según se acordó')),
-        'Entrega del apartamento: ' + txt(lin('fecha-entrega')),
-        'Firma en ' + txt(lin('ciudad-firma')) + ', el ' + txt(lin('fecha-firma'))
+        'Aseo del frente a su cargo: ' + (dias.length ? dias.join(', ') : (txt(lin('aseo-otro')) || 'PENDIENTE (se acuerda con el arrendador)')),
+        'Entrega del apartamento: ' + (txt(lin('fecha-entrega')) || 'PENDIENTE'),
+        'Firma en ' + (txt(lin('ciudad-firma')) || 'PENDIENTE') + ', el ' + (txt(lin('fecha-firma')) || 'día de la firma')
       ].forEach(function (t) { ul.appendChild(el('li', null, '• ' + t)); });
       cu.appendChild(ul);
     },
@@ -1403,10 +1422,10 @@
       cu.appendChild(el('p', null, 'Antes de aceptar, lea el contrato completo o escúchelo. Si prefiere hacerlo con calma, puede salir y volver cuando quiera: lo que ya hizo queda en esta página.'));
       var fila = el('div', 'asis-fila');
       fila.appendChild(btn('🎧 Escuchar el contrato', function () { document.getElementById('btnAudio').click(); }));
-      fila.appendChild(btn('📄 Leer el contrato', function () { cont.classList.add('oculto'); document.body.style.overflow = ''; flotante.classList.remove('oculto'); }));
+      fila.appendChild(btn('📄 Leer el contrato', function () { abrirLectura(); }));
       cu.appendChild(fila);
       if (aceptado(rol)) { cu.appendChild(el('p', 'ok', '✔ Aceptado: ' + txt(document.querySelector('[data-acepta="' + rol + '"]')))); return; }
-      if (ROLES[rol].datos) {
+      if (ROLES[rol].datos && paquete.modo !== 'cliente') {
         cu.appendChild(el('p', 'asis-sub', 'Si quien firma está en otro lugar'));
         cu.appendChild(el('p', null, 'Si la persona ya escuchó o leyó el contrato y le escribió por WhatsApp que lo acepta, regístrelo aquí. Guarde ese mensaje: es su constancia.'));
         var tmp = el('span'); tmp.textContent = fechaLarga(new Date());
@@ -1490,7 +1509,8 @@
       var extra = false;
       if (!opciones.papel) {
         if (c.fotos) items.push(['Cédula: cara con su foto', fotoLista(rol, 'frente')], ['Cédula: cara con su huella', fotoLista(rol, 'dorso')]);
-        items.push(['Huella', padListo('pad-huella', rol)], ['Firma', padListo('pad-firma', rol)]);
+        if (!(paquete.modo && rol === 'arrendador')) items.push(['Huella', padListo('pad-huella', rol)]);
+        items.push(['Firma', padListo('pad-firma', rol)]);
         extra = c.inv && padInv(rol) && !padInv(rol).classList.contains('firmado');
       }
       var ul = el('ul', 'asis-lista');
@@ -1519,6 +1539,12 @@
       }, true);
       gen.disabled = !todo;
       zona.appendChild(gen);
+      if (paquete.modo === 'cliente') {
+        cu.appendChild(el('p', 'asis-sub', 'Enviar su parte'));
+        cu.appendChild(el('p', null, 'Además del PDF, puede enviar su parte (datos, firma y huella) a quien le preparó el contrato, para que la termine de completar.'));
+        var zona2 = el('div', 'asis-fila'); cu.appendChild(zona2);
+        zona2.appendChild(btn('📤 Enviar mi parte por WhatsApp', function () { enviarParte(); }, true));
+      }
     }
   };
   function pasoFoto(cu, rol, lado, instruccion) {
@@ -1573,13 +1599,179 @@
     caja.appendChild(s); cont.appendChild(caja);
     mostrarAsistente(true);
   }
-  flotante.addEventListener('click', function () { flotante.classList.add('oculto'); if (asis && asis.rol) pintarPaso(); else pantallaRol(); });
+  flotante.addEventListener('click', function () { flotante.classList.add('oculto'); if (asis && asis.rol) pintarPaso(); else if (paquete.modo === 'cliente') pantallaCliente(); else pantallaRol(); });
   document.addEventListener('pad-cambio', function () {
     if (asis && asis.rol && !cont.classList.contains('oculto') && ['frente', 'dorso', 'huella', 'firma', 'firmaInv'].indexOf(asis.pasos[asis.i]) >= 0) pintarPaso();
   });
   ['btnProceso', 'btnProceso2'].forEach(function (id) {
     document.getElementById(id).addEventListener('click', function () { menu(false); pantallaRol(); });
   });
+  // ===== Contrato prellenado y cifrado: dos enlaces (arrendador y cliente) =====
+  var paquete = { modo: null };   // 'cliente' o 'dueno' cuando se abre un contrato cargado desde un enlace
+  function b64(buf) { var b = new Uint8Array(buf), t = ''; for (var i = 0; i < b.length; i += 8192) t += String.fromCharCode.apply(null, b.subarray(i, i + 8192)); return btoa(t); }
+  function deB64(t) { var x = atob(t), b = new Uint8Array(x.length); for (var i = 0; i < x.length; i++) b[i] = x.charCodeAt(i); return b; }
+  function limpiarClave(c) { return String(c || '').toUpperCase().replace(/[^A-Z0-9]/g, ''); }
+  function derivar(clave, sal) {
+    return crypto.subtle.importKey('raw', new TextEncoder().encode(limpiarClave(clave)), 'PBKDF2', false, ['deriveKey']).then(function (base) {
+      return crypto.subtle.deriveKey({ name: 'PBKDF2', salt: sal, iterations: 600000, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+    });
+  }
+  function cifrar(obj, clave) {
+    var sal = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12));
+    return derivar(clave, sal).then(function (k) { return crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, k, new TextEncoder().encode(JSON.stringify(obj))); })
+      .then(function (c) { return JSON.stringify({ v: 1, s: b64(sal), i: b64(iv), d: b64(c) }); });
+  }
+  function descifrar(texto, clave) {
+    var o = JSON.parse(texto);
+    return derivar(clave, deB64(o.s)).then(function (k) { return crypto.subtle.decrypt({ name: 'AES-GCM', iv: deB64(o.i) }, k, deB64(o.d)); })
+      .then(function (b) { return JSON.parse(new TextDecoder().decode(b)); });
+  }
+  function idPad(q) {
+    if (q.dataset.id) return 'foto:' + q.dataset.id;
+    if (q.dataset.inv) return 'inv:' + q.dataset.inv;
+    return (q.classList.contains('pad-huella') ? 'huella:' : 'firma:') + (q.dataset.rol || '');
+  }
+  function leerEstado(solo) {
+    var est = { campos: {}, fijos: {}, chk: [], pads: {}, opciones: {}, acepta: {} };
+    document.querySelectorAll('[data-campo]').forEach(function (e) { est.campos[(e.dataset.rol || '') + '|' + e.dataset.campo] = e.classList.contains('notas') ? e.innerText.replace(/\n+$/, '') : e.textContent; });
+    document.querySelectorAll('.fijo[data-key]').forEach(function (e) { est.fijos[e.dataset.key] = e.textContent; });
+    document.querySelectorAll('table.hoja input[type=checkbox]').forEach(function (c) { est.chk.push(c.checked); });
+    document.querySelectorAll('.pad.firmado').forEach(function (q) { var im = q.querySelector('.pad-img'); if (im) est.pads[idPad(q)] = im.src; });
+    ['codeudor', 'referencias', 'papel'].forEach(function (k) { est.opciones[k] = !!opciones[k]; });
+    document.querySelectorAll('[data-acepta]').forEach(function (e) { est.acepta[e.dataset.acepta] = e.textContent; });
+    if (solo === 'parte') {
+      var c2 = {};
+      Object.keys(est.campos).forEach(function (k) { if (/^(arrendatario|referencias)\|/.test(k) || k === '|fecha-firma') c2[k] = est.campos[k]; });
+      var p2 = {};
+      Object.keys(est.pads).forEach(function (k) { if (/arrendatario$|^foto:arr-/.test(k)) p2[k] = est.pads[k]; });
+      est = { campos: c2, pads: p2, acepta: { arrendatario: est.acepta.arrendatario || '' }, parte: true };
+    }
+    return est;
+  }
+  function aplicarEstado(est) {
+    Object.keys(est.opciones || {}).forEach(function (k) {
+      var c = document.querySelector('input[data-opcion="' + k + '"]');
+      if (c) { c.checked = !!est.opciones[k]; opciones[k] = !!est.opciones[k]; }
+    });
+    aplicarOpciones();
+    Object.keys(est.fijos || {}).forEach(function (k) { fijar(k, est.fijos[k]); });
+    Object.keys(est.campos || {}).forEach(function (k) {
+      var q = k.split('|'), e = document.querySelector('[data-campo="' + q[1] + '"]' + (q[0] ? '[data-rol="' + q[0] + '"]' : ':not([data-rol])'));
+      if (e) e.textContent = est.campos[k];
+    });
+    if (est.chk) document.querySelectorAll('table.hoja input[type=checkbox]').forEach(function (c, i) { if (i < est.chk.length) c.checked = est.chk[i]; });
+    var porId = {}; pads.forEach(function (q) { porId[idPad(q)] = q; });
+    Object.keys(est.pads || {}).forEach(function (k) { if (porId[k]) ponerPad(porId[k], est.pads[k]); });
+    Object.keys(est.acepta || {}).forEach(function (r) { var e = document.querySelector('[data-acepta="' + r + '"]'); if (e && est.acepta[r]) e.textContent = est.acepta[r]; });
+    espejarCC(); marcarPendientes();
+  }
+  window.__contrato = { leerEstado: leerEstado, aplicarEstado: aplicarEstado, cifrar: cifrar };
+
+  function marcarPendientes() {
+    document.body.classList.toggle('paquete', !!paquete.modo);
+    document.querySelectorAll('.pendiente').forEach(function (e) { e.classList.remove('pendiente'); });
+    if (!paquete.modo) return;
+    function m(e, falta) { if (e && falta) e.classList.add('pendiente'); }
+    ['nombre', 'cc', 'expedida', 'telefono', 'correo'].forEach(function (c) { var e = campo('arrendatario', c); m(e, !txt(e)); });
+    if (opciones.referencias) ['r1', 'r2'].forEach(function (r) { ['nombre', 'parentesco', 'telefono', 'direccion'].forEach(function (c) { var e = campo('referencias', r + '-' + c); m(e, !txt(e)); }); });
+    ['fecha-firma', 'fecha-inicio', 'fecha-entrega', 'ciudad-firma'].forEach(function (c) { var e = lin(c); m(e, !txt(e)); });
+    ['arrendador', 'arrendatario'].forEach(function (r) {
+      var a = document.querySelector('[data-acepta="' + r + '"]'); m(a, !txt(a));
+      var f = padDe('pad-firma', r); m(f, f && !f.classList.contains('firmado'));
+      var q = padInv(r); m(q, q && !q.classList.contains('firmado'));
+    });
+    var h = padDe('pad-huella', 'arrendatario'); m(h, h && !h.classList.contains('firmado'));
+    var d1 = document.querySelector('input[data-dia]');
+    if (d1) m(d1.closest('p'), !diasAseo().some(function (c) { return c.checked; }) && !txt(lin('aseo-otro')));
+  }
+  ['input', 'change'].forEach(function (ev) { document.addEventListener(ev, marcarPendientes); });
+  document.addEventListener('pad-cambio', marcarPendientes);
+
+  // Lectura del contrato completo en una ventana (sin salir del proceso de firma)
+  function abrirLectura() {
+    var fondo = el('div', 'lectura'), cab = el('div', 'lectura-cab');
+    cab.appendChild(el('b', null, 'Contrato de arrendamiento'));
+    cab.appendChild(btn('✕ Cerrar', function () { fondo.remove(); document.body.style.overflow = (asis && !cont.classList.contains('oculto')) ? 'hidden' : ''; }));
+    var cuerpo = el('div', 'lectura-cuerpo'), pag = el('div', 'pagina');
+    var h = document.querySelector('table.hoja').cloneNode(true);
+    ['thead', 'tfoot'].forEach(function (t) { var e = h.querySelector(t); if (e) e.remove(); });
+    h.querySelectorAll('[contenteditable]').forEach(function (e) { e.removeAttribute('contenteditable'); });
+    h.querySelectorAll('.btnfecha, .cal, .pad-ph, .btnopc, .menu-opc, .oculto').forEach(function (e) { e.remove(); });
+    h.querySelectorAll('.pendiente').forEach(function (e) { e.classList.remove('pendiente'); });
+    var orig = document.querySelectorAll('table.hoja .chk input');
+    h.querySelectorAll('.chk input').forEach(function (c, i) { c.checked = orig[i].checked; c.disabled = true; });
+    pag.appendChild(h); cuerpo.appendChild(pag);
+    fondo.appendChild(cab); fondo.appendChild(cuerpo);
+    document.body.appendChild(fondo); document.body.style.overflow = 'hidden';
+  }
+
+  // El cliente envía su parte (datos, firma y huella) y el arrendador la carga en su contrato
+  function enviarParte() {
+    var blob = new Blob([JSON.stringify(leerEstado('parte'))], { type: 'text/plain' });
+    var f = new File([blob], 'parte-arrendatario.txt', { type: 'text/plain' });
+    if (navigator.canShare && navigator.canShare({ files: [f] })) navigator.share({ files: [f], title: 'Mi parte del contrato' }).catch(function () {});
+    else guardarArchivo(blob, 'parte-arrendatario.txt').catch(function () {});
+  }
+  document.getElementById('btnCargarParte').addEventListener('click', function () {
+    var inp = document.createElement('input'); inp.type = 'file'; inp.style.display = 'none'; document.body.appendChild(inp);
+    inp.addEventListener('change', function () {
+      var a = inp.files && inp.files[0]; inp.remove(); if (!a) return;
+      var lector = new FileReader();
+      lector.onload = function () { try { aplicarEstado(JSON.parse(lector.result)); decir('Parte del cliente cargada.'); } catch (x) { decir('Ese archivo no es una parte válida.'); } };
+      lector.readAsText(a);
+    });
+    inp.click();
+  });
+
+  function pantallaCliente() {
+    cont.textContent = '';
+    var caja = el('div', 'asis-caja');
+    caja.appendChild(el('h2', null, 'Contrato de arrendamiento'));
+    caja.appendChild(el('p', null, 'Este contrato ya está preparado con sus datos. Antes de firmar, escúchelo o léalo completo. Los datos que faltan aparecen marcados como PENDIENTE y los completa usted al firmar.'));
+    var b1 = btn('🎧 Escuchar el contrato', function () { document.getElementById('btnAudio').click(); }, true); b1.classList.add('grande');
+    var b2 = btn('📖 Leer el contrato', function () { abrirLectura(); }); b2.classList.add('grande');
+    caja.appendChild(b1); caja.appendChild(b2);
+    caja.appendChild(el('p', 'asis-sub', 'Cuando termine'));
+    var b3 = btn('✍ Continuar a firmar', function () { asis = { rol: 'arrendatario', pasos: pasosDe('arrendatario'), i: 0 }; pintarPaso(); }, true); b3.classList.add('grande');
+    caja.appendChild(b3);
+    cont.appendChild(caja); mostrarAsistente(true);
+  }
+
+  function iniciarPaquete(modo, id) {
+    cont.textContent = '';
+    var caja = el('div', 'asis-caja');
+    caja.appendChild(el('h2', null, 'Abrir el contrato'));
+    caja.appendChild(el('p', null, 'Escriba el código que le enviaron junto con el enlace.'));
+    var ci = document.createElement('input'); ci.type = 'text'; ci.autocomplete = 'off'; ci.autocapitalize = 'characters'; ci.placeholder = 'XXXX-XXXX'; ci.style.textTransform = 'uppercase';
+    var msg = el('p', 'falta'), ab;
+    function abrir() {
+      msg.textContent = 'Abriendo…'; ab.disabled = true;
+      fetch('p/' + encodeURIComponent(id) + '.json', { cache: 'no-store' }).then(function (r) { if (!r.ok) throw new Error('no'); return r.text(); })
+        .then(function (t) { return descifrar(t, ci.value); })
+        .then(function (est) {
+          window.__sinGuardar = true; paquete.modo = modo;
+          document.body.classList.add(modo);
+          aplicarEstado(est);
+          document.querySelectorAll('.linea, .fijo, .notas').forEach(function (e) { if (modo === 'cliente') e.removeAttribute('contenteditable'); });
+          if (modo === 'cliente') {
+            document.querySelectorAll('table.hoja input[type=checkbox]').forEach(function (c) { c.disabled = true; });
+            document.querySelectorAll('.pad[data-rol="arrendador"], .pad[data-inv="arrendador"]').forEach(function (q) { q.style.pointerEvents = 'none'; });
+            pantallaCliente();
+          } else {
+            document.getElementById('btnCargarParte').hidden = false;
+            mostrarAsistente(false);
+          }
+          marcarPendientes();
+        })
+        .catch(function () { msg.textContent = 'El código no es correcto o el contrato no está disponible.'; ab.disabled = false; });
+    }
+    ab = btn('Abrir', abrir, true);
+    ci.addEventListener('keydown', function (e) { if (e.key === 'Enter') abrir(); });
+    caja.appendChild(ci); caja.appendChild(msg); caja.appendChild(ab);
+    cont.appendChild(caja); mostrarAsistente(true);
+  }
+  var hashPaquete = /^#([cd])=([A-Za-z0-9]+)$/.exec(location.hash);
+  if (hashPaquete) iniciarPaquete(hashPaquete[1].toLowerCase() === 'c' ? 'cliente' : 'dueno', hashPaquete[2]);
 })();
 </script>
 </body>
