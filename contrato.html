@@ -448,6 +448,7 @@
   <p class="fila">Enlace de la carpeta compartida: <span class="linea larga min" data-campo="enlace-carpeta"></span></p>
   <p>Descripción escrita (opcional):</p>
   <div class="notas" data-campo="notas-inventario"></div>
+  <p><b>Recorrido y conformidad.</b> Al firmar aquí, el arrendatario confirma que se le hizo el recorrido del inmueble, donde vio el estado y el funcionamiento de lo que hay en él (tomas, interruptores, llaves, grifería, puertas y demás), y que está de acuerdo con este inventario. El arrendador confirma que lo entrega así.</p>
   <div class="firmas-anexo">
     <div>Firma arrendador:<div class="pad pad-firma" data-titulo="Firma del arrendador (inventario)" data-inv="arrendador"><span class="pad-ph">Toque aquí para firmar</span></div></div>
     <div>Firma arrendatario:<div class="pad pad-firma" data-titulo="Firma del arrendatario (inventario)" data-inv="arrendatario"><span class="pad-ph">Toque aquí para firmar</span></div></div>
@@ -1192,7 +1193,7 @@
   };
   var PREFIJO = { arrendatario: 'arr', codeudor: 'cod' };
   var CAMPOS_PERSONA = [['nombre', 'Nombre completo', 'text'], ['cc', 'Cédula de ciudadanía (solo números)', 'tel'], ['expedida', 'Cédula expedida en (ciudad)', 'text'], ['telefono', 'Teléfono celular', 'tel'], ['correo', 'Correo electrónico', 'email']];
-  var TITULOS = { aceptar: 'Lea o escuche el contrato', datosArr: 'Datos del arrendador', condiciones: 'Condiciones del arriendo', convivencia: 'Personas y aseo del frente', anexo: 'Entrega, servicios e inventario', revisar: 'Revise las condiciones', firmaInv: 'Firma del inventario', datos: 'Sus datos', refs: 'Referencias personales', frente: 'Cédula: cara con su foto', dorso: 'Cédula: cara con su huella', huella: 'Su huella', firma: 'Su firma', resumen: 'Resumen y PDF final' };
+  var TITULOS = { aceptar: 'Lea o escuche el contrato', datosArr: 'Datos del arrendador', condiciones: 'Condiciones del arriendo', convivencia: 'Personas y aseo del frente', anexo: 'Entrega, servicios e inventario', revisar: 'Revise las condiciones', firmaInv: 'Recorrido e inventario', datos: 'Sus datos', refs: 'Referencias personales', frente: 'Cédula: cara con su foto', dorso: 'Cédula: cara con su huella', huella: 'Su huella', firma: 'Su firma', resumen: 'Resumen y PDF final' };
   var asis = null;
   // Cada dato que falta del cliente se pide en su propia pantalla (como un formulario, uno por uno)
   var CAMPOS_CLIENTE = {};
@@ -1427,7 +1428,7 @@
     },
     firmaInv: function (cu, rol) {
       var q = padInv(rol), base = padDe('pad-firma', rol), hecho = q.classList.contains('firmado');
-      cu.appendChild(el('p', null, 'Firma del inventario y estado del apartamento (al final del contrato). Puede usar la misma firma que ya hizo o firmar de nuevo.'));
+      cu.appendChild(el('p', null, 'Esta firma confirma que se le hizo el recorrido del apartamento, donde vio el estado y el funcionamiento de las tomas, los interruptores y todo lo demás, y que está de acuerdo con el inventario. Puede usar la misma firma que ya hizo o firmar de nuevo.'));
       miniatura(cu, q);
       if (hecho) cu.appendChild(el('p', 'ok', '✔ Firma del inventario guardada.'));
       var fila = el('div', 'asis-fila'); cu.appendChild(fila);
@@ -1536,15 +1537,15 @@
       var todo = items.every(function (it) { return it[1]; });
       cu.appendChild(el('p', null, !todo ? 'Falta completar algunos pasos. Use "Atrás" para terminarlos.' : (opciones.papel
         ? 'Todo listo para imprimir. Descargue el PDF e imprímalo. Cada parte firma y pone su huella a mano, y pega en el Anexo 1 la fotocopia de su cédula, por los dos lados.'
-        : 'Todo listo. El PDF final lleva el contrato con sus datos, las fotos de la cédula, la huella y la firma.')));
+        : (paquete.modo === 'cliente' ? 'Todo listo. Genere y descargue su copia del contrato: lleva sus datos, las fotos de la cédula, su huella y su firma. La arrendadora la completa con la suya y le envía la copia final.' : 'Todo listo. El PDF final lleva el contrato con sus datos, las fotos de la cédula, la huella y la firma.'))));
       var zona = el('div', 'asis-fila'), estado = el('p');
       cu.appendChild(zona); cu.appendChild(estado);
-      var gen = btn('📄 Generar el PDF final', function () {
+      var gen = btn(paquete.modo === 'cliente' ? '📄 Generar mi copia del contrato' : '📄 Generar el PDF final', function () {
         gen.disabled = true; estado.textContent = 'Generando el PDF... (puede tardar unos segundos)';
         hacerPDF().then(function (blob) {
           estado.textContent = '✔ PDF listo.';
           zona.textContent = '';
-          zona.appendChild(btn('⬇ Descargar el PDF', function () {
+          zona.appendChild(btn(paquete.modo === 'cliente' ? '⬇ Descargar mi copia' : '⬇ Descargar el PDF', function () {
             guardarArchivo(blob).then(function () { estado.textContent = '✔ PDF guardado en su dispositivo.'; }).catch(function (e) { if (!e || e.code !== 'declined') estado.textContent = 'No se pudo guardar el archivo.'; });
           }, true));
           var arch = new File([blob], NOMBRE, { type: 'application/pdf' });
