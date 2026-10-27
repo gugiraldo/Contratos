@@ -1827,7 +1827,8 @@
     var msg = el('p', 'falta'), ab;
     function abrir() {
       msg.textContent = 'Abriendo…'; ab.disabled = true;
-      fetch('p/' + encodeURIComponent(id) + '.json', { cache: 'no-store' }).then(function (r) { if (!r.ok) throw new Error('no'); return r.text(); })
+      fetch('p/' + encodeURIComponent(id) + '.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r : fetch(encodeURIComponent(id) + '.json', { cache: 'no-store' }); })
+        .then(function (r) { if (!r.ok) throw new Error('no'); return r.text(); })
         .then(function (t) { return descifrar(t, ci.value); })
         .then(function (est) {
           window.__sinGuardar = true; paquete.modo = modo;
