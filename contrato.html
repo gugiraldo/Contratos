@@ -114,8 +114,8 @@
   .asis-sub { margin: 18px 0 2px; padding-top: 10px; border-top: 1px solid #e2e8f0; font-weight: bold; color: #475569; }
   .fijo[data-key="canonletras"] { text-transform: uppercase; }
   .lectura { position: fixed; left: 0; top: 0; right: 0; bottom: 0; z-index: 100; background: #e2e8f0; display: flex; flex-direction: column; font: 15px Arial, sans-serif; }
-  .lectura-cab { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; background: #0f172a; color: #fff; }
-  .lectura-cuerpo { flex: 1; overflow: auto; padding: 16px; box-sizing: border-box; }
+  .lectura-cab { flex: none; position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; background: #0f172a; color: #fff; }
+  .lectura-cuerpo { flex: 1; min-height: 0; overflow: auto; padding: 16px; box-sizing: border-box; }
   .lectura-cuerpo .pagina { background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,.2); border-radius: 4px; }
   .grande { display: block; width: 100%; box-sizing: border-box; margin: 8px 0; padding: 18px 14px; font-size: 18px; }
   .lectura-cuerpo .asis-caja { width: 100%; max-width: 560px; box-sizing: border-box; margin: 0 auto; padding: 18px; }
@@ -180,6 +180,7 @@
   table.hoja { table-layout: fixed; }
   .pagina { overflow-wrap: anywhere; }
   .linea { max-width: 100%; }
+  .linea.larga { white-space: normal; overflow-wrap: anywhere; }
   @media (max-width: 640px) {
     .barra-in { padding: 8px 12px; gap: 8px 14px; }
     .b-titulo { flex-basis: 100%; }
