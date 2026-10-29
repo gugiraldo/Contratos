@@ -1539,6 +1539,14 @@
       cu.appendChild(el('p', null, !todo ? 'Falta completar algunos pasos. Use "Atrás" para terminarlos.' : (opciones.papel
         ? 'Todo listo para imprimir. Descargue el PDF e imprímalo. Cada parte firma y pone su huella a mano, y pega en el Anexo 1 la fotocopia de su cédula, por los dos lados.'
         : (paquete.modo === 'cliente' ? 'Todo listo. Genere y descargue su copia del contrato: lleva sus datos, las fotos de la cédula, su huella y su firma. La arrendadora la completa con la suya y le envía la copia final.' : 'Todo listo. El PDF final lleva el contrato con sus datos, las fotos de la cédula, la huella y la firma.'))));
+      if (paquete.modo === 'cliente' && todo) {
+        var aviso2 = el('div'); aviso2.style.cssText = 'background:#fff4d6;border:2px solid #f59e0b;border-radius:10px;padding:12px;margin:12px 0;';
+        aviso2.appendChild(el('p', 'asis-sub', 'IMPORTANTE: envíe su parte'));
+        aviso2.appendChild(el('p', null, 'Toque el botón y elija WhatsApp para mandársela a quien le preparó el contrato. Si cierra esta página sin enviarla, tendrá que llenar todo de nuevo.'));
+        var env = btn(parteEnviada ? '✔ Parte enviada (enviar otra vez)' : '📤 Enviar mi parte por WhatsApp', function () { enviarParte(); }, !parteEnviada);
+        env.classList.add('grande'); aviso2.appendChild(env); cu.appendChild(aviso2);
+        cu.appendChild(el('p', null, 'Después puede descargar su copia del contrato:'));
+      }
       var zona = el('div', 'asis-fila'), estado = el('p');
       cu.appendChild(zona); cu.appendChild(estado);
       var gen = btn(paquete.modo === 'cliente' ? '📄 Generar mi copia del contrato' : '📄 Generar el PDF final', function () {
@@ -1557,12 +1565,6 @@
       }, true);
       gen.disabled = !todo;
       zona.appendChild(gen);
-      if (paquete.modo === 'cliente') {
-        cu.appendChild(el('p', 'asis-sub', 'Enviar su parte'));
-        cu.appendChild(el('p', null, 'Además del PDF, puede enviar su parte (datos, firma y huella) a quien le preparó el contrato, para que la termine de completar.'));
-        var zona2 = el('div', 'asis-fila'); cu.appendChild(zona2);
-        zona2.appendChild(btn('📤 Enviar mi parte por WhatsApp', function () { enviarParte(); }, true));
-      }
     }
   };
   function pasoCampo(cu, clave, cambio, sig) {
@@ -1786,7 +1788,10 @@
   }
 
   // El cliente envía su parte (datos, firma y huella) y el arrendador la carga en su contrato
+  var parteEnviada = false;
+  window.addEventListener('beforeunload', function (e) { if (paquete.modo === 'cliente' && !parteEnviada && aceptado('arrendatario')) { e.preventDefault(); e.returnValue = ''; } });
   function enviarParte() {
+    parteEnviada = true;
     var blob = new Blob([JSON.stringify(leerEstado('parte'))], { type: 'text/plain' });
     var f = new File([blob], 'parte-arrendatario.txt', { type: 'text/plain' });
     if (navigator.canShare && navigator.canShare({ files: [f] })) navigator.share({ files: [f], title: 'Mi parte del contrato' }).catch(function () {});
